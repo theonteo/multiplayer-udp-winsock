@@ -1,2 +1,2 @@
 #include "GameObjectManager.h"
-std::map<std::string, GameObject*> GameObjectManager::GameObjectList;
+std::map<std::string, std::unique_ptr<GameObject>> GameObjectManager::GameObjectList;

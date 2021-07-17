@@ -48,7 +48,6 @@ Shader* Render::screenShader;
 Skybox skybox1;
 Shader* selected_shader;
 Shader* line_shader;
-GameObject go;
 
 /******************************************************************************/
 /*!
@@ -108,7 +107,7 @@ void Render::RenderAll()
 
 	for (auto& gos : GameObjectManager::GameObjectList)
 	{
-		GameObject* go = gos.second;
+		const std::unique_ptr<GameObject>& go = gos.second;
 
 		selected_shader = go->shader;
 
@@ -160,7 +159,8 @@ void Render::DirectionalShadowPass
 /******************************************************************************/
 void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
-
+	if (GameObjectManager::GameObjectList.empty())return;
+	const std::unique_ptr<GameObject>& go = GameObjectManager::GameObjectList.begin()->second;
 	DirectionalShadowPass(&Lighting::mainLight, viewMatrix, projectionMatrix);
 
 
@@ -174,7 +174,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	screenShader->UseShader();
 	screenShader->SetScreenTexture(10);
 
-	selected_shader = go.shader;
+	selected_shader = go->shader;
 
 	if (selected_shader)
 	{
@@ -223,16 +223,16 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 
 		//set model matrix
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, go.translate);
-		model = glm::rotate(model, go.rotation.x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, go.rotation.y * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, go.rotation.z * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		model = glm::scale(model, go.scale);
+		model = glm::translate(model, go->translate);
+		model = glm::rotate(model, go->rotation.x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, go->rotation.y * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, go->rotation.z * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, go->scale);
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		go.Model->RenderNormals();
+		go->Model->RenderNormals();
 	}
 
 	Lighting::mainLight.SetLightRotation(Resource::directionalRotation);
@@ -262,13 +262,18 @@ void Render::AssignShaders()
 /******************************************************************************/
 void Render::AssignRenderObject() 
 {
+
+	std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
+
 	//set initial object
-	go.translate = glm::vec3(0.0f, 0.0f, 0.0f);
-	go.rotation = glm::vec3(0, 0, 0);
-	go.scale = glm::vec3(1, 1, 1);
-	go.GameObjectName = "Main Object";
-	
-	go.Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
-	go.shader = (*Resource::Shader_List.find("Shaders\\shader_vertex")).second;
-	GameObjectManager::GameObjectList.insert(std::pair<std::string, GameObject*>("Main Object", &go));
+	go->translate = glm::vec3(0.0f, 0.0f, 0.0f);
+	go->rotation = glm::vec3(0, 0, 0);
+	go->scale = glm::vec3(1, 1, 1);
+	go->GameObjectName = "Main Object";
+	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
+	go->shader = (*Resource::Shader_List.find("Shaders\\shader_vertex")).second;
+
+
+	GameObjectManager::GameObjectList.insert
+	(std::pair<std::string, std::unique_ptr<GameObject>>("Main Object",std::move( go)));
 }

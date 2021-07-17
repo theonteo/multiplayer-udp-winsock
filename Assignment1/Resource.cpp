@@ -25,7 +25,7 @@ Technology is prohibited.
 //static declaration
 bool Resource::enableNormal = false;
 bool Resource::fragmentLighting = false;
-GameObject* Resource::SelectedGameObjectElement;
+std::string Resource::SelectedGameObjectElement;
 std::string Resource::SelectedResourceElement;
 Texture* Resource::Texture_Selected;
 Material* Resource::Material_Selected;

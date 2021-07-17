@@ -152,7 +152,7 @@ void Interface::ShowMainUI()
 	if (ImGui::TreeNodeEx("Settings",
 		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Information", -1))
 	{
-		GameObject* gameobject_selected = (*GameObjectManager::GameObjectList.begin()).second;
+		const std::unique_ptr<GameObject>& gameobject_selected = GameObjectManager::GameObjectList.begin()->second;
 
 		ImGui::Text("Press shift to toggle fly mode");
 		ImGui::Separator();
@@ -205,7 +205,7 @@ void Interface::ShowMainUI()
 		for (auto& i : GameObjectManager::GameObjectList)
 		{
 
-			GameObject* gameobject_selected = i.second;
+			const std::unique_ptr<GameObject>& gameobject_selected = i.second;
 
 			if (ImGui::TreeNodeEx(i.first.c_str(),
 				ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, i.first.c_str(), -1))

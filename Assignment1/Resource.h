@@ -57,7 +57,7 @@ public:
 	//static variables
 	static glm::vec3 directionalRotation;
 	static Camera* camera;
-	static GameObject* SelectedGameObjectElement;
+	static std::string SelectedGameObjectElement;
 	static std::string SelectedResourceElement;
 
 private:
