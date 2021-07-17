@@ -25,6 +25,7 @@ Technology is prohibited.
 #include "Resource.h"
 #include "Material.h"
 #include "GameObject.h"
+#include "GameObjectManager.h"
 
 /******************************************************************************/
 /*!
@@ -151,7 +152,7 @@ void Interface::ShowMainUI()
 	if (ImGui::TreeNodeEx("Settings",
 		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Information", -1))
 	{
-		GameObject* gameobject_selected = (*Resource::GameObject_List.begin()).second;
+		GameObject* gameobject_selected = (*GameObjectManager::GameObjectList.begin()).second;
 
 		ImGui::Text("Press shift to toggle fly mode");
 		ImGui::Separator();
@@ -199,9 +200,9 @@ void Interface::ShowMainUI()
 		ImGui::TreePop();
 	}
 	ImGui::Separator();
-	if (Resource::GameObject_List.size() > 0)
+	if (GameObjectManager::GameObjectList.size() > 0)
 	{
-		for (auto& i : Resource::GameObject_List)
+		for (auto& i : GameObjectManager::GameObjectList)
 		{
 
 			GameObject* gameobject_selected = i.second;

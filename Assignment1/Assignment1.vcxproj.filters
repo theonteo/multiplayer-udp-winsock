@@ -23,6 +23,9 @@
     <Filter Include="Render">
       <UniqueIdentifier>{ec876d30-b42e-4341-a2eb-f5fefbde4a55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{67096407-5e1f-4806-a423-55cde93093a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -103,6 +106,9 @@
     <ClCompile Include="ShadowMap.cpp">
       <Filter>Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="GameObjectManager.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\External Libs\GUI\imgui.h">
@@ -165,9 +171,6 @@
     <ClInclude Include="PostProcess.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Lighting</Filter>
     </ClInclude>
@@ -190,5 +193,11 @@
       <Filter>Lighting</Filter>
     </ClInclude>
     <ClInclude Include="CommonValues.h" />
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectManager.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

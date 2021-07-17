@@ -31,9 +31,7 @@ Texture* Resource::Texture_Selected;
 Material* Resource::Material_Selected;
 Camera* Resource::camera;
 
-std::vector<std::string> Resource::Level_List;
 
-std::map<std::string, GameObject*>Resource::GameObject_List;
 std::map<std::string, Shader*>Resource::Shader_List;
 std::map<std::string, Material*>Resource::Material_List;
 std::map<std::string, Model*>Resource::Model_List;

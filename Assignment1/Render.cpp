@@ -15,6 +15,7 @@ Technology is prohibited.
 */
 /*****************************************************************************/
 
+#include "GameObjectManager.h"
 #include "Render.h"
 #include "Resource.h"
 #include "Lighting.h"
@@ -74,7 +75,7 @@ void Render::Init()
 void Render::RenderShadow() 
 {
 	glm::mat4 model = glm::mat4(1.0f);
-	for (auto& go : Resource::GameObject_List)
+	for (auto& go :GameObjectManager::GameObjectList)
 	{
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, go.second->translate);
@@ -105,7 +106,7 @@ void Render::RenderAll()
 	model = glm::mat4(1.0f);
 	// run all gameobject
 
-	for (auto& gos : Resource::GameObject_List)
+	for (auto& gos : GameObjectManager::GameObjectList)
 	{
 		GameObject* go = gos.second;
 
@@ -269,5 +270,5 @@ void Render::AssignRenderObject()
 	
 	go.Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
 	go.shader = (*Resource::Shader_List.find("Shaders\\shader_vertex")).second;
-	Resource::GameObject_List.insert(std::pair<std::string, GameObject*>("Main Object", &go));
+	GameObjectManager::GameObjectList.insert(std::pair<std::string, GameObject*>("Main Object", &go));
 }

@@ -36,13 +36,11 @@ class Resource
 public:
 
 	//store data
-	static std::vector<std::string> Level_List;
 
 	static std::map<std::string, Texture*>Texture_List;
 	static std::map<std::string, Shader*>Shader_List;
 	static std::map<std::string, Material*>Material_List;
 	static std::map<std::string, Model*>Model_List;
-	static std::map<std::string, GameObject*>GameObject_List;
 	static std::map<std::string, Light*>Light_List;
 
 	static Texture* Texture_Selected;

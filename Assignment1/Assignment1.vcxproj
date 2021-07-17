@@ -181,6 +181,7 @@
     <ClCompile Include="..\External Libs\GUI\imgui_widgets.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Lighting.cpp" />
     <ClCompile Include="Render.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="Render.h" />
