@@ -19,7 +19,7 @@ Technology is prohibited.
 #define RENDER_H
 
 #include <glm.hpp>
-
+#include <string>
 class DirectionalLight;
 class Shader;
 class PostProcess;
@@ -34,9 +34,10 @@ class Render
 public:
 
 	//store shader pointers
-	static Shader* directionalShadowShader;
-	static Shader* SkyBoxShader;
-	static Shader* screenShader;
+	static std::string directionalShadowShader;
+	static std::string SkyBoxShader;
+	static std::string screenShader;
+
 	static PostProcess postprocess;
 
 	static void Init();

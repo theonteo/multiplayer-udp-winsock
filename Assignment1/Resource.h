@@ -38,7 +38,7 @@ public:
 	//store data
 
 	static std::map<std::string, Texture*>Texture_List;
-	static std::map<std::string, Shader*>Shader_List;
+	static std::map<std::string, std::unique_ptr<Shader>>Shader_List;
 	static std::map<std::string, Material*>Material_List;
 	static std::map<std::string, Model*>Model_List;
 	static std::map<std::string, Light*>Light_List;

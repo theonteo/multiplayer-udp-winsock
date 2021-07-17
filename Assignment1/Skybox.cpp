@@ -37,10 +37,13 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 {
 	// Shader Setup
 //	skyShader = new Shader();
-	skyShader=(*Resource::Shader_List.find("Shaders\\skybox")).second;
+	skyShader="Shaders\\skybox";
 
-	uniformProjection = skyShader->GetProjectionLocation();
-	uniformView = skyShader->GetViewLocation();
+	const auto& shader = Resource::Shader_List.find(skyShader)->second;
+
+
+	uniformProjection = shader->GetProjectionLocation();
+	uniformView = shader->GetViewLocation();
 
 	// Texture Setup
 	glGenTextures(1, &textureId);
@@ -120,8 +123,8 @@ void Skybox::DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	viewMatrix = glm::mat4(glm::mat3(viewMatrix));
 
 	glDepthMask(GL_FALSE);
-
-	skyShader->UseShader();
+	const auto& shader = Resource::Shader_List.find(skyShader)->second;
+	shader->UseShader();
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 

@@ -31,7 +31,7 @@ public:
 	//store pointers to data
 	Material* GameObjectMaterial;
 	Model* Model;
-	Shader* shader;
+	std::string shader;
 
 	//store transforms
 	glm::vec3 translate = glm::vec3(0, 0, 0);

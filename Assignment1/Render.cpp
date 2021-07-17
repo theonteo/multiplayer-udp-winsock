@@ -41,13 +41,14 @@ uniformShininess = 0,
 uniformEyePosition = 0;
 
 PostProcess Render::postprocess;
-Shader* Render::directionalShadowShader;
-Shader* Render::SkyBoxShader;
-Shader* Render::screenShader;
+std::string Render::directionalShadowShader;
+std::string Render::SkyBoxShader;
+std::string Render::screenShader;
+std::string selected_shader;
+std::string line_shader;
 
 Skybox skybox1;
-Shader* selected_shader;
-Shader* line_shader;
+
 
 /******************************************************************************/
 /*!
@@ -76,6 +77,10 @@ void Render::RenderShadow()
 	glm::mat4 model = glm::mat4(1.0f);
 	for (auto& go :GameObjectManager::GameObjectList)
 	{
+
+		const std::unique_ptr<Shader>& shader = 
+			Resource::Shader_List.find(directionalShadowShader)->second;
+
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, go.second->translate);
 		model = glm::rotate(model, go.second->rotation.x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -83,7 +88,7 @@ void Render::RenderShadow()
 		model = glm::rotate(model, go.second->rotation.z * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, go.second->scale);
 
-		uniformModel = directionalShadowShader->GetModelLocation();
+		uniformModel = shader->GetModelLocation();
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		go.second->Model->RenderModel();
@@ -109,9 +114,12 @@ void Render::RenderAll()
 	{
 		const std::unique_ptr<GameObject>& go = gos.second;
 
+		const std::unique_ptr<Shader>& shader =
+			Resource::Shader_List.find(go->shader)->second;
+
 		selected_shader = go->shader;
 
-		if (selected_shader)  selected_shader->UseShader();
+		if (shader)  shader->UseShader();
 
 		glUniform1f(uniformSpecularIntensity,2.0f);
 		glUniform1f(uniformShininess, 25.0f);
@@ -139,15 +147,17 @@ void Render::RenderAll()
 void Render::DirectionalShadowPass
 (DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
+	const std::unique_ptr<Shader>& shader =
+		Resource::Shader_List.find(directionalShadowShader)->second;
 
-	directionalShadowShader->UseShader();
+	shader->UseShader();
 	glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
 
 	light->GetShadowMap()->Write();
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
-	directionalShadowShader->SetDirectionalLighttransform(&light->CalculateLightTransform());
+	shader->SetDirectionalLighttransform(&light->CalculateLightTransform());
 
 	RenderShadow();
 
@@ -171,21 +181,25 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	glClearColor(1.0f, 1.0f, 0.75f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	screenShader->UseShader();
-	screenShader->SetScreenTexture(10);
+	const std::unique_ptr<Shader>& screenshader =
+		Resource::Shader_List.find(screenShader)->second;
+
+	screenshader->UseShader();
+	screenshader->SetScreenTexture(10);
 
 	selected_shader = go->shader;
-
-	if (selected_shader)
+	const std::unique_ptr<Shader>& shader =
+		Resource::Shader_List.find(go->shader)->second;
+	if (shader)
 	{
-		selected_shader->UseShader();
-		uniformModel = selected_shader->GetModelLocation();
-		uniformProjection = selected_shader->GetProjectionLocation();
-		uniformView = selected_shader->GetViewLocation();
-		uniformModel = selected_shader->GetModelLocation();
-		uniformEyePosition = selected_shader->GetEyePositionLocation();
-		uniformSpecularIntensity = selected_shader->GetSpecularIntensityLocation();
-		uniformShininess = selected_shader->GetShininessLocation();
+		shader->UseShader();
+		uniformModel = shader->GetModelLocation();
+		uniformProjection =shader->GetProjectionLocation();
+		uniformView = shader->GetViewLocation();
+		uniformModel = shader->GetModelLocation();
+		uniformEyePosition = shader->GetEyePositionLocation();
+		uniformSpecularIntensity = shader->GetSpecularIntensityLocation();
+		uniformShininess = shader->GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -193,16 +207,16 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 		(uniformEyePosition, Resource::camera->getCameraPosition().x,
 			Resource::camera->getCameraPosition().y, Resource::camera->getCameraPosition().z);
 
-		selected_shader->SetDirectionalLight(&Lighting::mainLight);
-		selected_shader->SetPointLight(Lighting::pointLights, Lighting::pointLightCount);
-		selected_shader->SetSpotLight(Lighting::spotLights, Lighting::spotLightCount);
-		selected_shader->SetDirectionalLighttransform(&Lighting::mainLight.CalculateLightTransform());
+		shader->SetDirectionalLight(&Lighting::mainLight);
+		shader->SetPointLight(Lighting::pointLights, Lighting::pointLightCount);
+		shader->SetSpotLight(Lighting::spotLights, Lighting::spotLightCount);
+		shader->SetDirectionalLighttransform(&Lighting::mainLight.CalculateLightTransform());
 		Lighting::mainLight.GetShadowMap()->Read(GL_TEXTURE1);
 
-		selected_shader->SetTexture(0);
-		selected_shader->SetDirectionalShadowMap(1);
-		selected_shader->SetTextureNormal(2);
-		selected_shader->SetTextureCubeMap(6);
+		shader->SetTexture(0);
+		shader->SetDirectionalShadowMap(1);
+		shader->SetTextureNormal(2);
+		shader->SetTextureCubeMap(6);
 	}
 
 	skybox1.DrawSkybox(viewMatrix, projectionMatrix);
@@ -213,13 +227,17 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	//render normal
 	if (Resource::enableNormal)
 	{
+
+		const std::unique_ptr<Shader>& lineshader =
+			Resource::Shader_List.find(line_shader)->second;
+
 		//use line shader
-		line_shader->UseShader();
+		lineshader->UseShader();
 
 		//set matrix
-		uniformModel = line_shader->GetModelLocation();
-		uniformProjection = line_shader->GetProjectionLocation();
-		uniformView = line_shader->GetViewLocation();
+		uniformModel = lineshader->GetModelLocation();
+		uniformProjection = lineshader->GetProjectionLocation();
+		uniformView = lineshader->GetViewLocation();
 
 		//set model matrix
 		glm::mat4 model = glm::mat4(1.0f);
@@ -238,7 +256,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	Lighting::mainLight.SetLightRotation(Resource::directionalRotation);
 
 	//draw frame buffer
-	screenShader->UseShader();
+	screenshader->UseShader();
 	postprocess.DrawPostProcessing();
 
 }
@@ -249,10 +267,10 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 /******************************************************************************/
 void Render::AssignShaders()
 {
-	directionalShadowShader = (*Resource::Shader_List.find("Shaders\\directional_shadow_map")).second;
-	SkyBoxShader = (*Resource::Shader_List.find("Shaders\\skybox")).second;
-	screenShader = (*Resource::Shader_List.find("Shaders\\framebuffers_screen")).second;
-	line_shader = (*Resource::Shader_List.find("Shaders\\shader_line")).second;
+	directionalShadowShader = "Shaders\\directional_shadow_map";
+	SkyBoxShader = "Shaders\\skybox";
+	screenShader = "Shaders\\framebuffers_screen";
+	line_shader ="Shaders\\shader_line";
 }
 
 /******************************************************************************/
@@ -262,7 +280,6 @@ void Render::AssignShaders()
 /******************************************************************************/
 void Render::AssignRenderObject() 
 {
-
 	std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
 
 	//set initial object
@@ -271,8 +288,7 @@ void Render::AssignRenderObject()
 	go->scale = glm::vec3(1, 1, 1);
 	go->GameObjectName = "Main Object";
 	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
-	go->shader = (*Resource::Shader_List.find("Shaders\\shader_vertex")).second;
-
+	go->shader = "Shaders\\shader_vertex";
 
 	GameObjectManager::GameObjectList.insert
 	(std::pair<std::string, std::unique_ptr<GameObject>>("Main Object",std::move( go)));

@@ -32,7 +32,7 @@ Material* Resource::Material_Selected;
 Camera* Resource::camera;
 
 
-std::map<std::string, Shader*>Resource::Shader_List;
+std::map<std::string, std::unique_ptr<Shader>>Resource::Shader_List;
 std::map<std::string, Material*>Resource::Material_List;
 std::map<std::string, Model*>Resource::Model_List;
 std::map<std::string, Texture*>Resource::Texture_List;
@@ -116,8 +116,8 @@ void Resource::loadFiles()
 /******************************************************************************/
 void Resource::DeleteAllFiles()
 {
-	for (auto& i : Shader_List)
-		delete i.second;
+	//for (auto& i : Shader_List)
+	//	delete i.second;
 
 	for (auto& i : Model_List)
 		delete i.second;
@@ -196,12 +196,12 @@ void Resource::FileLoad_Shaders()
 			shader_vert.append(".vert");
 			shader_frag.append(".frag");
 
-			Shader* shader_new = new Shader();
+			std::unique_ptr<Shader> shader_new = std::make_unique<Shader>();
 
 			shader_new->CreateFromFiles(shader_vert.c_str(), shader_frag.c_str());
 			std::cout << "Loaded vert: " << shader_vert << ", frag: " << shader_frag << std::endl;
 			shader_new->shaderName = shader_name;
-			Shader_List.insert(std::pair<std::string, Shader*>(shader_new->shaderName, shader_new));
+			Shader_List.insert(std::pair<std::string, std::unique_ptr<Shader>>(shader_new->shaderName, std::move(shader_new)));
 
 		}
 		else

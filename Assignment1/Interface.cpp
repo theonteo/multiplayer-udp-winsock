@@ -173,10 +173,10 @@ void Interface::ShowMainUI()
 
 			if (Resource::fragmentLighting)
 			{
-				gameobject_selected->shader = (*Resource::Shader_List.find("Shaders\\shader")).second;
+				gameobject_selected->shader = "Shaders\\shader";
 			}
 			else {
-				gameobject_selected->shader = (*Resource::Shader_List.find("Shaders\\shader_vertex")).second;
+				gameobject_selected->shader = "Shaders\\shader_vertex";
 			}
 		}
 		ImGui::SameLine();

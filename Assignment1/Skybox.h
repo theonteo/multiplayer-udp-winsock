@@ -40,7 +40,7 @@ public:
 private:
 	GLuint textureId;
 	Mesh* skyMesh;
-	Shader* skyShader;
+	std::string skyShader;
 	GLuint uniformProjection, uniformView;
 };
 
