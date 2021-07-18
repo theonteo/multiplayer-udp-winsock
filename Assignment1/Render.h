@@ -37,17 +37,17 @@ public:
 	static std::string directionalShadowShader;
 	static std::string SkyBoxShader;
 	static std::string screenShader;
-
 	static PostProcess postprocess;
 
 	static void Init();
 
 	//assign data
-	static void AssignRenderObject();
 	static void AssignShaders();
 
 	//main render pass
-	static void DirectionalShadowPass(DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	static void DirectionalShadowPass
+	(DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+
 	static void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };
 

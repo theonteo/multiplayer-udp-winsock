@@ -34,6 +34,7 @@ public:
 
 
 private:
+	glm::vec3 front;
 	glm::vec3 direction;
 };
 

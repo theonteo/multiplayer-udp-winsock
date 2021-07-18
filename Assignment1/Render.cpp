@@ -57,6 +57,10 @@ Skybox skybox1;
 /******************************************************************************/
 void Render::Init()
 {
+	Render::AssignShaders();
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Cubemaps/s_1.jpg");
 	skyboxFaces.push_back("Cubemaps/s_2.jpg");
@@ -273,23 +277,3 @@ void Render::AssignShaders()
 	line_shader ="Shaders\\shader_line";
 }
 
-/******************************************************************************/
-/*!
-\brief  assign render objects
-*/
-/******************************************************************************/
-void Render::AssignRenderObject() 
-{
-	std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
-
-	//set initial object
-	go->translate = glm::vec3(0.0f, 0.0f, 0.0f);
-	go->rotation = glm::vec3(0, 0, 0);
-	go->scale = glm::vec3(1, 1, 1);
-	go->GameObjectName = "Main Object";
-	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
-	go->shader = "Shaders\\shader_vertex";
-
-	GameObjectManager::GameObjectList.insert
-	(std::pair<std::string, std::unique_ptr<GameObject>>("Main Object",std::move( go)));
-}

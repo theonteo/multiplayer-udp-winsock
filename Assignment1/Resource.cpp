@@ -25,8 +25,6 @@ Technology is prohibited.
 //static declaration
 bool Resource::enableNormal = false;
 bool Resource::fragmentLighting = false;
-std::string Resource::SelectedGameObjectElement;
-std::string Resource::SelectedResourceElement;
 Texture* Resource::Texture_Selected;
 Material* Resource::Material_Selected;
 Camera* Resource::camera;
@@ -98,7 +96,6 @@ std::string PathReformatTypeName(std::string _path, std::string _pathextension)
 /******************************************************************************/
 void Resource::loadFiles()
 {
-	Resource::SelectedResourceElement = "";
 	Resource::Texture_Selected = NULL;
 	Resource::Material_Selected = NULL;
 
@@ -146,10 +143,9 @@ void Resource::FileLoad_Models()
 		model_new->ModelName = pathString;
 		Model_List.insert(std::pair<std::string, Model*>(pathString, model_new));
 	}
-
-	//load first Model
-	(*Resource::Model_List.find("Models\\cube.obj")).second->LoadAssetModel
-	((*Resource::Model_List.find("Models\\cube.obj")).second->ModelName);
+	//load all Models
+	for (const auto& i : Resource::Model_List)
+		i.second->LoadAssetModel(i.second->ModelName);
 
 }
 /******************************************************************************/

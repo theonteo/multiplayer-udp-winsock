@@ -16,6 +16,8 @@ Technology is prohibited.
 /*****************************************************************************/
 
 #include "DirectionalLight.h"
+#include "Resource.h"
+#include "Camera.h"
 
 /******************************************************************************/
 /*!
@@ -40,7 +42,7 @@ DirectionalLight::DirectionalLight
 		red, green, blue, aIntensity, dIntensity)
 {
 	direction = glm::vec3(xDir, yDir, zDir);
-	lightProj = glm::ortho(-3.0f, 3.0f, -3.0f,3.0f, 0.1f, 50.0f);
+	lightProj = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.1f,300.0f);
 
 }
 /******************************************************************************/
@@ -65,7 +67,7 @@ void DirectionalLight::SetLightRotation(glm::vec3 rotation)
 	float sz = sin(theta);
 	float cz = cos(theta);
 
-	glm::vec3 front;
+
 	front.y = sy;
 	front.z = -sx * cy;
 	front.x = cx * cy;
@@ -95,7 +97,9 @@ void DirectionalLight::UseLight
 /******************************************************************************/
 glm::mat4 DirectionalLight::CalculateLightTransform()
 {
-	return lightProj * glm::lookAt
-	(-direction, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), -Resource::camera->getCameraPosition() + front * 75.0f);
+	return  lightProj *  glm::lookAt
+	(-direction, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f))*model;
 }
 

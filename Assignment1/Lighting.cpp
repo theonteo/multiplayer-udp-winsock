@@ -35,10 +35,10 @@ unsigned int Lighting::spotLightCount = 0;
 /******************************************************************************/
 void Lighting::init()
 {
-
+	Resource::directionalRotation = glm::vec3(225, -45, 0);
 	mainLight = DirectionalLight(
 		4096, 4096,
-		0.05f,0.01f, 0.0f,
+		0.25f,0.25f, 0.25f,
 		0.25f, 1.15f,
 		45.0f, 15.0f, 10.0f);
 

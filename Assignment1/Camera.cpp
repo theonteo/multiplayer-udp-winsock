@@ -111,6 +111,18 @@ glm::vec3 Camera::getCameraPosition()
 	return position;
 }
 
+void Camera::SetPosition(const glm::vec3& pos)
+{
+	position = pos;
+}
+void Camera::SetRotation(const glm::vec2& rot)
+{
+	pitch = rot.x;
+	yaw = rot.y;
+}
+
+
+
 /******************************************************************************/
 /*!
 \brief get field of view

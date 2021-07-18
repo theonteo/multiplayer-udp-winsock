@@ -26,6 +26,15 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{67096407-5e1f-4806-a423-55cde93093a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GamePlay">
+      <UniqueIdentifier>{5faba501-d304-4250-93f8-f87ddd28f3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking">
+      <UniqueIdentifier>{552e8a94-3462-4bce-8215-9aa3d4d13897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Time">
+      <UniqueIdentifier>{cedd7a9e-6409-4332-8256-a75fe9e6c01b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -108,6 +117,15 @@
     </ClCompile>
     <ClCompile Include="GameObjectManager.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="DeltaTime.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="UDP.cpp">
+      <Filter>Networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +216,15 @@
     </ClInclude>
     <ClInclude Include="GameObjectManager.h">
       <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="DeltaTime.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="UDP.h">
+      <Filter>Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

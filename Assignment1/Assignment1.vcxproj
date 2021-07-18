@@ -180,7 +180,9 @@
     <ClCompile Include="..\External Libs\GUI\imgui_impl_win32.cpp" />
     <ClCompile Include="..\External Libs\GUI\imgui_widgets.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DeltaTime.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Lighting.cpp" />
@@ -198,6 +200,7 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UDP.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -212,7 +215,9 @@
     <ClInclude Include="..\External Libs\GUI\imstb_truetype.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommonValues.h" />
+    <ClInclude Include="DeltaTime.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="Interface.h" />
@@ -230,6 +235,7 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UDP.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

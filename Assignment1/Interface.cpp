@@ -149,57 +149,13 @@ void Interface::ShowMainUI()
 	ImGui::End();
 
 	ImGui::Begin("Inspector", &Inspector_Header);
-	if (ImGui::TreeNodeEx("Settings",
-		ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Information", -1))
+
+	if (ImGui::TreeNodeEx("All Objects",
+		ImGuiTreeNodeFlags_Framed , "All Objects", -1))
 	{
-		const std::unique_ptr<GameObject>& gameobject_selected = GameObjectManager::GameObjectList.begin()->second;
+	
 
-		ImGui::Text("Press shift to toggle fly mode");
-		ImGui::Separator();
-
-		if (ImGui::Button("Change Model"))
-			ImGui::OpenPopup("change_model");
-		ImGui::SameLine();
-		ImGui::Text("Select a new model");
-
-		if (ImGui::Button("Toggle Normals"))
-			Resource::enableNormal = !Resource::enableNormal;
-		ImGui::SameLine();
-		ImGui::Text("Enable/Disable Normals");
-
-		if (ImGui::Button("Toggle Lighting"))
-		{
-			Resource::fragmentLighting = !Resource::fragmentLighting;
-
-			if (Resource::fragmentLighting)
-			{
-				gameobject_selected->shader = "Shaders\\shader";
-			}
-			else {
-				gameobject_selected->shader = "Shaders\\shader_vertex";
-			}
-		}
-		ImGui::SameLine();
-		ImGui::Text("Switch between vertex/fragment lighting");
-
-		if (ImGui::BeginPopup("change_model"))
-		{
-			for (const auto& i : Resource::Model_List)
-			{
-				if (ImGui::MenuItem(i.first.c_str()))
-				{
-					gameobject_selected->rotation = glm::vec3(0);
-					gameobject_selected->Model->ClearModel();
-					gameobject_selected->Model = (*Resource::Model_List.find(i.first.c_str())).second;
-					gameobject_selected->Model->LoadAssetModel((*Resource::Model_List.find(i.first.c_str())).second->ModelName);
-				}
-			}
-			ImGui::EndPopup();
-		}
-
-		ImGui::TreePop();
-	}
-	ImGui::Separator();
+	
 	if (GameObjectManager::GameObjectList.size() > 0)
 	{
 		for (auto& i : GameObjectManager::GameObjectList)
@@ -208,7 +164,7 @@ void Interface::ShowMainUI()
 			const std::unique_ptr<GameObject>& gameobject_selected = i.second;
 
 			if (ImGui::TreeNodeEx(i.first.c_str(),
-				ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, i.first.c_str(), -1))
+				ImGuiTreeNodeFlags_Framed , i.first.c_str(), -1))
 			{
 
 			
@@ -241,6 +197,9 @@ void Interface::ShowMainUI()
 			}
 		}
 	}
+	ImGui::TreePop();
+	}
+	ImGui::Separator();
 
 	for (auto& i : Resource::Light_List)
 	{

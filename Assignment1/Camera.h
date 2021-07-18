@@ -18,7 +18,7 @@ Technology is prohibited.
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <cstring> 
+#include <string> 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
@@ -51,6 +51,8 @@ private:
 	GLfloat moveSpeed;
 	GLfloat turnSpeed;
 
+	std::string lookTarget;
+
 	void update();
 
 public:
@@ -58,12 +60,18 @@ public:
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw,
 		GLfloat startPitch, GLfloat startMovespeed, GLfloat startTurnspeed);
 	
+	//controls
 	void keyControl(bool* keys,GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
 
 	glm::mat4 calculateViewMatrix();
 	glm::mat4 calculateProjectionMatrix(GLfloat aspect);
 	glm::vec3 getCameraPosition();
+
+	void SetPosition(const glm::vec3& pos);
+	void SetRotation(const glm::vec2& rot);
+
+	//getters
 	GLfloat getFov();
 	GLfloat getNearPlane();
 	GLfloat getFarPlane();

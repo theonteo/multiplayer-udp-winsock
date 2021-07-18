@@ -57,8 +57,6 @@ public:
 	//static variables
 	static glm::vec3 directionalRotation;
 	static Camera* camera;
-	static std::string SelectedGameObjectElement;
-	static std::string SelectedResourceElement;
 
 private:
 	//load models
