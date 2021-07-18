@@ -33,6 +33,8 @@ public:
 	Model* Model;
 	std::string shader;
 
+	bool enabled{ true };
+
 	//store transforms
 	glm::vec3 translate = glm::vec3(0, 0, 0);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);

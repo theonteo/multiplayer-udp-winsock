@@ -112,10 +112,12 @@ void Render::RenderAll()
 	skybox1.UseTextureCubeMap();
 
 	model = glm::mat4(1.0f);
-	// run all gameobject
 
+	// run all gameobject
 	for (auto& gos : GameObjectManager::GameObjectList)
 	{
+		if (!gos.second->enabled)continue;
+
 		const std::unique_ptr<GameObject>& go = gos.second;
 
 		const std::unique_ptr<Shader>& shader =
