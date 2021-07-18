@@ -62,7 +62,7 @@ namespace TextRender
 	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z, 
 		GLfloat scale, const glm::vec4& color)
 	{
-		RenderText(font, *Resource::Shader_List.find("Shaders//shader_text")->second, text,
+		RenderText(font, *Resource::Shader_List.find("Shaders\\shader_text")->second, text,
 			_x, _y, _z, 0, 0,
 			scale, color, 0, 9999);
 	}
@@ -95,7 +95,7 @@ namespace TextRender
 
 		Graphics::UniformMat4(shader.GetModelLocation(), temp);
 		Graphics::UniformMat4(shader.GetProjectionLocation(), projection);
-		//Graphics::UniformVec4(shader.GetMainDiffuseColourLocation(), color);
+		Graphics::UniformVec4(shader.GetColourLocation(), color);
 
 		Graphics::ActiveTexture(0);
 
