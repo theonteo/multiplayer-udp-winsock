@@ -81,7 +81,7 @@ void Render::RenderShadow()
 	glm::mat4 model = glm::mat4(1.0f);
 	for (auto& go :GameObjectManager::GameObjectList)
 	{
-
+		if (!go.second->enabled)continue;
 		const std::unique_ptr<Shader>& shader = 
 			Resource::Shader_List.find(directionalShadowShader)->second;
 
@@ -130,6 +130,10 @@ void Render::RenderAll()
 		glUniform1f(uniformSpecularIntensity,2.0f);
 		glUniform1f(uniformShininess, 25.0f);
 
+		//diffuse colour
+		glUniform3f(shader->GetColourLocation(),
+			go->colour.x, go->colour.y, go->colour.z);
+
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, go->translate);
 		model = glm::rotate(model, go->rotation.x * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -141,10 +145,8 @@ void Render::RenderAll()
 
 		//render model
 		go->Model->RenderModel();
-
 	}
 }
-
 /******************************************************************************/
 /*!
 \brief  directional shadow pass
@@ -157,7 +159,8 @@ void Render::DirectionalShadowPass
 		Resource::Shader_List.find(directionalShadowShader)->second;
 
 	shader->UseShader();
-	glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(), light->GetShadowMap()->GetShadowHeight());
+	glViewport(0, 0, light->GetShadowMap()->GetShadowWidth(),
+		light->GetShadowMap()->GetShadowHeight());
 
 	light->GetShadowMap()->Write();
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -176,9 +179,10 @@ void Render::DirectionalShadowPass
 void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 {
 	if (GameObjectManager::GameObjectList.empty())return;
-	const std::unique_ptr<GameObject>& go = GameObjectManager::GameObjectList.begin()->second;
-	DirectionalShadowPass(&Lighting::mainLight, viewMatrix, projectionMatrix);
+	const std::unique_ptr<GameObject>& go = 
+		GameObjectManager::GameObjectList.begin()->second;
 
+	DirectionalShadowPass(&Lighting::mainLight, viewMatrix, projectionMatrix);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, postprocess.GetFrameBuffer());
 	glEnable(GL_DEPTH_TEST);
@@ -196,6 +200,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	selected_shader = go->shader;
 	const std::unique_ptr<Shader>& shader =
 		Resource::Shader_List.find(go->shader)->second;
+
 	if (shader)
 	{
 		shader->UseShader();

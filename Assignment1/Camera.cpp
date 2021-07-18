@@ -28,7 +28,7 @@ Camera::Camera
 	GLfloat startYaw, GLfloat startPitch, 
 	GLfloat startMovespeed, GLfloat startTurnspeed)
 {
-	fov = 60.0f;
+	fov = 80.0f;
 	nearPlane = 0.1f;
 	farPlane = 100.0f;
 

@@ -113,8 +113,9 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,8 +160,9 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,6 +188,7 @@
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Lighting.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Light.cpp" />
@@ -201,6 +204,8 @@
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UDP.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="UIText.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -220,8 +225,10 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Light.h" />
@@ -236,6 +243,8 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UDP.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UIText.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

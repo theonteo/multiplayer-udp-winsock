@@ -28,7 +28,7 @@ Technology is prohibited.
 /******************************************************************************/
 void Model::RenderModel()
 {
-	for (size_t i = 0; i < meshList.size(); i++)
+	for (int i = 0; i < meshList.size(); i++)
 		meshList[i]->RenderMesh();
 }
 
@@ -39,8 +39,8 @@ void Model::RenderModel()
 /******************************************************************************/
 void Model::RenderNormals()
 {
-	for (size_t i = 0; i < meshList.size(); i++)
-		meshList[i]->RenderNormal(allPos.size());
+	for (int i = 0; i < meshList.size(); i++)
+		meshList[i]->RenderNormal(static_cast<int>(allPos.size()));
 }
 
 /******************************************************************************/
@@ -50,7 +50,7 @@ void Model::RenderNormals()
 /******************************************************************************/
 void Model::ClearModel()
 {
-	for (size_t i = 0; i < meshList.size(); i++)
+	for (int i = 0; i < meshList.size(); i++)
 	{
 		if (meshList[i])
 		{
@@ -234,7 +234,9 @@ void Model::LoadAssetModel(const std::string& model_name)
 
 
 
-	newMesh->CreateMesh(&allVerts[0], &allIndices[0], allVerts.size(), allIndices.size());
+	newMesh->CreateMesh(&allVerts[0], &allIndices[0], 
+		static_cast<int>(allVerts.size()), static_cast<int>(allIndices.size()));
+
 	meshList.push_back(newMesh);
 
 }
@@ -334,10 +336,10 @@ void Model::computeNormals()
 {
 	allNormal.resize(allPos.size());
 
-	for (size_t v = 0; v < allPos.size(); ++v)
+	for (int v = 0; v < allPos.size(); ++v)
 	{
 		glm::vec3 N(0, 0, 0);
-		for (size_t i = 0; i < allIndices.size() / 3; ++i)
+		for (int i = 0; i < allIndices.size() / 3; ++i)
 		{
 			if (FaceContainVertex(i, v))
 				N = N + generateNormals(i);

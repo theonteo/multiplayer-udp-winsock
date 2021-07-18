@@ -48,6 +48,7 @@ public:
 	GLuint GetAmbientColourLocation();
 	GLuint GetDiffuseIntensityLocation();
 	GLuint GetDirectionLocation();
+	GLuint GetColourLocation();
 	GLuint GetSpecularIntensityLocation();
 	GLuint GetShininessLocation();
 	GLuint GetEyePositionLocation();
@@ -82,7 +83,7 @@ private:
 	GLuint uniformTextureCubeMap;
 	GLuint uniformScreenTexture;
 
-
+	GLuint uniformColour;
 
 
 	struct {

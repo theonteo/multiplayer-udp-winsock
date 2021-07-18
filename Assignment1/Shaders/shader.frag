@@ -66,6 +66,9 @@ uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+//diffuse colour
+uniform vec3 diffuseColour;
+
 //diffuse texture
 uniform sampler2D theTexture;
 
@@ -126,14 +129,14 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor)
 	vec4 cubemapcolor = vec4(texture(theTextureCubeMap, R).rgb, 1.0) * 0.05;
 
 	//ambient value
-	vec4 ambientColour = vec4(light.colour, 1.0f) * light.ambientIntensity;
+	vec4 ambientColour = vec4(diffuseColour,1.0f) * vec4(light.colour, 1.0f) * light.ambientIntensity;
 	
 	//diffuse value
 	float diffuseFactor = 
 	max(dot(normalize(Normal), normalize(direction)), 0.0f);
 	
 	vec4 diffuseColour = 
-	vec4(light.colour * light.diffuseIntensity * diffuseFactor, 1.0f);
+	vec4(diffuseColour,1.0f) * vec4(light.colour * light.diffuseIntensity * diffuseFactor, 1.0f);
 	
 	vec4 specularColour = vec4(0, 0, 0, 0);
 	
@@ -235,5 +238,5 @@ void main()
 	//vec4 outputColour= texDiffuse *finalColour;
 	
 	//final output
-	colour = finalColour;
+	colour =  finalColour;
 }

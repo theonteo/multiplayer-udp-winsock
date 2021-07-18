@@ -30,7 +30,7 @@ void GameObjectManager::AddPlayer()
 	go->GameObjectName = "Main Object";
 	go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
 	go->shader = "Shaders\\shader";
-
+	go->colour = glm::vec3(1.9f, 0.75f, 0.1f);
 	GameObjectList.insert
 	(std::pair<std::string, std::unique_ptr<GameObject>>("Player", std::move(go)));
 }
@@ -49,6 +49,7 @@ void GameObjectManager::AddScatterObjects()
 		go->translate = glm::vec3(x, 0.0f, z);
 		go->rotation = glm::vec3(0, 0, 0);
 		go->scale = glm::vec3(0.25f, 0.25f, 0.25f);
+		go->colour = glm::vec3(0.2f, 0.2f, 0.2f);
 
 		go->GameObjectName = "point";
 		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
