@@ -41,6 +41,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{3b2b00aa-bb39-4eca-b078-0a579fade44a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Exceptions">
+      <UniqueIdentifier>{9e3b52b4-244d-418f-b56d-2a25d548b289}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -141,6 +144,15 @@
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFlow.cpp">
+      <Filter>GamePlay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +264,18 @@
     </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Exceptions.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFlow.h">
+      <Filter>GamePlay</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
