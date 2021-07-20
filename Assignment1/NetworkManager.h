@@ -19,5 +19,12 @@ public:
 
 	void Init(const std::vector<Player>& data);
 
+	void Update();
+
+	void Send();
+
+	void Receive();
+
+
 };
 
