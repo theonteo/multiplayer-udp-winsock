@@ -9,6 +9,7 @@ class Engine
 
 public:
 	void Init(int argc, char** argv);
+	void EngineLoop();
 	void NetworkLoop();
 	void Loop();
 };

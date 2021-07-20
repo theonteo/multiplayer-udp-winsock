@@ -78,9 +78,27 @@ namespace
 	Lighting lighting;
 	NetworkManager network;
 
+	int ac;
+	char** av;
+
 }
 void Engine::Init(int argc, char** argv)
 {
+	ac = argc;
+	av = argv;
+	std::thread loopThread(std::bind(&Engine::EngineLoop, this));
+	std::thread networkThread(std::bind(&Engine::NetworkLoop, this));
+
+	loopThread.join();
+	networkThread.join();
+}
+
+void Engine::EngineLoop()
+{
+	int argc = ac;
+	char** argv = av;
+
+
 	//store error code
 	int errorCode = 0;
 
@@ -93,9 +111,6 @@ void Engine::Init(int argc, char** argv)
 		if (argc != 5)
 			throw
 			exceptionHandler("Wrong number of arguments ", 1);
-
-
-
 
 		//set up window
 		mainWindow = Window(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -121,9 +136,6 @@ void Engine::Init(int argc, char** argv)
 		Render::postprocess.LoadPostProcessing();
 		main_editor.loadFiles();
 
-		//parse main arguements before int
-		network.Init(ParseEntry(argc, argv));
-
 		DeltaTime::Init();
 		Lighting::init();
 		Render::Init();
@@ -131,12 +143,6 @@ void Engine::Init(int argc, char** argv)
 
 		GameObjectManager::Create();
 		Loop();
-		//std::thread loopThread(std::bind(&Engine::Loop, this));
-		//std::thread networkThread(std::bind(&Engine::NetworkLoop, this));
-
-		//loopThread.join();
-		//networkThread.join();
-
 	}
 	catch (exceptionHandler& e)
 	{
@@ -171,10 +177,13 @@ void Engine::Init(int argc, char** argv)
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-}
+
+	}
 
 void Engine::NetworkLoop()
 {
+	while (!ac)
+		network.Init(ParseEntry(ac, av));
 	network.Update();
 }
 
