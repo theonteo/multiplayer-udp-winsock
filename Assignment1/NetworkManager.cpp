@@ -1,6 +1,6 @@
 #include "NetworkManager.h"
 
-void NetworkManager::Init()
+void NetworkManager::Init(const std::vector<Player>& data)
 {
 	udp.StartUp();
 

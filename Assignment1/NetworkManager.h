@@ -14,8 +14,10 @@ class NetworkManager
 
 	std::vector<Player> playerData;
 	UDP udp;
+
 public:
-	void Init();
+
+	void Init(const std::vector<Player>& data);
 
 };
 
