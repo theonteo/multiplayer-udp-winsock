@@ -154,6 +154,9 @@
     <ClCompile Include="GameFlow.cpp">
       <Filter>GamePlay</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\External Libs\GUI\imgui.h">
@@ -276,6 +279,9 @@
     </ClInclude>
     <ClInclude Include="GameFlow.h">
       <Filter>GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

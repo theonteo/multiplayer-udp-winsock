@@ -35,13 +35,15 @@ void NetworkManager::Update()
 	std::thread sendThread
 	(std::bind(&NetworkManager::Send, this));
 
+	receiveThread.join();
+	sendThread.join();
 }
 
 void NetworkManager::Send()
 {
 	while (1)
 	{
-
+		int x = 0;
 	}
 }
 
@@ -49,6 +51,6 @@ void NetworkManager::Receive()
 {
 	while (1)
 	{
-
+		int x = 0;
 	}
 }
