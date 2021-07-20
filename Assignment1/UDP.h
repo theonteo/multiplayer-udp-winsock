@@ -13,7 +13,7 @@ struct UDPData
 	addrinfo* clientInfo = nullptr;
 
 	//change later
-	std::string hostName{ "localhost" };
+	std::string hostName{ "2000" };
 };
 
 class UDP
@@ -25,7 +25,7 @@ public:
 
 	//stages for udp boot up
 	void StartUp();
-	void GetAddressInfo();
+	void GetAddressInfo(const std::string& clientHostPort);
 	void CreateSocket();
 
 

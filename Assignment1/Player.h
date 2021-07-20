@@ -4,9 +4,18 @@
 class Player
 {
 	//player name
-	std::string playerName;
+	std::string portName;
 
 	//port being used
-	std::string address;
+	std::string portNumber;
+
+public:
+
+	std::string GetPortName()const;
+	std::string GetPortNumber() const;
+
+	//constructor
+	Player
+	(const std::string& name, const std::string address);
 };
 

@@ -32,8 +32,14 @@ void UDP::StartUp()
 #endif
 }
 
-void UDP::GetAddressInfo()
+void UDP::GetAddressInfo(const std::string& clientHostPort)
 {
+
+	size_t portNum = std::atoi(clientHostPort.c_str());
+
+	if (!portNum)
+		throw exceptionHandler("Incorrect port number", 1);
+
 	// Object hints indicates which protocols to use to fill in the info.
 	SecureZeroMemory(&data.hints, sizeof(data.hints));
 	data.hints.ai_family = AF_INET;			// IPv4
@@ -43,7 +49,8 @@ void UDP::GetAddressInfo()
 	data.hints.ai_protocol = IPPROTO_UDP;	// UDP
 
 	int errorCode = getaddrinfo(nullptr,
-		data.hostName.c_str(), &data.hints, &data.clientInfo);
+		clientHostPort.c_str(), &data.hints, &data.clientInfo);
+
 	if (errorCode || !data.clientInfo)
 	{
 		//exception handling
