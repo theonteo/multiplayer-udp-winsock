@@ -20,9 +20,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{ec876d30-b42e-4341-a2eb-f5fefbde4a55}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject">
       <UniqueIdentifier>{67096407-5e1f-4806-a423-55cde93093a0}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,9 @@
     </Filter>
     <Filter Include="Exceptions">
       <UniqueIdentifier>{9e3b52b4-244d-418f-b56d-2a25d548b289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{ec876d30-b42e-4341-a2eb-f5fefbde4a55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -116,7 +116,7 @@
       <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="Render.cpp">
-      <Filter>Render</Filter>
+      <Filter>Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Lighting.cpp">
       <Filter>Lighting</Filter>
@@ -156,6 +156,9 @@
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>Networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,7 +235,7 @@
       <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Render.h">
-      <Filter>Render</Filter>
+      <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Lighting.h">
       <Filter>Lighting</Filter>
@@ -282,6 +285,9 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

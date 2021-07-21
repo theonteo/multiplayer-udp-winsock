@@ -1,19 +1,3 @@
-// ============================================================================
-// \file       Graphics.h
-// \brief      Defines the collection of inline OpenGL helper functions.
-// 
-// \author     Yap Yong Woon
-// \author     Sherman Pang Yusheng
-// \author     Loh Chang Zhen
-// \author     Theon Teo Zheng Yong
-// \author     Kevin Hartono
-// \author     Ng Yu Lun
-// \author     Khoo Kean Fai
-// 
-// \copyright Copyright (c) 2020 DigiPen Institute of Technology. Reproduction
-// or disclosure of this file or its contents without the prior
-// written consent of DigiPen Institute of Technology is prohibited.
-// ============================================================================
 
 #pragma once
 

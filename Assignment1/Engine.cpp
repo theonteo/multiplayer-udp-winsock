@@ -1,3 +1,19 @@
+/*****************************************************************************/
+/*!
+\file
+\author
+\par email:
+\par DigiPen login:
+\par Course: cs260
+\par Assignment 4
+\date
+
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/*****************************************************************************/
 #include "Engine.h"
 
 #include <imgui.h>
@@ -98,76 +114,41 @@ void Engine::EngineLoop()
 	int argc = ac;
 	char** argv = av;
 
+	if (argc != 5)
+		throw
+		exceptionHandler("Wrong number of arguments ", 1);
 
-	//store error code
-	int errorCode = 0;
+	//set up window
+	mainWindow = Window(WINDOW_WIDTH, WINDOW_HEIGHT);
+	mainWindow.Init();
 
-	//try catch excepton system
-	try
-	{
-		//store network data to vector
-		std::vector<Player> data;
+	//set up camera
+	camera = Camera(glm::vec3(0.6f, 0.0f, 2.1f),
+		glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.25f);
 
-		if (argc != 5)
-			throw
-			exceptionHandler("Wrong number of arguments ", 1);
+	Resource::camera = &camera;
 
-		//set up window
-		mainWindow = Window(WINDOW_WIDTH, WINDOW_HEIGHT);
-		mainWindow.Init();
+	//set up imgui
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(mainWindow.getMainWindow(), true);
+	ImGui_ImplOpenGL3_Init("#version 130");
 
-		//set up camera
-		camera = Camera(glm::vec3(0.6f, 0.0f, 2.1f),
-			glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.25f);
+	//load everything
+	Render::postprocess.LoadPostProcessing();
+	main_editor.loadFiles();
 
-		Resource::camera = &camera;
-
-		//set up imgui
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		ImGui::StyleColorsDark();
-		ImGui_ImplGlfw_InitForOpenGL(mainWindow.getMainWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 130");
-
-		//load everything
-		Render::postprocess.LoadPostProcessing();
-		main_editor.loadFiles();
-
-		DeltaTime::Init();
-		Lighting::init();
-		Render::Init();
-		UIManager::Init();
-
-		GameObjectManager::Create();
-		Loop();
-	}
-	catch (exceptionHandler& e)
-	{
-#ifdef PRINTDEBUG
-		std::cerr << "Exception caught : " << e.what()
-			<< " Error Code : " << e.GetErrorCode() <<
-			" - Exiting " << std::endl;
-#else
-		std::cout << "An error has occured - exiting" << std::endl;
-#endif
-
-		//set error code
-		errorCode = e.GetErrorCode();
-	}
-	catch (...)
-	{
-#ifdef PRINTDEBUG
-		std::cerr << "Unknown Exception caught! - Exiting "
-			<< std::endl;
-#else
-		std::cerr << "Unknown Error encountered! - Exiting "
-			<< std::endl;
-#endif
-	}
-	std::cout << "Server exit" << std::endl;
+	DeltaTime::Init();
+	Lighting::init();
+	Render::Init();
+	UIManager::Init();
+	network.Init(ParseEntry(ac,av));
+	GameObjectManager::Create();
+	Loop();
 
 
 	//delete all
@@ -178,12 +159,10 @@ void Engine::EngineLoop()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	}
+}
 
 void Engine::NetworkLoop()
 {
-	while (!ac)
-		network.Init(ParseEntry(ac, av));
 	network.Update();
 }
 
@@ -201,6 +180,9 @@ void Engine::Loop()
 		//calculate camera control
 		camera.keyControl(mainWindow.getsKeys(), DeltaTime::GetDeltaTime());
 		camera.mouseControl(mainWindow.getXchange(), mainWindow.getYchange());
+
+	
+
 
 		//main game update
 		Game::Update();

@@ -8,7 +8,7 @@
 
 namespace
 {
-	std::string goTarget{ "Player" };
+	std::string goTarget{ "Player1" };
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 }
@@ -21,7 +21,7 @@ void Game::Interaction()
 	for (const auto& i : GameObjectManager::GameObjectList)
 	{
 		//basic collision
-		if (i.second->enabled&&i.first != "Player" && i.first != "Level")
+		if (i.second->enabled && i.first != goTarget && i.first != "Level")
 			if (Physics::CircleToCircle
 			(player->translate, player->scale.x,
 				i.second->translate, i.second->scale.x))

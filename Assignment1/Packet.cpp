@@ -15,17 +15,19 @@ Technology is prohibited.
 */
 /*****************************************************************************/
 
-#include "Player.h"
+#include "Packet.h"
+#include <sstream>
 
-std::string Player::GetPortName() const
+// -------------------------------------------------------------------------
+// dataPacket::dataPacket(const PacketData& packetdata)
+//
+// constructor
+// -------------------------------------------------------------------------
+dataPacket::dataPacket(const PacketData& packetdata)
 {
-	return portName;
-}
-std::string Player::GetPortNumber() const
-{
-	return portNumber;
 }
 
-Player::Player
-(const std::string& name, const std::string addressname)
-	:portName{ name }, portNumber{ addressname } {}
+Packet::Packet(const MoveType& type, const glm::vec3& pos)
+	:moveType{ type }, position{ pos }
+{
+}

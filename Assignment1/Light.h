@@ -25,6 +25,9 @@ Technology is prohibited.
 
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
+
+#include "Exceptions.h"
+
 class Interface;
 class Light
 {
