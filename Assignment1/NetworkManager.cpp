@@ -31,18 +31,21 @@ namespace
 
 void NetworkManager::Init(const std::vector<Player>& data)
 {
-	udp.StartUp();
+	//udp.StartUp();
 
 	//use player 
-	udp.GetAddressInfo(data[clientPlayerNum].GetPortNumber());
+//	udp.GetAddressInfo(data[clientPlayerNum].GetPortNumber());
 
-	udp.CreateSocket();
+	//udp.CreateSocket();
 }
 
 void NetworkManager::Update()
 {
 
 
+	udp.StartUp();
+	udp.CreateClientSocket();
+	udp.CreateServerSocket();
 
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));

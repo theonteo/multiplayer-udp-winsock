@@ -31,7 +31,7 @@ struct UDPData
 	addrinfo hints;
 	PortValue port{ 80 };
 	addrinfo* clientInfo = nullptr;
-
+	addrinfo* serverInfo = nullptr;
 	//change later
 	std::string hostName{ "2000" };
 	size_t portNumber{ 0 };
@@ -47,7 +47,9 @@ public:
 	//stages for udp boot up
 	void StartUp();
 	void GetAddressInfo(const std::string& clientHostPort);
-	void CreateSocket();
+
+	void CreateClientSocket();
+	void CreateServerSocket();
 
 	void Send(const GameObject& player);
 	void Receive();
