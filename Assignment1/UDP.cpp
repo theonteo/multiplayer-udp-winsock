@@ -45,7 +45,8 @@ namespace Client
 	
 	sockaddr_in clientAddr;
 	sockaddr_in serverAddr;
-	constexpr int usedPort = 9999;
+
+	constexpr int usedPort = 2049;
 	std::string host{ "localhost" };
 }
 
@@ -58,7 +59,7 @@ namespace Server
 
 	sockaddr_in clientAddr;
 	sockaddr_in serverAddr;
-	constexpr int usedPort = 9999;
+	constexpr int usedPort = 2048;
 }
 
 
@@ -115,7 +116,7 @@ void UDP::GetAddressInfo(const std::string& clientHostPort)
 
 void UDP::CreateClientSocket()
 {
-	/*
+	
 	///size_t portNum = std::atoi(Client::host.c_str());
 
 	//if (!portNum)
@@ -150,7 +151,9 @@ void UDP::CreateClientSocket()
 		throw
 			exceptionHandler("socket() failed.", 1);
 	}
+
 	char broadcast = 1;
+
 	if (setsockopt
 	(Client::socketD, SOL_SOCKET, SO_BROADCAST,
 		&broadcast, sizeof(broadcast)) == -1)
@@ -161,7 +164,7 @@ void UDP::CreateClientSocket()
 
 	Client::clientAddr.sin_family = AF_INET;
 	Client::clientAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	Client::clientAddr.sin_port = htons(0);
+	Client::clientAddr.sin_port = htons(Client::usedPort);
 
 	Client::socketC = bind(Client::socketD, (struct sockaddr*) & Client::clientAddr,
 		sizeof(Client::clientAddr));
@@ -171,7 +174,7 @@ void UDP::CreateClientSocket()
 		throw
 			exceptionHandler("bind() failed.", 1);
 	}
-	*/
+
 }
 
 void UDP::CreateServerSocket()
@@ -205,6 +208,8 @@ void UDP::CreateServerSocket()
 	}
 
 	char broadcast = 1;
+	setsockopt
+	(Server::socketD, SOL_SOCKET, SO_REUSEADDR, (char*)&broadcast, sizeof(broadcast));
 
 	if (setsockopt
 	(Server::socketD, SOL_SOCKET, SO_BROADCAST,
@@ -230,62 +235,26 @@ void UDP::CreateServerSocket()
 	}
 }
 
-
-//void UDP::CreateSocket()
-//{
-	/*
-	data.clientSocket = socket(
-		data.hints.ai_family, data.hints.ai_socktype,
-		data.hints.ai_protocol);
-
-	if (data.clientSocket == INVALID_SOCKET)
-		throw
-		exceptionHandler("socket() failed.", 1);
-
-	//reuse port
-//broadcast option
-	char broadcast = 1;
-	setsockopt
-	(data.portNumber, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
-
-	int errorCode = bind(
-		data.clientSocket,
-		data.clientInfo->ai_addr,
-		static_cast<int>(data.clientInfo->ai_addrlen));
-
-	if (errorCode != NO_ERROR)
-	{
-		closesocket(data.clientSocket);
-		data.clientSocket = INVALID_SOCKET;
-	}
-
-	freeaddrinfo(data.clientInfo);
-
-	if (data.clientSocket == INVALID_SOCKET)
-		throw
-		exceptionHandler("bind() failed.", 2);
-		*/
-//}
-
 void UDP::Receive()
 {
-	/*
+	
+	sockaddr clientAddress{};
+	SecureZeroMemory(&clientAddress, sizeof(clientAddress));
+	int clientAddressSize = sizeof(clientAddress);
+
 	constexpr size_t BUFFER_SIZE = 5000;
-	int len = sizeof(Server::clientAddr);
 
 	char buffer[BUFFER_SIZE]{ 0 };
-	const int bytesReceived = recvfrom(Server::socketD,
+	const int bytesReceived = recvfrom(Client::socketD,
 		buffer,
 		BUFFER_SIZE - 1,
 		0,
-		(sockaddr*)&Server::clientAddr, &len);
+		&clientAddress, &clientAddressSize);
+
 	if (bytesReceived > 0)
 	{
 		int x = 0;
 	}
-	*/
-
-	
 
 	/*
 	if (!data.clientSocket)
@@ -320,10 +289,10 @@ void UDP::Send(const GameObject& player)
 	//placeholder testing
 	Packet packet{ MoveType::MOVE_DOWN,glm::vec3(0,0,0) };
 
-
 	sockaddr serverAddress{};
 	serverAddress = *data.serverInfo->ai_addr;
 	int serverAddressSize = sizeof(serverAddress);
+
 
 	const int bytesSent =
 		sendto(Server::socketD, reinterpret_cast<char*>(&packet),
