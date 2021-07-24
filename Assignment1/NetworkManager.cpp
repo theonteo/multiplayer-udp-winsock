@@ -14,8 +14,10 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /*****************************************************************************/
+
 #include "NetworkManager.h"
 #include "Player.h"
+#include "Packet.h"
 
 #include <string>
 #include <thread>
@@ -28,24 +30,20 @@ namespace
 	constexpr size_t clientPlayerNum{ 0 };
 }
 
+const std::vector<Player>& NetworkManager::GetPlayerData() const
+{
+	return playerData;
+}
 
 void NetworkManager::Init(const std::vector<Player>& data)
 {
-	//udp.StartUp();
-
-	//use player 
-//	udp.GetAddressInfo(data[clientPlayerNum].GetPortNumber());
-
-	//udp.CreateSocket();
+	playerData = data;
 }
 
 void NetworkManager::Update()
 {
-
-
 	udpReceive.StartUp();
 	udpSend.StartUp();
-
 
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));
@@ -61,17 +59,15 @@ void NetworkManager::Send()
 {
 	while (1)
 	{
-		const auto& player =
-			GameObjectManager::GameObjectList.find
-			("Player" + std::to_string(clientPlayerNum));
-
-		//cannot find client player
-		if (player == GameObjectManager::GameObjectList.end())
-			continue;
+		const auto& playerName = NetworkManager::GetPlayerData();
+		if (playerName.empty()) continue;
+		//placeholder testing - change to proper packet next time
+		Packet packet
+		{ playerName[0].GetPortName().c_str(), 
+			MoveType::MOVE_DOWN,glm::vec3(0,5,0) };
 
 		//send player info - for testing
-		//udpSend.Send(*player->second);
-		udpSend.Send();
+		udpSend.Send(packet);
 	}
 }
 
@@ -79,6 +75,7 @@ void NetworkManager::Receive()
 {
 	while (1)
 	{
+		//keep receiving
 		udpReceive.Receive();
 	}
 }

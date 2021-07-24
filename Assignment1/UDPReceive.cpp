@@ -17,15 +17,13 @@ void UDPReceive::Receive()
 	char buffer[BUFFER_SIZE]{ 0 };
 	int clientAddressSize = sizeof(data.sendAddress);
 
-
 	int bytesReceived = recvfrom(data.socket, buffer, BUFFER_SIZE - 1, 0,
 		(sockaddr*)&data.sendAddress, &clientAddressSize);
 
 	Packet packet = *reinterpret_cast<Packet*>(&buffer);
 
-
-	std::cout << buffer << std::endl;
-
+	//debug printout
+	//std::cout << buffer << std::endl;
 }
 
 void UDPReceive::StartUp()
@@ -44,8 +42,5 @@ void UDPReceive::StartUp()
 		throw
 			exceptionHandler("bind() failed : " + WSAGetLastError(), 2);
 	}
-
-
-
 
 }

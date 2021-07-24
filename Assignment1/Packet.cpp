@@ -27,7 +27,9 @@ dataPacket::dataPacket(const PacketData& packetdata)
 {
 }
 
-Packet::Packet(const MoveType& type, const glm::vec3& pos)
-	:moveType{ type }, position{ pos }
+Packet::Packet
+(const char* name, const MoveType& type, const glm::vec3& pos)
+	: moveType{ type }, position{ pos }
 {
+	strcpy_s(hostName, name);
 }

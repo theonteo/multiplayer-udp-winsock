@@ -42,11 +42,12 @@ enum class MoveType
 
 struct Packet
 {
+	char hostName[50];
 	MoveType moveType;
 	glm::vec3 position;
 
 	Packet() = default;
-	Packet(const MoveType& type, const glm::vec3& pos);
+	Packet(const char* hostName,const MoveType& type, const glm::vec3& pos);
 };
 
 struct dataPacket :public Packet

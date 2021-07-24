@@ -26,22 +26,20 @@ Technology is prohibited.
 
 class Player;
 
-
 class NetworkManager
 {
-
 	std::vector<Player> playerData;
+
 	UDPReceive udpReceive;
 	UDPSend udpSend;
 
 public:
 
+	const std::vector<Player>& GetPlayerData() const;
+
 	void Init(const std::vector<Player>& data);
-
 	void Update();
-
 	void Send();
-
 	void Receive();
 
 
