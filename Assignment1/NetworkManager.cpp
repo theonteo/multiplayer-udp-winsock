@@ -45,10 +45,13 @@ void NetworkManager::Update()
 	//get own port number
 	udpReceive.StartUp(playerData[0].GetPortNumber());
 	udpSend.StartUp(playerData[0].GetPortNumber());
+	
+	//keep receiving and send data
 
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));
 
+	//only one thread needed due to broadcast
 	std::thread sendThread
 	(std::bind(&NetworkManager::Send, this));
 
@@ -77,7 +80,15 @@ void NetworkManager::Receive()
 {
 	while (1)
 	{
-		//keep receiving
-		udpReceive.Receive();
+		//keep receiving packet then process them accordingly
+		const auto& packet = udpReceive.Receive();
+
+		//unpack and give data to gameplay containers(player pos etc)
+		UnpackPacket(packet);
 	}
+}
+
+void NetworkManager::UnpackPacket(const Packet& packet)
+{
+
 }

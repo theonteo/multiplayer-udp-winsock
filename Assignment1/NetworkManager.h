@@ -43,5 +43,7 @@ public:
 	void Receive();
 
 
+	void UnpackPacket(const Packet& packet);
+
 };
 
