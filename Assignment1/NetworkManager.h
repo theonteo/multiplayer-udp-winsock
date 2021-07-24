@@ -19,7 +19,9 @@ Technology is prohibited.
 #include <string>
 #include <vector>
 
-#include "UDP.h"
+#include "UDPReceive.h"
+#include "UDPSend.h"
+
 #include "Player.h"
 
 class Player;
@@ -29,7 +31,8 @@ class NetworkManager
 {
 
 	std::vector<Player> playerData;
-	UDP udp;
+	UDPReceive udpReceive;
+	UDPSend udpSend;
 
 public:
 

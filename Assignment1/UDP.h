@@ -22,16 +22,20 @@ Technology is prohibited.
 
 using PortValue = uint16_t;
 class GameObject;
+
 struct UDPData
 {
 	//udp variables
 	WSADATA wsaData;
 	SOCKADDR_IN localAddress;
-	SOCKET clientSocket;
+	SOCKET socket;
 	addrinfo hints;
-	PortValue port{ 80 };
-	addrinfo* clientInfo = nullptr;
-	addrinfo* serverInfo = nullptr;
+	addrinfo* info = nullptr;
+
+	//save address info
+	sockaddr_in receiveAddress;
+	sockaddr_in sendAddress;
+
 	//change later
 	std::string hostName{ "2000" };
 	size_t portNumber{ 0 };
@@ -39,19 +43,16 @@ struct UDPData
 
 class UDP
 {
+protected:
 	//all udp data
 	UDPData data;
 
 public:
 
 	//stages for udp boot up
-	void StartUp();
-	void GetAddressInfo(const std::string& clientHostPort);
+	virtual void StartUp() = 0;
 
-	void CreateClientSocket();
-	void CreateServerSocket();
+	~UDP() = default;
 
-	void Send(const GameObject& player);
-	void Receive();
 };
 

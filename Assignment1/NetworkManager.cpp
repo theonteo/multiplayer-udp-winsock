@@ -43,9 +43,9 @@ void NetworkManager::Update()
 {
 
 
-	udp.StartUp();
-	udp.CreateClientSocket();
-	udp.CreateServerSocket();
+	udpReceive.StartUp();
+	udpSend.StartUp();
+
 
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));
@@ -70,7 +70,8 @@ void NetworkManager::Send()
 			continue;
 
 		//send player info - for testing
-		udp.Send(*player->second);
+		//udpSend.Send(*player->second);
+		udpSend.Send();
 	}
 }
 
@@ -78,6 +79,6 @@ void NetworkManager::Receive()
 {
 	while (1)
 	{
-		udp.Receive();
+		udpReceive.Receive();
 	}
 }

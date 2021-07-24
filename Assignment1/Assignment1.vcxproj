@@ -209,6 +209,8 @@
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UDP.cpp" />
+    <ClCompile Include="UDPReceive.cpp" />
+    <ClCompile Include="UDPSend.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UIText.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -254,6 +256,8 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UDP.h" />
+    <ClInclude Include="UDPReceive.h" />
+    <ClInclude Include="UDPSend.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UIText.h" />
     <ClInclude Include="Window.h" />
