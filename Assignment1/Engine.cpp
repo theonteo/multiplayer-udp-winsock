@@ -111,12 +111,6 @@ void Engine::Init(int argc, char** argv)
 
 void Engine::EngineLoop()
 {
-	int argc = ac;
-	char** argv = av;
-
-	if (argc != 5)
-		throw
-		exceptionHandler("Wrong number of arguments ", 1);
 
 	//set up window
 	mainWindow = Window(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -146,7 +140,6 @@ void Engine::EngineLoop()
 	Lighting::init();
 	Render::Init();
 	UIManager::Init();
-	network.Init(ParseEntry(ac,av));
 	GameObjectManager::Create();
 	Loop();
 
@@ -163,6 +156,14 @@ void Engine::EngineLoop()
 
 void Engine::NetworkLoop()
 {
+	int argc = ac;
+	char** argv = av;
+
+	if (argc != 5)
+		throw
+		exceptionHandler("Wrong number of arguments ", 1);
+
+	network.Init(ParseEntry(ac, av));
 	network.Update();
 }
 

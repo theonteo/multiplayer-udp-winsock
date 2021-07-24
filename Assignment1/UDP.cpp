@@ -32,23 +32,8 @@ Technology is prohibited.
 #include "Exceptions.h"
 
 
-namespace Client
-{
-	/*
-	SOCKET socketD;
-	SOCKET socketC;
 
-	hostent* h;
-	
-	sockaddr_in clientAddr;
-	sockaddr_in serverAddr;
-
-	constexpr int usedPort = 2049;
-	std::string host{ "localhost" };
-	*/
-}
-
-void UDP::StartUp()
+void UDP::StartUp(const std::string& port)
 {
 	int errorCode = WSAStartup(MAKEWORD(2, 2), &data.wsaData);
 
@@ -62,6 +47,12 @@ void UDP::StartUp()
 	data.socket = socket(AF_INET, SOCK_DGRAM, 0);
 
 	if (setsockopt(data.socket, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0)
+	{
+		closesocket(data.socket);
+		throw
+			exceptionHandler("setsockopt() failed", errorCode);
+	}
+	if (setsockopt(data.socket, SOL_SOCKET, SO_REUSEADDR, &broadcast, sizeof(broadcast)) < 0)
 	{
 		closesocket(data.socket);
 		throw

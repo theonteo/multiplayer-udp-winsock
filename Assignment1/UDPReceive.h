@@ -6,6 +6,6 @@ class UDPReceive :
 
 public:
 	void Receive();
-	void StartUp() override;
+	void StartUp(const std::string& port) override;
 };
 

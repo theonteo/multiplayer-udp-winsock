@@ -42,8 +42,9 @@ void NetworkManager::Init(const std::vector<Player>& data)
 
 void NetworkManager::Update()
 {
-	udpReceive.StartUp();
-	udpSend.StartUp();
+	//get own port number
+	udpReceive.StartUp(playerData[0].GetPortNumber());
+	udpSend.StartUp(playerData[0].GetPortNumber());
 
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));
@@ -61,6 +62,7 @@ void NetworkManager::Send()
 	{
 		const auto& playerName = NetworkManager::GetPlayerData();
 		if (playerName.empty()) continue;
+
 		//placeholder testing - change to proper packet next time
 		Packet packet
 		{ playerName[0].GetPortName().c_str(), 

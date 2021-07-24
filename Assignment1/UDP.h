@@ -50,7 +50,7 @@ protected:
 public:
 
 	//stages for udp boot up
-	virtual void StartUp() = 0;
+	virtual void StartUp(const std::string& port ="") = 0;
 
 	~UDP() = default;
 

@@ -9,6 +9,6 @@ class UDPSend :
 
 public:
 	void Send(const Packet& packet);
-	void StartUp() override;
+	void StartUp(const std::string& port) override;
 };
 
