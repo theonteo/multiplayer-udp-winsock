@@ -43,6 +43,7 @@ enum class MoveType
 struct Packet
 {
 	char hostName[50];
+	int hostNameLength{ 0 };
 	MoveType moveType;
 	glm::vec3 position;
 

@@ -32,4 +32,5 @@ Packet::Packet
 	: moveType{ type }, position{ pos }
 {
 	strcpy_s(hostName, name);
+	hostNameLength = strlen(hostName);
 }

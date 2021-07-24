@@ -24,6 +24,7 @@ Technology is prohibited.
 #include <functional>
 #include "GameObjectManager.h"
 #include "Exceptions.h"
+#include "Game.h"
 
 namespace
 {
@@ -45,7 +46,8 @@ void NetworkManager::Update()
 	//get own port number
 	udpReceive.StartUp(playerData[0].GetPortNumber());
 	udpSend.StartUp(playerData[0].GetPortNumber());
-	
+	Game::InitPlayer(playerData[0].GetPortName());
+
 	//keep receiving and send data
 
 	std::thread receiveThread
@@ -64,12 +66,22 @@ void NetworkManager::Send()
 	while (1)
 	{
 		const auto& playerName = NetworkManager::GetPlayerData();
+
+		//player container is empty ,don't send
 		if (playerName.empty()) continue;
 
 		//placeholder testing - change to proper packet next time
+
+		const auto& iter = GameObjectManager::GameObjectList.find
+		(playerName[0].GetPortName());
+
+		//cannot find own player gameobject , don't send
+		if (iter == GameObjectManager::GameObjectList.end())continue;
+
+		//send player data
 		Packet packet
-		{ playerName[0].GetPortName().c_str(), 
-			MoveType::MOVE_DOWN,glm::vec3(0,5,0) };
+		{ playerName[0].GetPortName().c_str(),
+			MoveType::MOVE_DOWN,	iter->second->translate };
 
 		//send player info - for testing
 		udpSend.Send(packet);
@@ -90,5 +102,23 @@ void NetworkManager::Receive()
 
 void NetworkManager::UnpackPacket(const Packet& packet)
 {
+	//move this somewhere else
 
+	//same person - return
+	if (GameObjectManager::GameObjectList.empty() ||
+		playerData[0].GetPortName() == packet.hostName)
+		return;
+
+	std::string temp
+	{ packet.hostName,packet.hostName + packet.hostNameLength };
+
+	const auto& iter = GameObjectManager::GameObjectList.find(temp);
+
+	//cannot find player from gameobject container
+	if (iter == GameObjectManager::GameObjectList.end())
+		return;
+
+	//update player position
+	const auto& player = iter->second;
+	player->translate = packet.position;
 }

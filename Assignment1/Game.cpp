@@ -8,11 +8,14 @@
 
 namespace
 {
-	std::string goTarget{ "Player1" };
+	std::string goTarget{ "" };
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 }
-
+void Game::InitPlayer(const std::string& playerName)
+{
+	goTarget = playerName;
+}
 void Game::Interaction()
 {
 	const auto& player =
