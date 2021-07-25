@@ -186,7 +186,7 @@
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameFlow.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameObjectManager.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="Lighting.cpp" />
@@ -232,7 +232,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameFlow.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="Graphics.h" />

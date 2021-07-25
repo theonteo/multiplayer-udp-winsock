@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameState.h"
 #include "Resource.h"
 #include "Camera.h"
 #include "GameObjectManager.h"
@@ -42,7 +43,6 @@ void Game::MoveObject()
 		GameObjectManager::GameObjectList.find(goTarget)->second;
 
 	//Player control
-
 	if (Window::getKey(GLFW_KEY_A))
 	{
 		player->translate.x -=
@@ -65,17 +65,26 @@ void Game::MoveObject()
 	}
 }
 
+void Game::CheckState()
+{
+	//change game state
+	if (Window::getKey(GLFW_KEY_P))
+	{
+		GameState::GetCurrentState();
+	}
+}
+
 void Game::Update()
 {
-	const auto& cam = Resource::camera;
 
-	const auto& player =
-		GameObjectManager::GameObjectList.find(goTarget)->second;
-
-	glm::vec3 append{ range,range + 1.0f,range };
-
+	CheckState();
 	MoveObject();
 	Interaction();
+
+	const auto& cam = Resource::camera;
+	const auto& player =
+		GameObjectManager::GameObjectList.find(goTarget)->second;
+	glm::vec3 append{ range,range + 1.0f,range };
 
 	cam->SetPosition(player->translate + append);
 	cam->SetRotation(glm::vec2{ -45 , -135 });

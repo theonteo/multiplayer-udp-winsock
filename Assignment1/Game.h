@@ -9,6 +9,7 @@ class Game
 	static void MoveObject();
 
 public:
+	static void CheckState();
 	static void Update();
 	static void InitPlayer(const std::string& playerName);
 };

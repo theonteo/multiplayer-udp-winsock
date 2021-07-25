@@ -93,7 +93,7 @@ namespace
 	Camera camera;
 	Lighting lighting;
 	NetworkManager network;
-
+	UIManager ui;
 	int ac;
 	char** av;
 
@@ -102,6 +102,7 @@ void Engine::Init(int argc, char** argv)
 {
 	ac = argc;
 	av = argv;
+
 	std::thread loopThread(std::bind(&Engine::EngineLoop, this));
 	std::thread networkThread(std::bind(&Engine::NetworkLoop, this));
 
@@ -139,7 +140,7 @@ void Engine::EngineLoop()
 	DeltaTime::Init();
 	Lighting::init();
 	Render::Init();
-	UIManager::Init();
+	ui.Init();
 	GameObjectManager::Create();
 	Loop();
 
@@ -182,9 +183,6 @@ void Engine::Loop()
 		camera.keyControl(mainWindow.getsKeys(), DeltaTime::GetDeltaTime());
 		camera.mouseControl(mainWindow.getXchange(), mainWindow.getYchange());
 
-	
-
-
 		//main game update
 		Game::Update();
 
@@ -194,7 +192,7 @@ void Engine::Loop()
 			((GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight()));
 
 		//ui text render
-		UIManager::Render();
+		ui.Render(network.GetPlayerData());
 
 		//show show editor
 		interface_game.ShowMainUI();

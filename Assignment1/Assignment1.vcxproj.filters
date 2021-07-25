@@ -151,9 +151,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Networking</Filter>
     </ClCompile>
-    <ClCompile Include="GameFlow.cpp">
-      <Filter>GamePlay</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Main</Filter>
     </ClCompile>
@@ -165,6 +162,9 @@
     </ClCompile>
     <ClCompile Include="UDPSend.cpp">
       <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>GamePlay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -286,9 +286,6 @@
     <ClInclude Include="Player.h">
       <Filter>Networking</Filter>
     </ClInclude>
-    <ClInclude Include="GameFlow.h">
-      <Filter>GamePlay</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Main</Filter>
     </ClInclude>
@@ -300,6 +297,9 @@
     </ClInclude>
     <ClInclude Include="UDPSend.h">
       <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>GamePlay</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

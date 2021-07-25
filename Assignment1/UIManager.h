@@ -1,8 +1,15 @@
 #pragma once
+#include <vector>
+class Player;
 class UIManager
 {
+	void RenderLobby(const std::vector<Player>& data);
+	void RenderGame(const std::vector<Player>& data);
+	void RenderResult(const std::vector<Player>& data);
+
 public:
-	static void Init();
-	static void Render();
+
+	void Init();
+	void Render(const std::vector<Player>& data);
 };
 
