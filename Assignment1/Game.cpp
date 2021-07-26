@@ -31,7 +31,8 @@ void Game::Interaction()
 				i.second->translate, i.second->scale.x))
 			{
 				player->score++;
-				range = player->score * 4.0f;
+				range = player->scale.x * 4.0f;
+
 				i.second->enabled = false;
 			}
 
@@ -79,16 +80,22 @@ void Game::CheckState()
 
 void Game::Update()
 {
-
 	CheckState();
-	MoveObject();
-	Interaction();
-
+	
 	const auto& cam = Resource::camera;
-	const auto& player =
-		GameObjectManager::GameObjectList.find(goTarget)->second;
-	glm::vec3 append{ range,range + 1.0f,range };
+	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
+	{
+		MoveObject();
+		Interaction();
 
-	cam->SetPosition(player->translate + append);
-	cam->SetRotation(glm::vec2{ -45 , -135 });
+		const auto& player =
+			GameObjectManager::GameObjectList.find(goTarget)->second;
+		glm::vec3 append{ range,range + 1.0f,range };
+		cam->SetPosition(player->translate + append);
+		cam->SetRotation(glm::vec2{ -45 , -135 });
+	}
+	else {
+		cam->SetPosition(glm::vec3(30, 30, 30));
+		cam->SetRotation(glm::vec2{ -45 , -135 });
+	}
 }

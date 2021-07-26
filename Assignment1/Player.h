@@ -18,6 +18,7 @@ Technology is prohibited.
 #pragma once
 #include <string>
 
+enum class MoveType;
 class Player
 {
 public:
@@ -39,20 +40,6 @@ public:
 	//port being used
 	std::string portNumber;
 
-
-	/*
-	float GetConnectionTimer() const;
-	bool GetConnection() const;
-
-	void SetConnectionTimer(float num);
-	void SetConnection(bool connection);
-
-	std::string GetPortName()const;
-	std::string GetPortNumber() const;
-
-	//constructor
-	Player
-	(const std::string& name, const std::string address);
-	*/
+	MoveType moveType;
 };
 

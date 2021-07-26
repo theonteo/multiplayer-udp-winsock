@@ -37,13 +37,17 @@ enum class MoveType
 	MOVE_UP,
 	MOVE_DOWN,
 	MOVE_LEFT,
-	MOVE_RIGHT
+	MOVE_RIGHT,
+	KILL
 };
 
 struct Packet
 {
 	char hostName[50];
 	int hostNameLength{ 0 };
+
+	char actionName[50];
+	int actionLength{ 0 };
 
 	//change what to send!!!
 	MoveType moveType;

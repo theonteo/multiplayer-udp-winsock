@@ -76,18 +76,37 @@ void NetworkManager::Send()
 		const auto& iter = GameObjectManager::GameObjectList.find
 		(playerName[0].portName);
 
-	
+
 		//cannot find own player gameobject , don't send
 		if (iter == GameObjectManager::GameObjectList.end())continue;
 
 		//collate player data from gameobject
 		playerData[0].score = iter->second->score;
 
-
+		//placeholder
+		MoveType type{ MoveType::MOVE_DOWN };
 		//send player data
 		Packet packet
 		{ playerName[0].portName.c_str(),
-			MoveType::MOVE_DOWN,playerData[0],iter->second->translate };
+			type,playerData[0],iter->second->translate };
+
+
+		for (auto& i : playerData)
+		{
+			if (i.alive)
+			{
+				const auto& iter = GameObjectManager::GameObjectList.find
+				(i.portName);
+				if (!iter->second->enabled)
+				{
+					type = MoveType::KILL;
+					i.alive = false;
+				}
+			}
+		}
+		
+	
+
 
 		//send player info - for testing
 		udpSend.Send(packet);
@@ -117,7 +136,7 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 	for (auto& i : playerData)
 	{
-		
+
 		//received an active player
 		if (i.portName == playerData[0].portName ||
 			i.portName == packet.hostName)
@@ -132,7 +151,7 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 			i.connectionTimer += DeltaTime::GetDeltaTime();
 	}
 	if (GameObjectManager::GameObjectList.empty() ||
-		playerData[0].portName== packet.hostName)
+		playerData[0].portName == packet.hostName)
 		return;
 
 	const auto& iter = GameObjectManager::GameObjectList.find(temp);
