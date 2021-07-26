@@ -68,9 +68,9 @@ void Game::MoveObject()
 void Game::CheckState()
 {
 	//change game state
-	if (Window::getKey(GLFW_KEY_P))
+	if (Window::getKeyTriggered(GLFW_KEY_P))
 	{
-		GameState::GetCurrentState();
+		GameState::AppendState();
 	}
 }
 

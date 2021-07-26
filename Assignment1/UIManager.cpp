@@ -12,18 +12,17 @@ void UIManager::RenderLobby(const std::vector<Player>& data)
 	(std::string{ "GAME.IO" }, 0.5f, 0.9f, 0, 1.2f,
 		glm::vec4(1.0f, 0.75f, 0.5f, 1.0f));
 
-	//const auto& player = NetworkManager::GetPlayerData();
-
 	//4 player wait ui
-	for (int i = 0; i < MAX_PLAYER; ++i)
+	int index = 0;
+	for (const auto& i : data)
 	{
-
-		std::string playerText{ "Player " + std::to_string(i)+" not joined" };
+		std::string playerText{  i.GetPortName() + " not joined" };
 
 		TextRender::RenderTextNormal
 		(std::string{ playerText },
-			0.5f , 0.4f-(i) * 0.05f, 0, 0.4f,
+			0.5f, 0.4f - (index) * 0.05f, 0, 0.4f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		index++;
 	}
 
 
@@ -32,15 +31,16 @@ void UIManager::RenderLobby(const std::vector<Player>& data)
 void UIManager::RenderGame(const std::vector<Player>& data)
 {
 	//4 player wait ui
-	for (int i = 0; i < MAX_PLAYER; ++i)
+	int index = 0;
+	for (const auto& i : data)
 	{
-
-		std::string playerText{ "Player :" };
+		std::string playerText{ i.GetPortName() + " not joined" };
 
 		TextRender::RenderTextNormal
 		(std::string{ playerText },
-			0.5f, 0.4f - (i) * 0.05f, 0, 0.4f,
+			0.5f + (index) * 0.15f, 0.4f, 0, 0.3f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		index++;
 	}
 }
 
