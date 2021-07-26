@@ -116,6 +116,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
