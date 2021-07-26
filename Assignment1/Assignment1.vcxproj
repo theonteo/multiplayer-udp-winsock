@@ -113,14 +113,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW\lib\Release\x64;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW\lib\Release\x64;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -160,7 +160,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -169,7 +169,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW\lib\Release\x64;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage\Dist\x64;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW\lib\Release\x64;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32s.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
