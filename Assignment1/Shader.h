@@ -60,7 +60,7 @@ public:
 	void SetTextureNormal(GLuint textureUnit);
 	void SetTextureCubeMap(GLuint textureUnit);
 	void SetDirectionalShadowMap(GLuint textureUnit);
-	void SetDirectionalLighttransform(glm::mat4 * lTransform);
+	void SetDirectionalLighttransform(glm::mat4 lTransform);
 	void SetScreenTexture(GLuint textureUnit);
 	void UseShader();
 	void ClearShader();

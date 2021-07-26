@@ -166,7 +166,7 @@ void Render::DirectionalShadowPass
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 
-	shader->SetDirectionalLighttransform(&light->CalculateLightTransform());
+	shader->SetDirectionalLighttransform(light->CalculateLightTransform());
 
 	RenderShadow();
 
@@ -221,7 +221,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 		shader->SetDirectionalLight(&Lighting::mainLight);
 		shader->SetPointLight(Lighting::pointLights, Lighting::pointLightCount);
 		shader->SetSpotLight(Lighting::spotLights, Lighting::spotLightCount);
-		shader->SetDirectionalLighttransform(&Lighting::mainLight.CalculateLightTransform());
+		shader->SetDirectionalLighttransform(Lighting::mainLight.CalculateLightTransform());
 		Lighting::mainLight.GetShadowMap()->Read(GL_TEXTURE1);
 
 		shader->SetTexture(0);
