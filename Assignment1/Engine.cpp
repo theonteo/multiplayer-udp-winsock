@@ -77,7 +77,9 @@ std::vector<Player> Engine::ParseEntry
 		const auto& divider = temp.find_first_of(":");
 		std::string l1{ temp.begin(),temp.begin() + divider };
 		std::string l2{ temp.begin() + divider + 1,temp.end() };
-		Player p{ l1,l2 };
+		Player p{};
+		p.portName = l2;
+		p.portName = l1;
 		playerData.emplace_back(std::move(p));
 
 	}

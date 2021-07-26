@@ -20,13 +20,32 @@ Technology is prohibited.
 
 class Player
 {
+public:
+	//is player connected
+	bool connected{ false };
+
+	//connection timeout
+	float connectionTimer{ 0.0f };
+
+	//player score
+	int score{ 0 };
+
+	//alive / dead
+	bool alive{ false };
+
 	//player name
 	std::string portName;
 
 	//port being used
 	std::string portNumber;
 
-public:
+
+	/*
+	float GetConnectionTimer() const;
+	bool GetConnection() const;
+
+	void SetConnectionTimer(float num);
+	void SetConnection(bool connection);
 
 	std::string GetPortName()const;
 	std::string GetPortNumber() const;
@@ -34,5 +53,6 @@ public:
 	//constructor
 	Player
 	(const std::string& name, const std::string address);
+	*/
 };
 

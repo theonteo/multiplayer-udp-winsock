@@ -28,8 +28,8 @@ dataPacket::dataPacket(const PacketData& packetdata)
 }
 
 Packet::Packet
-(const char* name, const MoveType& type, const glm::vec3& pos)
-	: moveType{ type }, position{ pos }
+(const char* name, const MoveType& type,  const Player& player, const glm::vec3& pos)
+	: moveType{ type }, position{ pos }, playerData{ player }
 {
 	strcpy_s(hostName, name);
 	hostNameLength = static_cast<int>(strlen(hostName));

@@ -30,10 +30,13 @@ void Game::Interaction()
 			(player->translate, player->scale.x,
 				i.second->translate, i.second->scale.x))
 			{
-				range = player->scale.x * 4.0f;
-				player->scale *= 1.02f;
+				player->score++;
+				range = player->score * 4.0f;
 				i.second->enabled = false;
 			}
+
+		if (i.second->score > 0)
+			i.second->scale = glm::vec3(1 + i.second->score * 0.135f);
 	}
 }
 

@@ -33,6 +33,8 @@ public:
 	Model* Model;
 	std::string shader;
 
+	int score{ 0 };
+
 	bool enabled{ true };
 
 	//store transforms

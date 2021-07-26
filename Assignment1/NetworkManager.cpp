@@ -25,6 +25,7 @@ Technology is prohibited.
 #include "GameObjectManager.h"
 #include "Exceptions.h"
 #include "Game.h"
+#include "DeltaTime.h"
 
 namespace
 {
@@ -44,9 +45,9 @@ void NetworkManager::Init(const std::vector<Player>& data)
 void NetworkManager::Update()
 {
 	//get own port number
-	udpReceive.StartUp(playerData[0].GetPortNumber());
-	udpSend.StartUp(playerData[0].GetPortNumber());
-	Game::InitPlayer(playerData[0].GetPortName());
+	udpReceive.StartUp(playerData[0].portNumber);
+	udpSend.StartUp(playerData[0].portNumber);
+	Game::InitPlayer(playerData[0].portName);
 
 	//keep receiving and send data
 
@@ -73,15 +74,20 @@ void NetworkManager::Send()
 		//placeholder testing - change to proper packet next time
 
 		const auto& iter = GameObjectManager::GameObjectList.find
-		(playerName[0].GetPortName());
+		(playerName[0].portName);
 
+	
 		//cannot find own player gameobject , don't send
 		if (iter == GameObjectManager::GameObjectList.end())continue;
 
+		//collate player data from gameobject
+		playerData[0].score = iter->second->score;
+
+
 		//send player data
 		Packet packet
-		{ playerName[0].GetPortName().c_str(),
-			MoveType::MOVE_DOWN,	iter->second->translate };
+		{ playerName[0].portName.c_str(),
+			MoveType::MOVE_DOWN,playerData[0],iter->second->translate };
 
 		//send player info - for testing
 		udpSend.Send(packet);
@@ -105,12 +111,29 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 	//move this somewhere else
 
 	//same person - return
-	if (GameObjectManager::GameObjectList.empty() ||
-		playerData[0].GetPortName() == packet.hostName)
-		return;
 
 	std::string temp
 	{ packet.hostName,packet.hostName + packet.hostNameLength };
+
+	for (auto& i : playerData)
+	{
+		
+		//received an active player
+		if (i.portName == playerData[0].portName ||
+			i.portName == packet.hostName)
+			i.connected = true;
+
+		if (i.portName == packet.hostName)
+		{
+			i = packet.playerData;
+		}
+
+		if (i.portName != packet.hostName)
+			i.connectionTimer += DeltaTime::GetDeltaTime();
+	}
+	if (GameObjectManager::GameObjectList.empty() ||
+		playerData[0].portName== packet.hostName)
+		return;
 
 	const auto& iter = GameObjectManager::GameObjectList.find(temp);
 
@@ -120,5 +143,7 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 	//update player position
 	const auto& player = iter->second;
+
+	player->score = packet.playerData.score;
 	player->translate = packet.position;
 }

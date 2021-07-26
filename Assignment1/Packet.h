@@ -21,9 +21,9 @@ Technology is prohibited.
 #include <vector>
 #include<string>
 #include <glm.hpp>
-
+#include "Player.h"
 using PacketData = std::vector<char>;
-
+class Player;
 enum class PacketType
 {
 	PACKET_DATA = 1,
@@ -44,11 +44,16 @@ struct Packet
 {
 	char hostName[50];
 	int hostNameLength{ 0 };
+
+	//change what to send!!!
 	MoveType moveType;
 	glm::vec3 position;
 
+	Player playerData;
+
 	Packet() = default;
-	Packet(const char* hostName,const MoveType& type, const glm::vec3& pos);
+	Packet(const char* hostName, const MoveType& type,
+		const Player& player, const glm::vec3& pos);
 };
 
 struct dataPacket :public Packet
