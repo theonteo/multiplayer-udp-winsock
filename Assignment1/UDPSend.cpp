@@ -17,6 +17,7 @@ namespace
 
 void UDPSend::Send(const Packet& packet)
 {
+
 	Packet pack = packet;
 
 	//keep sending to receiver - for testing - will change next time

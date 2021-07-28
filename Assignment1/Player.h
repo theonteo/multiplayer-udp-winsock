@@ -32,7 +32,7 @@ public:
 	int score{ 0 };
 
 	//alive / dead
-	bool alive{ false };
+	bool alive{ true };
 
 	//player name
 	std::string portName;

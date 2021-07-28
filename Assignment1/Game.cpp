@@ -30,6 +30,14 @@ void Game::Interaction()
 			(player->translate, player->scale.x,
 				i.second->translate, i.second->scale.x))
 			{
+				//the player must have higher score to eat
+
+				if (!player->score && i.second->score > 0)
+					continue;
+
+				if (player->score &&player->score <= i.second->score )
+					continue;
+
 				player->score++;
 				range = player->scale.x * 4.0f;
 

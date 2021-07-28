@@ -14,11 +14,12 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /*****************************************************************************/
-
+#define _CRT_SECURE_NO_WARNINGS
 #include "NetworkManager.h"
 #include "Player.h"
 #include "Packet.h"
 
+#include <iostream>
 #include <string>
 #include <thread>
 #include <mutex>
@@ -78,9 +79,10 @@ void NetworkManager::Idle()
 	while (1)
 	{
 		//check states of players for transition to gameplay
-		if (GameState::GetCurrentState() == GameState::State::STATE_LOBBY)
+		switch (GameState::GetCurrentState())
 		{
-			mutex.lock();
+		case  GameState::State::STATE_LOBBY:
+		{
 			const auto& playerName = NetworkManager::GetPlayerData();
 			int connectCount = 0;
 			for (const auto& p : playerName)
@@ -89,10 +91,34 @@ void NetworkManager::Idle()
 					connectCount++;
 			}
 			if (connectCount >= START_PLAYER)
-				GameState::AppendState();
-			mutex.unlock();
+				GameState::SetState(GameState::State::STATE_GAMEPLAY);
 		}
+		break;
+		case  GameState::State::STATE_GAMEPLAY:
+		{
+			const auto& playerName = NetworkManager::GetPlayerData();
+			int deadCount = 0;
+			int connectCount = 0;
+			for (const auto& p : playerName)
+			{
+				if (p.connected)
+					connectCount++;
+
+				if (p.connected && !p.alive)
+					deadCount++;
+			}
+			//one winner left
+			if (deadCount == connectCount-1)
+				GameState::SetState(GameState::State::STATE_RESULTS);
+		}
+		break;
+		}
+
+
+
+
 	}
+
 }
 
 void NetworkManager::Send()
@@ -124,22 +150,27 @@ void NetworkManager::Send()
 			type,playerData[0],iter->second->translate };
 
 
-		/*
+		//check if other player gameobject is alive
+		mutex.lock();
 		for (auto& i : playerData)
 		{
 			if (i.alive)
 			{
 				const auto& iter = GameObjectManager::GameObjectList.find
 				(i.portName);
-				if (!iter->second->enabled)
+				if (iter == GameObjectManager::GameObjectList.end()) break;
+				if (i.connected && !iter->second->enabled)
 				{
-					type = MoveType::KILL;
+
+					strcpy(&packet.actionName[0], iter->first.c_str());
+					packet.actionLength = iter->first.size();
+					packet.moveType = MoveType::KILL;
 					i.alive = false;
 				}
 			}
 		}
-		*/
-	
+		mutex.unlock();
+
 
 
 		//send player info - for testing
@@ -167,7 +198,7 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 	std::string temp
 	{ packet.hostName,packet.hostName + packet.hostNameLength };
-
+	mutex.lock();
 	for (auto& i : playerData)
 	{
 
@@ -178,15 +209,42 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 		if (i.portName == packet.hostName)
 		{
+			//temp - fix later - alive state
+			bool tempAlive = i.alive;
 			i = packet.playerData;
+			i.alive = tempAlive;
+		}
+
+		//check if killed
+		if (packet.moveType == MoveType::KILL)
+		{
+			std::string action
+			{ packet.actionName,(packet.actionName) + packet.actionLength };
+			if (i.alive && i.portName == action)
+			{
+				i.alive = false;
+				const auto& iter = GameObjectManager::GameObjectList.find(action);
+				iter->second->enabled = false;
+				std::cout << "killed" << std::endl;
+				break;
+			}
+
+
 		}
 
 		if (i.portName != packet.hostName)
 			i.connectionTimer += DeltaTime::GetDeltaTime();
 	}
+	mutex.unlock();
 	if (GameObjectManager::GameObjectList.empty() ||
 		playerData[0].portName == packet.hostName)
+	{
 		return;
+	}
+
+
+
+
 
 	const auto& iter = GameObjectManager::GameObjectList.find(temp);
 

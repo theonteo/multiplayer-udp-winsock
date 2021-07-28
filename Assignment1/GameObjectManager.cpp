@@ -43,7 +43,7 @@ void GameObjectManager::AddPlayer()
 
 		GameObjectList.insert
 		(std::pair<std::string, std::unique_ptr<GameObject>>
-		("player" + std::to_string(i), std::move(go)));
+		("player" + std::to_string(i+1), std::move(go)));
 	}
 }
 
