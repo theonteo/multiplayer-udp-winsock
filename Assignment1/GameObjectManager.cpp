@@ -7,6 +7,18 @@ GameObjectManager::GameObjectList;
 namespace
 {
 	constexpr size_t maxPlayerCount = 4;
+
+	//default player colours
+	const std::vector<glm::vec3>	col({
+		//blue
+		{ 0.0f / 255.0f,191.0f / 255.0f, 255.0f / 255.0f},
+		//red
+		{255.0f / 255.0f,0.0f / 255.0f, 75.0f / 255.0f},
+		//green
+		{ 174.0f / 255.0f, 255.0f / 255.0f,0.0f / 255.0f},
+		//orange
+		{ 255.0f / 255.0f, 150.0f / 255.0f, 0.0f / 255.0f},
+		});
 }
 
 /******************************************************************************/
@@ -26,7 +38,7 @@ void GameObjectManager::Create()
 
 void GameObjectManager::AddPlayer()
 {
-	
+
 
 	for (size_t i = 0; i < maxPlayerCount; ++i)
 	{
@@ -39,11 +51,13 @@ void GameObjectManager::AddPlayer()
 		go->GameObjectName = "Main Object";
 		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
 		go->shader = "Shaders\\shader";
-		go->colour = glm::vec3(1.9f, 0.75f, 0.1f);
+
+
+		go->colour =col[i] * 2.0f;
 
 		GameObjectList.insert
 		(std::pair<std::string, std::unique_ptr<GameObject>>
-		("player" + std::to_string(i+1), std::move(go)));
+		("player" + std::to_string(i + 1), std::move(go)));
 	}
 }
 
