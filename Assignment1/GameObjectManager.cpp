@@ -1,6 +1,6 @@
 #include "GameObjectManager.h"
 #include "Resource.h"
-
+#include <Colors.h>
 std::map<std::string, std::unique_ptr<GameObject>>
 GameObjectManager::GameObjectList;
 
@@ -8,17 +8,7 @@ namespace
 {
 	constexpr size_t maxPlayerCount = 4;
 
-	//default player colours
-	const std::vector<glm::vec3>	col({
-		//blue
-		{ 0.0f / 255.0f,191.0f / 255.0f, 255.0f / 255.0f},
-		//red
-		{255.0f / 255.0f,0.0f / 255.0f, 75.0f / 255.0f},
-		//green
-		{ 174.0f / 255.0f, 255.0f / 255.0f,0.0f / 255.0f},
-		//orange
-		{ 255.0f / 255.0f, 150.0f / 255.0f, 0.0f / 255.0f},
-		});
+
 }
 
 /******************************************************************************/
@@ -51,7 +41,6 @@ void GameObjectManager::AddPlayer()
 		go->GameObjectName = "Main Object";
 		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
 		go->shader = "Shaders\\shader";
-
 
 		go->colour =col[i] * 2.0f;
 

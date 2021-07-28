@@ -227,6 +227,11 @@ GLuint Shader::GetModelLocation()
 	return uniformModel;
 }
 
+GLuint Shader::GetDiffuseLocation()
+{
+	return uniformTexture;
+}
+
 /******************************************************************************/
 /*!
 \brief  get view location

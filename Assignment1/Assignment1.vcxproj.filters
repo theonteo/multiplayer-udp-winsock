@@ -166,6 +166,9 @@
     <ClCompile Include="GameState.cpp">
       <Filter>GamePlay</Filter>
     </ClCompile>
+    <ClCompile Include="UIImage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\External Libs\GUI\imgui.h">
@@ -300,6 +303,12 @@
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="UIImage.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
