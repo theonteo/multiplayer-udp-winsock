@@ -39,6 +39,8 @@ public:
 
 	void Init(const std::vector<Player>& data);
 	void Update();
+
+	void Idle();
 	void Send();
 	void Receive();
 

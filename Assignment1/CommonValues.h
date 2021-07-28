@@ -18,7 +18,7 @@ Technology is prohibited.
 #ifndef COMMONVALUES_H
 #define COMMONVALUES_H
 
-
+const int START_PLAYER = 2;
 const int MAX_PLAYER = 4;
 
 const int MAX_POINT_LIGHTS = 3;

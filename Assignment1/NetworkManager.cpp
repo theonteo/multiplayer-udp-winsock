@@ -21,15 +21,19 @@ Technology is prohibited.
 
 #include <string>
 #include <thread>
+#include <mutex>
 #include <functional>
+#include "GameState.h"
 #include "GameObjectManager.h"
 #include "Exceptions.h"
 #include "Game.h"
 #include "DeltaTime.h"
+#include "CommonValues.h"
 
 namespace
 {
 	constexpr size_t clientPlayerNum{ 0 };
+	std::mutex mutex;
 }
 
 const std::vector<Player>& NetworkManager::GetPlayerData() const
@@ -47,10 +51,11 @@ void NetworkManager::Update()
 	//get own port number
 	udpReceive.StartUp(playerData[0].portNumber);
 	udpSend.StartUp(playerData[0].portNumber);
+
 	Game::InitPlayer(playerData[0].portName);
 
-	//keep receiving and send data
 
+	//keep receiving and send data
 	std::thread receiveThread
 	(std::bind(&NetworkManager::Receive, this));
 
@@ -58,8 +63,36 @@ void NetworkManager::Update()
 	std::thread sendThread
 	(std::bind(&NetworkManager::Send, this));
 
+	//thread for misc 
+	std::thread idleThread
+	(std::bind(&NetworkManager::Idle, this));
+
 	receiveThread.join();
 	sendThread.join();
+	idleThread.join();
+
+}
+
+void NetworkManager::Idle()
+{
+	while (1)
+	{
+		//check states of players for transition to gameplay
+		if (GameState::GetCurrentState() == GameState::State::STATE_LOBBY)
+		{
+			mutex.lock();
+			const auto& playerName = NetworkManager::GetPlayerData();
+			int connectCount = 0;
+			for (const auto& p : playerName)
+			{
+				if (p.connected)
+					connectCount++;
+			}
+			if (connectCount >= START_PLAYER)
+				GameState::AppendState();
+			mutex.unlock();
+		}
+	}
 }
 
 void NetworkManager::Send()
@@ -91,6 +124,7 @@ void NetworkManager::Send()
 			type,playerData[0],iter->second->translate };
 
 
+		/*
 		for (auto& i : playerData)
 		{
 			if (i.alive)
@@ -104,7 +138,7 @@ void NetworkManager::Send()
 				}
 			}
 		}
-		
+		*/
 	
 
 

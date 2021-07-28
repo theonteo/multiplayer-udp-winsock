@@ -15,3 +15,8 @@ void GameState::AppendState()
 	if (currentState == State::STATE_UNKNOWN)
 		currentState = State::STATE_LOBBY;
 }
+
+void GameState::SetState(const State& state)
+{
+	currentState = state;
+}

@@ -14,6 +14,7 @@ public:
 	};
 	static State GetCurrentState();
 	static void AppendState();
+	static void SetState(const State& state);
 
 private:
 

@@ -71,6 +71,7 @@ void Game::MoveObject()
 
 void Game::CheckState()
 {
+
 	//change game state
 	if (Window::getKeyTriggered(GLFW_KEY_P))
 	{
