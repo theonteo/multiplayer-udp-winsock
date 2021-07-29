@@ -39,9 +39,12 @@ void UIManager::RenderGame(const std::vector<Player>& data)
 	int index = 0;
 
 	int circle =
-		Resource::Texture_List.find("Textures\\circle.png")->second->textureID;
+		Resource::Texture_List.find("Textures\\flag.png")->second->textureID;
+
 	const auto& imageShader = Resource::Shader_List.find("Shaders\\shader_ui");
+
 	int playerNum = -1;
+
 	for (const auto& i : data)
 	{
 		++playerNum;
@@ -72,26 +75,77 @@ void UIManager::RenderGame(const std::vector<Player>& data)
 			0.5f + (index - 2) * padding, 0.875f, 0, 0.3f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-
-
 		index++;
 	}
 }
 
 void UIManager::RenderResult(const std::vector<Player>& data)
 {
-	int playerNum = 0;
 	//4 player wait ui
+	int index = 0;
+
+	int circle =
+		Resource::Texture_List.find("Textures\\circle.png")->second->textureID;
+
+	const auto& imageShader = Resource::Shader_List.find("Shaders\\shader_ui");
+
+	int playerNum = -1;
+
+	//find winner
+	Player p = *data.begin();
+	int score = 0;
 	for (const auto& i : data)
 	{
-		std::string playerText
-		{ i.portName + " : "+std::to_string(i.score) };
+		if (i.score > score)
+		{
+			score = i.score;
+			p = i;
+		}
+	}
 
+
+
+	//winner text
+	TextRender::RenderTextNormal
+	(std::string{ "Winner is " + p.portName },
+		0.5f, 0.65f, 0, 0.65f,
+		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	for (const auto& i : data)
+	{
+		++playerNum;
+		if (!i.connected)
+			continue;
+
+		std::string playerScore
+		{ std::to_string(i.score) };
+
+		std::string playerText
+		{ i.portName + (!i.connected ? " not joined" : "") };
+
+		const float padding = 0.075f;
+
+		ImageRender::RenderQuad(circle, *imageShader->second,
+			0.5f + (index - 2) * padding, 0.45f, 0, 0, 0, 100, 100,
+			glm::vec4(col[playerNum].x, col[playerNum].y, col[playerNum].z, 1));
+
+		//point
+		TextRender::RenderTextNormal
+		(std::string{ playerScore },
+			0.5f + (index - 2) * padding, 0.45f, 0, 0.65f,
+			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+		//name
 		TextRender::RenderTextNormal
 		(std::string{ playerText },
-			0.5f, 0.4f - (playerNum) * 0.05f, 0, 0.4f,
+			0.5f + (index - 2) * padding, 0.375f, 0, 0.3f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		++playerNum;
+
+		TextRender::RenderTextNormal
+		(std::string{ "Press ESC to quit game"},
+			0.5f , 0.2f, 0, 0.3f,
+			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+		index++;
 	}
 }
 
