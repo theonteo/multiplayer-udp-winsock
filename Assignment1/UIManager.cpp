@@ -56,7 +56,6 @@ void UIManager::RenderGame(const std::vector<Player>& data)
 
 		const float padding = 0.075f;
 
-
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			0.5f + (index - 2) * padding, 0.95f, 0, 0, 0, 100, 100,
 			glm::vec4(col[playerNum].x, col[playerNum].y, col[playerNum].z, 1));
@@ -81,16 +80,18 @@ void UIManager::RenderGame(const std::vector<Player>& data)
 
 void UIManager::RenderResult(const std::vector<Player>& data)
 {
+	int playerNum = 0;
 	//4 player wait ui
-	for (int i = 0; i < MAX_PLAYER; ++i)
+	for (const auto& i : data)
 	{
 		std::string playerText
-		{ "Player " + std::to_string(i) + " not joined" };
+		{ i.portName + " : "+std::to_string(i.score) };
 
 		TextRender::RenderTextNormal
 		(std::string{ playerText },
-			0.5f, 0.4f - (i) * 0.05f, 0, 0.4f,
+			0.5f, 0.4f - (playerNum) * 0.05f, 0, 0.4f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		++playerNum;
 	}
 }
 
