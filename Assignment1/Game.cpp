@@ -13,22 +13,25 @@
 namespace
 {
 	std::vector<std::string> names;
+	std::string clientName;
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 }
-void Game::InitPlayer(const std::vector<std::string>& playerName)
+void Game::InitPlayer
+(const std::string& mainPlayer,const std::vector<std::string>& playerName)
 {
-	names = std::move(playerName);
+	clientName = mainPlayer;
+	names = playerName;
 }
 void Game::Interaction()
 {
 	const auto& player =
-		GameObjectManager::GameObjectList.find(names[0])->second;
+		GameObjectManager::GameObjectList.find(clientName)->second;
 
 	for (const auto& i : GameObjectManager::GameObjectList)
 	{
 		//basic collision
-		if (i.second->enabled && i.first != names[0] && i.first != "Level")
+		if (i.second->enabled && i.first != clientName && i.first != "Level")
 			if (Physics::CircleToCircle
 			(player->translate, player->scale.x,
 				i.second->translate, i.second->scale.x))
@@ -55,7 +58,7 @@ void Game::Interaction()
 void Game::MoveObject()
 {
 	const auto& player =
-		GameObjectManager::GameObjectList.find(names[0])->second;
+		GameObjectManager::GameObjectList.find(clientName)->second;
 
 	//Player control
 	if (Window::getKey(GLFW_KEY_A))
@@ -112,7 +115,7 @@ void Game::Update()
 		Interaction();
 
 		const auto& player =
-			GameObjectManager::GameObjectList.find(names[0])->second;
+			GameObjectManager::GameObjectList.find(clientName)->second;
 		glm::vec3 append{ range,range + 1.0f,range };
 		cam->SetPosition(player->translate + append);
 		cam->SetRotation(glm::vec2{ -45 , -135 });

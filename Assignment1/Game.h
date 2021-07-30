@@ -13,6 +13,6 @@ public:
 	static void CheckState();
 	static void Update();
 	static void InitPlayer
-	(const std::vector<std::string>& playerName);
+	(const std::string& mainPlayer, const std::vector<std::string>& playerName);
 };
 

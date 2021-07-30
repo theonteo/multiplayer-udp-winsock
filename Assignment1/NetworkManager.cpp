@@ -64,7 +64,7 @@ void NetworkManager::Update()
 	for (const auto& i : playerData)
 		names.push_back(i.second.portName);
 
-	Game::InitPlayer(names);
+	Game::InitPlayer(clientPlayer,names);
 
 	//keep receiving and send data
 	std::thread receiveThread
@@ -213,7 +213,6 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 	auto& pl = playerData.find(clientPlayer)->second;
 	for (auto& i : playerData)
 	{
-
 		//received an active player
 		if (i.second.portName == pl.portName ||
 			i.second.portName == packet.hostName)
