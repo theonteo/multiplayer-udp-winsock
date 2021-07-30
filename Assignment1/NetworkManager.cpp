@@ -147,14 +147,15 @@ void NetworkManager::Send()
 		if (iter == GameObjectManager::GameObjectList.end())continue;
 
 		//collate player data from gameobject
-		playerData[0].score = iter->second->score;
+		auto& pl = playerData.find(clientPlayer)->second;
+			pl.score = iter->second->score;
 
 		//placeholder
 		MoveType type{ MoveType::MOVE_DOWN };
 		//send player data
 		Packet packet
 		{ clientPlayer.c_str(),
-			type,playerData[0],iter->second->translate };
+			type,pl,iter->second->translate };
 
 
 		//check if other player gameobject is alive
@@ -205,12 +206,16 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 	std::string temp
 	{ packet.hostName,packet.hostName + packet.hostNameLength };
+
+
+
 	mutex.lock();
+	auto& pl = playerData.find(clientPlayer)->second;
 	for (auto& i : playerData)
 	{
 
 		//received an active player
-		if (i.second.portName == playerData[0].portName ||
+		if (i.second.portName == pl.portName ||
 			i.second.portName == packet.hostName)
 			i.second.connected = true;
 
@@ -244,7 +249,7 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 	}
 	mutex.unlock();
 	if (GameObjectManager::GameObjectList.empty() ||
-		playerData[0].portName == packet.hostName)
+		pl.portName == packet.hostName)
 	{
 		return;
 	}

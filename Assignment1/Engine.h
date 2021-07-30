@@ -21,6 +21,9 @@ Technology is prohibited.
 class Player;
 class Engine
 {
+	std::string ParseFirst
+	(int argc, char** argv);
+
 	std::map<std::string, Player>  ParseEntry
 	(int argc, char** argv);
 

@@ -61,6 +61,20 @@ Technology is prohibited.
 #include <Lighting.h>
 #include "Exceptions.h"
 
+
+/******************************************************************************/
+/*!
+\brief  Parse main entry data
+*/
+/******************************************************************************/
+std::string Engine::ParseFirst
+(int argc, char** argv)
+{
+	int count = argc - 1;
+		std::string temp = argv[1];
+		const auto& divider = temp.find_first_of(":");
+		return { temp.begin(),temp.begin() + divider };
+}
 /******************************************************************************/
 /*!
 \brief  Parse main entry data
@@ -79,9 +93,9 @@ std::map<std::string, Player>  Engine::ParseEntry
 		std::string l1{ temp.begin(),temp.begin() + divider };
 		std::string l2{ temp.begin() + divider + 1,temp.end() };
 		Player p{};
-		p.portName = l2;
 		p.portName = l1;
-		playerData.insert({ temp, p });
+		p.portNumber = l2;
+		playerData.insert({ l1, p });
 
 	}
 	return playerData;
@@ -166,8 +180,8 @@ void Engine::NetworkLoop()
 	if (argc != 5)
 		throw
 		exceptionHandler("Wrong number of arguments ", 1);
-
-	network.Init(argv[1],ParseEntry(ac, av));
+	const auto& entry = ParseEntry(ac, av);
+	network.Init(ParseFirst(ac, av), entry);
 	network.Update();
 }
 
