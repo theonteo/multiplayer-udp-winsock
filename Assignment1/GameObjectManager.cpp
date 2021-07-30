@@ -64,7 +64,7 @@ void GameObjectManager::AddScatterObjects()
 		go->translate = glm::vec3(x, 0.0f, z);
 		go->rotation = glm::vec3(0, 0, 0);
 		go->scale = glm::vec3(0.25f, 0.25f, 0.25f);
-		go->colour = glm::vec3(0.2f, 0.2f, 0.2f);
+		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);
 
 		go->GameObjectName = "point";
 		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
@@ -86,7 +86,9 @@ void GameObjectManager::AddLevel()
 	//set initial object
 	go->translate = glm::vec3(0.0f, -1.0f, 0.0f);
 	go->rotation = glm::vec3(0, 0, 0);
-	go->scale = glm::vec3(50, 1, 50);
+	go->scale = glm::vec3(100, 1, 100);
+	go->colour = glm::vec3(0.1f, 0.1f, 0.1f);
+
 
 	go->GameObjectName = "Main Object";
 	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;

@@ -35,26 +35,36 @@ namespace
 {
 	constexpr size_t clientPlayerNum{ 0 };
 	std::mutex mutex;
+	std::string clientPlayer;
 }
 
-const std::vector<Player>& NetworkManager::GetPlayerData() const
+const std::map<std::string, Player>& NetworkManager::GetPlayerData() const
 {
 	return playerData;
 }
 
-void NetworkManager::Init(const std::vector<Player>& data)
+void NetworkManager::Init
+(const std::string& clientName,  const std::map<std::string, Player>& data)
 {
+	clientPlayer = clientName;
 	playerData = data;
 }
 
 void NetworkManager::Update()
 {
+	const auto& portNum = playerData.find(clientPlayer)->second.portNumber;
+
+
 	//get own port number
-	udpReceive.StartUp(playerData[0].portNumber);
-	udpSend.StartUp(playerData[0].portNumber);
+	udpReceive.StartUp(portNum);
+	udpSend.StartUp(portNum);
 
-	Game::InitPlayer(playerData[0].portName);
+	//give names to game
+	std::vector<std::string> names;
+	for (const auto& i : playerData)
+		names.push_back(i.second.portName);
 
+	Game::InitPlayer(names);
 
 	//keep receiving and send data
 	std::thread receiveThread
@@ -87,7 +97,7 @@ void NetworkManager::Idle()
 			int connectCount = 0;
 			for (const auto& p : playerName)
 			{
-				if (p.connected)
+				if (p.second.connected)
 					connectCount++;
 			}
 			if (connectCount >= START_PLAYER)
@@ -101,10 +111,10 @@ void NetworkManager::Idle()
 			int connectCount = 0;
 			for (const auto& p : playerName)
 			{
-				if (p.connected)
+				if (p.second.connected)
 					connectCount++;
 
-				if (p.connected && !p.alive)
+				if (p.second.connected && !p.second.alive)
 					deadCount++;
 			}
 			//one winner left
@@ -113,9 +123,6 @@ void NetworkManager::Idle()
 		}
 		break;
 		}
-
-
-
 
 	}
 
@@ -133,7 +140,7 @@ void NetworkManager::Send()
 		//placeholder testing - change to proper packet next time
 
 		const auto& iter = GameObjectManager::GameObjectList.find
-		(playerName[0].portName);
+		(clientPlayer);
 
 
 		//cannot find own player gameobject , don't send
@@ -146,7 +153,7 @@ void NetworkManager::Send()
 		MoveType type{ MoveType::MOVE_DOWN };
 		//send player data
 		Packet packet
-		{ playerName[0].portName.c_str(),
+		{ clientPlayer.c_str(),
 			type,playerData[0],iter->second->translate };
 
 
@@ -154,18 +161,18 @@ void NetworkManager::Send()
 		mutex.lock();
 		for (auto& i : playerData)
 		{
-			if (i.alive)
+			if (i.second.alive)
 			{
 				const auto& iter = GameObjectManager::GameObjectList.find
-				(i.portName);
+				(i.second.portName);
 				if (iter == GameObjectManager::GameObjectList.end()) break;
-				if (i.connected && !iter->second->enabled)
+				if (i.second.connected && !iter->second->enabled)
 				{
 
 					strcpy(&packet.actionName[0], iter->first.c_str());
-					packet.actionLength = iter->first.size();
+					packet.actionLength = static_cast<int>(iter->first.size());
 					packet.moveType = MoveType::KILL;
-					i.alive = false;
+					i.second.alive = false;
 				}
 			}
 		}
@@ -203,16 +210,16 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 	{
 
 		//received an active player
-		if (i.portName == playerData[0].portName ||
-			i.portName == packet.hostName)
-			i.connected = true;
+		if (i.second.portName == playerData[0].portName ||
+			i.second.portName == packet.hostName)
+			i.second.connected = true;
 
-		if (i.portName == packet.hostName)
+		if (i.second.portName == packet.hostName)
 		{
 			//temp - fix later - alive state
-			bool tempAlive = i.alive;
-			i = packet.playerData;
-			i.alive = tempAlive;
+			bool tempAlive = i.second.alive;
+			i.second = packet.playerData;
+			i.second.alive = tempAlive;
 		}
 
 		//check if killed
@@ -220,9 +227,9 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 		{
 			std::string action
 			{ packet.actionName,(packet.actionName) + packet.actionLength };
-			if (i.alive && i.portName == action)
+			if (i.second.alive && i.second.portName == action)
 			{
-				i.alive = false;
+				i.second.alive = false;
 				const auto& iter = GameObjectManager::GameObjectList.find(action);
 				iter->second->enabled = false;
 				std::cout << "killed" << std::endl;
@@ -232,8 +239,8 @@ void NetworkManager::UnpackPacket(const Packet& packet)
 
 		}
 
-		if (i.portName != packet.hostName)
-			i.connectionTimer += DeltaTime::GetDeltaTime();
+		if (i.second.portName != packet.hostName)
+			i.second.connectionTimer += DeltaTime::GetDeltaTime();
 	}
 	mutex.unlock();
 	if (GameObjectManager::GameObjectList.empty() ||

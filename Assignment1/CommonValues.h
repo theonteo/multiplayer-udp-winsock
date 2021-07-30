@@ -21,7 +21,7 @@ Technology is prohibited.
 const int START_PLAYER = 2;
 const int MAX_PLAYER = 4;
 
-const int MAX_POINT_LIGHTS = 3;
+const int MAX_POINT_LIGHTS = 4;
 const int MAX_SPOT_LIGHTS = 3;
 
 const int WINDOW_WIDTH = 1366;

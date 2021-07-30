@@ -17,7 +17,7 @@ Technology is prohibited.
 
 #ifndef LIGHTING_H
 #define LIGHTING_H
-
+#include "CommonValues.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "DirectionalLight.h"
@@ -26,13 +26,14 @@ class Lighting
 {
 public:
 
-	static PointLight pointLights[3];
-	static SpotLight spotLights[3];
+	static PointLight pointLights[MAX_POINT_LIGHTS];
+	static SpotLight spotLights[MAX_SPOT_LIGHTS];
 	static DirectionalLight mainLight;
 
 	static unsigned int pointLightCount;
 	static unsigned int spotLightCount;
 
+	static void UpdatePointLight(int index, const glm::vec3& col, const glm::vec3& pos);
 	static void init();
 };
 

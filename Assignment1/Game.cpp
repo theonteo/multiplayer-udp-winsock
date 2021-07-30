@@ -6,26 +6,29 @@
 #include "Window.h"
 #include "DeltaTime.h"
 #include "Physics.h"
+#include "CommonValues.h"
+#include "Lighting.h"
+#include "Colors.h"
 
 namespace
 {
-	std::string goTarget{ "" };
+	std::vector<std::string> names;
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 }
-void Game::InitPlayer(const std::string& playerName)
+void Game::InitPlayer(const std::vector<std::string>& playerName)
 {
-	goTarget = playerName;
+	names = std::move(playerName);
 }
 void Game::Interaction()
 {
 	const auto& player =
-		GameObjectManager::GameObjectList.find(goTarget)->second;
+		GameObjectManager::GameObjectList.find(names[0])->second;
 
 	for (const auto& i : GameObjectManager::GameObjectList)
 	{
 		//basic collision
-		if (i.second->enabled && i.first != goTarget && i.first != "Level")
+		if (i.second->enabled && i.first != names[0] && i.first != "Level")
 			if (Physics::CircleToCircle
 			(player->translate, player->scale.x,
 				i.second->translate, i.second->scale.x))
@@ -52,7 +55,7 @@ void Game::Interaction()
 void Game::MoveObject()
 {
 	const auto& player =
-		GameObjectManager::GameObjectList.find(goTarget)->second;
+		GameObjectManager::GameObjectList.find(names[0])->second;
 
 	//Player control
 	if (Window::getKey(GLFW_KEY_A))
@@ -77,6 +80,15 @@ void Game::MoveObject()
 	}
 }
 
+void Game::MoveLighting()
+{
+	for (int i = 0; i < MAX_PLAYER; ++i)
+	{
+		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
+		Lighting::UpdatePointLight(i,col[i], player->translate);
+	}
+}
+
 void Game::CheckState()
 {
 
@@ -89,6 +101,8 @@ void Game::CheckState()
 
 void Game::Update()
 {
+	MoveLighting();
+
 	CheckState();
 	
 	const auto& cam = Resource::camera;
@@ -98,7 +112,7 @@ void Game::Update()
 		Interaction();
 
 		const auto& player =
-			GameObjectManager::GameObjectList.find(goTarget)->second;
+			GameObjectManager::GameObjectList.find(names[0])->second;
 		glm::vec3 append{ range,range + 1.0f,range };
 		cam->SetPosition(player->translate + append);
 		cam->SetRotation(glm::vec2{ -45 , -135 });

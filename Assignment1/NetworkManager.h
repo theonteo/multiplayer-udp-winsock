@@ -17,7 +17,7 @@ Technology is prohibited.
 #pragma once
 
 #include <string>
-#include <vector>
+#include <map>
 
 #include "UDPReceive.h"
 #include "UDPSend.h"
@@ -28,16 +28,16 @@ class Player;
 
 class NetworkManager
 {
-	std::vector<Player> playerData;
+	std::map<std::string, Player> playerData;
 
 	UDPReceive udpReceive;
 	UDPSend udpSend;
 
 public:
 
-	const std::vector<Player>& GetPlayerData() const;
+	const std::map<std::string, Player>& GetPlayerData() const;
 
-	void Init(const std::vector<Player>& data);
+	void Init(const std::string& clientName, const std::map<std::string, Player>& data);
 	void Update();
 
 	void Idle();

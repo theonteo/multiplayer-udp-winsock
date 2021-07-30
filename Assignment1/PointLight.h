@@ -38,6 +38,9 @@ public:
 		GLint diffuseIntensityLocation, GLint positionLocation,
 		GLint constantLocation,GLint linearLocation,GLint exponentLocation);
 
+	void SetPosition(const glm::vec3& pos);
+	void SetColour(const glm::vec3& col);
+
 protected:
 	glm::vec3 position;
 	GLfloat constant, linear, exponent;

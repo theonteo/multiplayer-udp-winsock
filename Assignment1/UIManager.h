@@ -1,15 +1,16 @@
 #pragma once
-#include <vector>
+#include <map>
+#include <string>
 class Player;
 class UIManager
 {
-	void RenderLobby(const std::vector<Player>& data);
-	void RenderGame(const std::vector<Player>& data);
-	void RenderResult(const std::vector<Player>& data);
+	void RenderLobby(const std::map<std::string, Player>& data);
+	void RenderGame(const std::map<std::string, Player>& data);
+	void RenderResult(const std::map<std::string, Player>& data);
 
 public:
 
 	void Init();
-	void Render(const std::vector<Player>& data);
+	void Render(const std::map<std::string, Player>& data);
 };
 

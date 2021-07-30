@@ -17,7 +17,7 @@ Technology is prohibited.
 
 #include "Lighting.h"
 #include "Resource.h"
-#include "CommonValues.h"
+
 
 //light declaration
 PointLight Lighting::pointLights[MAX_POINT_LIGHTS];
@@ -27,6 +27,12 @@ DirectionalLight Lighting::mainLight;
 unsigned int Lighting::pointLightCount = 0;
 unsigned int Lighting::spotLightCount = 0;
 
+void Lighting::UpdatePointLight
+(int index,const glm::vec3& col, const glm::vec3& pos)
+{
+	pointLights[index].SetColour(col);
+	pointLights[index].SetPosition(pos);
+}
 
 /******************************************************************************/
 /*!
@@ -69,6 +75,14 @@ void Lighting::init()
 			0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 
+	pointLights[3] =
+		PointLight(
+			1024, 1024,
+			1.0f, 1.0f, 1.0f,
+			0.1f, 1.0f,
+			3.1f, 1.0f, -2.1f,
+			0.3f, 0.2f, 0.1f);
+	pointLightCount++;
 
 	spotLights[0] =
 		SpotLight(

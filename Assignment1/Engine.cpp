@@ -33,6 +33,7 @@ Technology is prohibited.
 #include <stdio.h>
 #include <cmath>
 #include <vector>
+#include <map>
 #include <UIManager.h>
 #include <NetworkManager.h>
 #include <Game.h>
@@ -65,11 +66,11 @@ Technology is prohibited.
 \brief  Parse main entry data
 */
 /******************************************************************************/
-std::vector<Player> Engine::ParseEntry
+std::map<std::string, Player>  Engine::ParseEntry
 (int argc, char** argv)
 {
 	int count = argc - 1;
-	std::vector<Player> playerData;
+	std::map<std::string, Player > playerData;
 
 	for (int i = 1; i <= count; ++i)
 	{
@@ -80,7 +81,7 @@ std::vector<Player> Engine::ParseEntry
 		Player p{};
 		p.portName = l2;
 		p.portName = l1;
-		playerData.emplace_back(std::move(p));
+		playerData.insert({ temp, p });
 
 	}
 	return playerData;
@@ -166,7 +167,7 @@ void Engine::NetworkLoop()
 		throw
 		exceptionHandler("Wrong number of arguments ", 1);
 
-	network.Init(ParseEntry(ac, av));
+	network.Init(argv[1],ParseEntry(ac, av));
 	network.Update();
 }
 

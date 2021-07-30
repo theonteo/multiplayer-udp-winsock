@@ -16,11 +16,12 @@ Technology is prohibited.
 /*****************************************************************************/
 
 #pragma once
-#include <vector>
+#include <map>
+#include <string>
 class Player;
 class Engine
 {
-	std::vector<Player> ParseEntry
+	std::map<std::string, Player>  ParseEntry
 	(int argc, char** argv);
 
 public:
