@@ -153,7 +153,7 @@ void Render::RenderAll()
 */
 /******************************************************************************/
 void Render::DirectionalShadowPass
-(DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+(DirectionalLight* light)
 {
 	const std::unique_ptr<Shader>& shader =
 		Resource::Shader_List.find(directionalShadowShader)->second;
@@ -182,7 +182,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	const std::unique_ptr<GameObject>& go = 
 		GameObjectManager::GameObjectList.begin()->second;
 
-	DirectionalShadowPass(&Lighting::mainLight, viewMatrix, projectionMatrix);
+	DirectionalShadowPass(&Lighting::mainLight);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, postprocess.GetFrameBuffer());
 	glEnable(GL_DEPTH_TEST);

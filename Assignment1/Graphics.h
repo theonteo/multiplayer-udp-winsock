@@ -178,8 +178,7 @@ namespace Graphics
 	\brief   create frame buffer
 	*/
 	/******************************************************************************/
-	inline void CreateFrameBuffer(GLuint& BufferID,
-		const GLuint& width, const GLuint& height)
+	inline void CreateFrameBuffer(GLuint& BufferID)
 	{
 		glGenFramebuffers(1, &BufferID);
 		glBindFramebuffer(GL_FRAMEBUFFER, BufferID);

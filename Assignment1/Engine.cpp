@@ -29,7 +29,6 @@ Technology is prohibited.
 #include <Player.h>
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <cmath>
 #include <vector>
@@ -60,6 +59,7 @@ Technology is prohibited.
 #include <imgui.h>
 #include <Lighting.h>
 #include "Exceptions.h"
+#include <GLFW/glfw3.h>
 
 
 /******************************************************************************/
@@ -70,7 +70,7 @@ Technology is prohibited.
 std::string Engine::ParseFirst
 (int argc, char** argv)
 {
-	int count = argc - 1;
+	(void)argc;
 		std::string temp = argv[1];
 		const auto& divider = temp.find_first_of(":");
 		return { temp.begin(),temp.begin() + divider };
@@ -143,7 +143,7 @@ void Engine::EngineLoop()
 	//set up imgui
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
+	//ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	ImGui::StyleColorsDark();
@@ -175,8 +175,6 @@ void Engine::EngineLoop()
 void Engine::NetworkLoop()
 {
 	int argc = ac;
-	char** argv = av;
-
 	if (argc != 5)
 		throw
 		exceptionHandler("Wrong number of arguments ", 1);

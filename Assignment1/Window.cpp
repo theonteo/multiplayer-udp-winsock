@@ -259,6 +259,7 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 /******************************************************************************/
 void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
 {
+	(void)mode; (void)code;
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 	if (key >= 0 && key < 1024)

@@ -64,9 +64,6 @@ void DirectionalLight::SetLightRotation(glm::vec3 rotation)
 
 	// rotation angle about Z-axis (roll)
 	theta = glm::radians(rotation.z);
-	float sz = sin(theta);
-	float cz = cos(theta);
-
 
 	front.y = sy;
 	front.z = -sx * cy;

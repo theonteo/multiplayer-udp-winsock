@@ -63,7 +63,6 @@ struct Packet
 struct dataPacket :public Packet
 {
 	dataPacket() = default;
-	dataPacket(const PacketData& packetdata);
 	int sequence;
 	int length;
 

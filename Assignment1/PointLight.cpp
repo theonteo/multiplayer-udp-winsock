@@ -43,6 +43,7 @@ PointLight::PointLight
 	GLfloat con, GLfloat lin, GLfloat exp):
 	Light(1024,1024,red,green,blue,aIntensity,dIntensity)
 {
+	(void)shadowWidth; (void)shadowHeight;
 	position = glm::vec3(xPos, yPos, zPos);
 	constant = con;
 	linear = lin;

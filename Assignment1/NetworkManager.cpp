@@ -164,14 +164,14 @@ void NetworkManager::Send()
 		{
 			if (i.second.alive)
 			{
-				const auto& iter = GameObjectManager::GameObjectList.find
+				const auto& it = GameObjectManager::GameObjectList.find
 				(i.second.portName);
-				if (iter == GameObjectManager::GameObjectList.end()) break;
+				if (it == GameObjectManager::GameObjectList.end()) break;
 				if (i.second.connected && !iter->second->enabled)
 				{
 
-					strcpy(&packet.actionName[0], iter->first.c_str());
-					packet.actionLength = static_cast<int>(iter->first.size());
+					strcpy(&packet.actionName[0], it->first.c_str());
+					packet.actionLength = static_cast<int>(it->first.size());
 					packet.moveType = MoveType::KILL;
 					i.second.alive = false;
 				}

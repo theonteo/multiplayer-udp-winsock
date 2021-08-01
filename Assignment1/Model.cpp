@@ -130,7 +130,6 @@ void Model::LoadAssetModel(const std::string& model_name)
 		{
 			std::string t;
 			int slash = 0;
-			bool indexType = false;
 			//form triangle
 			for (auto& i : fullLine)
 			{
@@ -319,9 +318,9 @@ glm::vec3 Model::generateNormals(int index)
 bool Model::FaceContainVertex(int face, int vertex) const
 {
 
-	if (allIndices[face * 3] == vertex ||
-		allIndices[face * 3 + 1] == vertex ||
-		allIndices[face * 3 + 2] == vertex)
+	if (allIndices[face * 3] ==(unsigned int) vertex ||
+		allIndices[face * 3 + 1] == (unsigned int)vertex ||
+		allIndices[face * 3 + 2] == (unsigned int)vertex)
 		return true;
 
 	return false;

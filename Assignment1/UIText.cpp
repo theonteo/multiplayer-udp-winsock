@@ -75,8 +75,6 @@ namespace TextRender
 		// Activate corresponding render state	
 		shader.UseShader();
 
-		const auto& cam = Resource::camera;
-
 		GLfloat camWidth = WINDOW_WIDTH;
 		GLfloat camHeight = WINDOW_HEIGHT;
 

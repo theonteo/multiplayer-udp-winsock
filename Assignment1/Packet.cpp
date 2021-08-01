@@ -23,9 +23,6 @@ Technology is prohibited.
 //
 // constructor
 // -------------------------------------------------------------------------
-dataPacket::dataPacket(const PacketData& packetdata)
-{
-}
 
 Packet::Packet
 (const char* name, const MoveType& type,  const Player& player, const glm::vec3& pos)

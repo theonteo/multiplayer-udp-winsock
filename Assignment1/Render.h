@@ -46,7 +46,7 @@ public:
 
 	//main render pass
 	static void DirectionalShadowPass
-	(DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+	(DirectionalLight* light);
 
 	static void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };

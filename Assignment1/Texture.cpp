@@ -55,8 +55,8 @@ bool Texture::LoadTexture()
 	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(fileLocation);
 	FIBITMAP* ib = FreeImage_Load(fif, fileLocation, PNG_DEFAULT);
 	FreeImage_FlipVertical(ib);
-	int width = FreeImage_GetWidth(ib);
-	int height = FreeImage_GetHeight(ib);
+	int w = FreeImage_GetWidth(ib);
+	int h = FreeImage_GetHeight(ib);
 
 	if (!ib)
 	{
@@ -73,7 +73,7 @@ bool Texture::LoadTexture()
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h,
 		0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(ib));
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
