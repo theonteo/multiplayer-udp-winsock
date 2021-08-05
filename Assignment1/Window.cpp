@@ -20,6 +20,7 @@ Technology is prohibited.
 
 
 bool Window::triggeredKeyList[1024];
+bool Window::releasedKeyList[1024];
 bool Window::KeyList[1024];
 
 
@@ -166,6 +167,28 @@ bool Window::getKeyTriggered(size_t index)
 	else if (!KeyList[index])
 	{
 		triggeredKeyList[index] = false;
+	}
+	return false;
+}
+
+/******************************************************************************/
+/*!
+\brief		get key released
+*/
+/******************************************************************************/
+bool Window::getKeyReleased(size_t index)
+{
+	if (!KeyList[index])
+	{
+		if (releasedKeyList[index] == 0)
+		{
+			releasedKeyList[index] = true;
+			return true;
+		}
+	}
+	else if (KeyList[index])
+	{
+		releasedKeyList[index] = false;
 	}
 	return false;
 }

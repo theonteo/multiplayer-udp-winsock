@@ -18,57 +18,116 @@ Technology is prohibited.
 #ifndef _PACKET_H_
 #define _PACKET_H_
 
-#include <vector>
-#include<string>
 #include <glm.hpp>
+#include <WinSock2.h>
+#include <array>
+#include <algorithm>
 #include "Player.h"
-using PacketData = std::vector<char>;
-class Player;
-enum class PacketType
+#include "CommonValues.h"
+
+enum class PacketType : unsigned char
 {
-	PACKET_DATA = 1,
-	PACKET_TERMINATE = 2,
-	PACKET_ACK = 3,
-	PACKET_UNKNOWN,
+	CONNECTION_REQUEST = 1,
+	CONNECTION_REPLY,
+	CONNECTION_CONFIRMATION,
+	CONNECTION_NOTIFICATION,
+	DATA_PACKET,
+
+	NUM_OF_PACKET_TYPES			// Must be last
 };
 
-enum class MoveType
+enum class MoveType : unsigned char
 {
-	MOVE_UP,
-	MOVE_DOWN,
-	MOVE_LEFT,
-	MOVE_RIGHT,
-	KILL
+	MOVE_UP = 1,
+	MOVE_DOWN = 2,
+	MOVE_LEFT = 4,
+	MOVE_RIGHT = 8,
+	KILL = 16
 };
 
 struct Packet
 {
-	char hostName[50];
-	int hostNameLength{ 0 };
+	const PacketType packetType;
 
-	char actionName[50];
-	int actionLength{ 0 };
+	Packet(PacketType _packetType);
 
-	//change what to send!!!
-	MoveType moveType;
-	glm::vec3 position;
-
-	Player playerData;
-
-	Packet() = default;
-	Packet(const char* hostName, const MoveType& type,
-		const Player& player, const glm::vec3& pos);
+	virtual void NtoH() = 0;
+	virtual void HtoN() = 0;
 };
 
-struct dataPacket :public Packet
+struct ConnectionPacket : Packet
 {
-	dataPacket() = default;
-	dataPacket(const PacketData& packetdata);
-	int sequence;
-	int length;
+	ConnectionPacket();
 
-	//store payload
-	std::vector<char> data;
+	virtual void NtoH() override;
+	virtual void HtoN() override;
 };
+
+struct ConnectionReply : Packet
+{
+	unsigned short assignedID;
+
+	unsigned short playerIndices[MAX_PEER];
+	unsigned short ports[MAX_PEER];
+	IN_ADDR ips[MAX_PEER];
+
+	ConnectionReply();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct ConnectionConfirmation : Packet
+{
+	unsigned short assignedID = 0;
+
+	ConnectionConfirmation();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct ConnectionNotification : Packet
+{
+	unsigned short joiningID = 0;
+
+	unsigned short port = 0;
+	IN_ADDR ip{};
+
+	ConnectionNotification();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct DataPacket : Packet
+{
+	unsigned char moveInfo{};
+	glm::vec3 position{};
+
+	DataPacket();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+namespace
+{
+	constexpr std::array
+	<
+		size_t,
+		static_cast<size_t>(PacketType::NUM_OF_PACKET_TYPES)
+	> packetSizes
+	{
+		sizeof(ConnectionPacket),
+		sizeof(ConnectionReply),
+		sizeof(ConnectionConfirmation),
+		sizeof(ConnectionNotification),
+		sizeof(DataPacket)
+	};
+}
+
+constexpr size_t MAX_PACKET_SIZE =
+	*std::max_element(packetSizes.begin(), packetSizes.end());
 
 #endif

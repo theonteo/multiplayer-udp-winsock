@@ -7,8 +7,6 @@ GameObjectManager::GameObjectList;
 namespace
 {
 	constexpr size_t maxPlayerCount = 4;
-
-
 }
 
 /******************************************************************************/
@@ -46,7 +44,7 @@ void GameObjectManager::AddPlayer()
 
 		GameObjectList.insert
 		(std::pair<std::string, std::unique_ptr<GameObject>>
-		("player" + std::to_string(i + 1), std::move(go)));
+		("Player " + std::to_string(i + 1), std::move(go)));
 	}
 }
 

@@ -18,17 +18,14 @@ Technology is prohibited.
 #pragma once
 #include <map>
 #include <string>
-class Player;
+#include "NetworkManager.h"
+
 class Engine
 {
-	std::string ParseFirst
-	(int argc, char** argv);
-
-	std::map<std::string, Player>  ParseEntry
-	(int argc, char** argv);
+	NetworkManager network;
 
 public:
-	void Init(int argc, char** argv);
+	void Init(char** argv);
 	void EngineLoop();
 	void NetworkLoop();
 	void Loop();

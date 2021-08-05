@@ -1,16 +1,18 @@
 #pragma once
-#include <map>
 #include <string>
+#include <vector>
+#include "NetworkManager.h"
+
 class Player;
 class UIManager
 {
-	void RenderLobby(const std::map<std::string, Player>& data);
-	void RenderGame(const std::map<std::string, Player>& data);
-	void RenderResult(const std::map<std::string, Player>& data);
+	void RenderLobby(const NetworkManager::PlayerArray& data);
+	void RenderGame(const NetworkManager::PlayerArray& data);
+	void RenderResult(const NetworkManager::PlayerArray& data);
 
 public:
 
 	void Init();
-	void Render(const std::map<std::string, Player>& data);
+	void Render(const NetworkManager::PlayerArray& data);
 };
 

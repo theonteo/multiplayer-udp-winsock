@@ -16,36 +16,80 @@ Technology is prohibited.
 /*****************************************************************************/
 #pragma once
 
-#include <string>
-#include <map>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 
-#include "UDPReceive.h"
-#include "UDPSend.h"
+#include "Windows.h"
+#include "ws2tcpip.h"
+
+#pragma comment(lib, "ws2_32.lib")
+
+#include <string>
+#include <unordered_map>
+#include <array>
+#include <mutex>
 
 #include "Player.h"
+#include "SocketAddress.h"
+#include "CommonValues.h"
+#include "Packet.h"
 
 class Player;
 
 class NetworkManager
 {
-	std::map<std::string, Player> playerData;
+public:
+	using PlayerArray = std::array<Player, MAX_PLAYER>;
 
-	UDPReceive udpReceive;
-	UDPSend udpSend;
+private:
+	static constexpr size_t TIMEOUT = 1;
+
+	static constexpr unsigned short INVALID_ID =
+		static_cast<unsigned short>(-1);
+
+	SOCKET clientSocket = INVALID_SOCKET;
+
+	std::unordered_map<SocketAddress, Player*> playerAddressMap;
+	SocketAddress localSocketAddr;
+	PlayerArray players;
+	unsigned short localPlayerID = INVALID_ID;
+
+	// To wait for timeout
+	std::mutex timeoutMutex;
+	std::condition_variable timeoutCondition;
+	bool receivedConnectionReply = false;
 
 public:
+	NetworkManager();
+	~NetworkManager();
 
-	const std::map<std::string, Player>& GetPlayerData() const;
+	const PlayerArray& GetPlayerData() const;
 
-	void Init(const std::string& clientName, const std::map<std::string, Player>& data);
-	void Update();
+	void Init(char** argv);
+	void ConnectToPeers();
 
-	void Idle();
 	void Send();
 	void Receive();
 
 
-	void UnpackPacket(const Packet& packet);
+	void UnpackPacket(
+		char* buffer, const SocketAddress& sourceAddr);
 
+	void ProcessConnectionRequest(const SocketAddress& sourceAddr);
+
+	void ProcessConnectionReply(
+		ConnectionReply& replyPacket, const SocketAddress& sourceAddr);
+
+	void ProcessConnectionConfirmation(
+		ConnectionConfirmation& conConfirm,
+		const SocketAddress& sourceAddr);
+
+	void ProcessConnectionNotification(
+		ConnectionNotification& conNotif,
+		const SocketAddress& sourceAddr);
+
+	void ProcessDataPacket(
+		DataPacket& dataPacket, const SocketAddress& sourceAddr);
 };
 

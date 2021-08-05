@@ -53,7 +53,8 @@ public:
 	
 	static glm::vec2 GetMousePos();
 	static bool getKeyTriggered(size_t index);
-	bool getKeyUp(size_t index);
+	static bool getKeyReleased(size_t index);
+	static bool getKeyUp(size_t index);
 	static bool getKey(size_t index);
 
 	GLint getBufferWidth() { return bufferWidth; }
@@ -67,6 +68,7 @@ public:
 
 private:
 	static bool triggeredKeyList[1024];
+	static bool releasedKeyList[1024];
 	static bool KeyList[1024];
 	void createCallbacks();
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);

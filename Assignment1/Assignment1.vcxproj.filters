@@ -133,9 +133,6 @@
     <ClCompile Include="DeltaTime.cpp">
       <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="UDP.cpp">
-      <Filter>Networking</Filter>
-    </ClCompile>
     <ClCompile Include="Physics.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
@@ -157,17 +154,14 @@
     <ClCompile Include="Packet.cpp">
       <Filter>Networking</Filter>
     </ClCompile>
-    <ClCompile Include="UDPReceive.cpp">
-      <Filter>Networking</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPSend.cpp">
-      <Filter>Networking</Filter>
-    </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="UIImage.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketAddress.cpp">
+      <Filter>Networking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -265,9 +259,6 @@
     <ClInclude Include="DeltaTime.h">
       <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="UDP.h">
-      <Filter>Networking</Filter>
-    </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Physics</Filter>
     </ClInclude>
@@ -295,12 +286,6 @@
     <ClInclude Include="Packet.h">
       <Filter>Networking</Filter>
     </ClInclude>
-    <ClInclude Include="UDPReceive.h">
-      <Filter>Networking</Filter>
-    </ClInclude>
-    <ClInclude Include="UDPSend.h">
-      <Filter>Networking</Filter>
-    </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>GamePlay</Filter>
     </ClInclude>
@@ -309,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="UIImage.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <Filter>Networking</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

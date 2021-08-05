@@ -18,12 +18,16 @@ Technology is prohibited.
 #pragma once
 #include <string>
 
-enum class MoveType;
+enum class MoveType : unsigned char;
+
 class Player
 {
 public:
-	//is player connected
-	bool connected{ false };
+	// Flag to check if player has previously connected
+	bool hasPreviouslyConnnected{ false };
+
+	//Flag to check if player is currently connected
+	bool isConnected{ false };
 
 	//connection timeout
 	float connectionTimer{ 0.0f };
@@ -33,12 +37,6 @@ public:
 
 	//alive / dead
 	bool alive{ true };
-
-	//player name
-	std::string portName;
-
-	//port being used
-	std::string portNumber;
 
 	MoveType moveType;
 };
