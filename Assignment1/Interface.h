@@ -22,8 +22,11 @@ class Interface
 {
 	bool* dock_open;
 	bool Inspector_Header;
+	bool showUI{ true };
 
 public:
+	bool GetShowUI() const;
+	void ToggleShowUI();
 	void ShowMainUI();
 };
 #endif

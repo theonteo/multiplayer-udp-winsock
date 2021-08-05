@@ -150,7 +150,10 @@ void Engine::Loop()
 		ui.Render(network.GetPlayerData());
 
 		//show show editor
-		interface_game.ShowMainUI();
+		if (Window::getKeyReleased(GLFW_KEY_I))
+			interface_game.ToggleShowUI();
+		if (interface_game.GetShowUI())
+			interface_game.ShowMainUI();
 		mainWindow.swapBuffers();
 	}
 }

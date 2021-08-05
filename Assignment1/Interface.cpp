@@ -27,6 +27,16 @@ Technology is prohibited.
 #include "GameObject.h"
 #include "GameObjectManager.h"
 
+bool Interface::GetShowUI() const
+{
+	return showUI;
+}
+
+void Interface::ToggleShowUI()
+{
+	showUI = !showUI;
+}
+
 /******************************************************************************/
 /*!
 \brief  show UI
