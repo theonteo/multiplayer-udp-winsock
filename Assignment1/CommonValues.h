@@ -18,13 +18,14 @@ Technology is prohibited.
 #ifndef COMMONVALUES_H
 #define COMMONVALUES_H
 
-const int START_PLAYER = 2;
-const int MAX_PLAYER = 4;
+constexpr int START_PLAYER = 2;
+constexpr int MAX_PLAYER = 4;
+constexpr int MAX_PEER = MAX_PLAYER - 1;
 
-const int MAX_POINT_LIGHTS = 4;
-const int MAX_SPOT_LIGHTS = 3;
+constexpr int MAX_POINT_LIGHTS = 4;
+constexpr int MAX_SPOT_LIGHTS = 3;
 
-const int WINDOW_WIDTH = 1366;
-const int WINDOW_HEIGHT = 768;
+constexpr int WINDOW_WIDTH = 1366;
+constexpr int WINDOW_HEIGHT = 768;
 
 #endif

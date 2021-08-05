@@ -5,13 +5,11 @@
 
 #include"Resource.h"
 #include "GameState.h"
-#include "NetworkManager.h"
 #include "CommonValues.h"
 #include "Colors.h"
 #include "Texture.h"
-#include <map>
 
-void UIManager::RenderLobby(const std::map<std::string, Player>& data)
+void UIManager::RenderLobby(const NetworkManager::PlayerArray& data)
 {
 	//title screen
 	TextRender::RenderTextNormal
@@ -24,17 +22,21 @@ void UIManager::RenderLobby(const std::map<std::string, Player>& data)
 	for (const auto& i : data)
 	{
 		std::string playerText
-		{ i.second.portName + (i.second.connected ? " in-game" : " not joined") };
+		{
+			"Player " + std::to_string(index + 1) +
+			(i.isConnected ? " in-game" : " not joined")
+		};
 
-		TextRender::RenderTextNormal
-		(std::string{ playerText },
+		TextRender::RenderTextNormal(
+			playerText,
 			0.5f, 0.4f - (index) * 0.05f, 0, 0.4f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
 		index++;
 	}
 }
 
-void UIManager::RenderGame(const std::map<std::string, Player>& data)
+void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 {
 	//4 player wait ui
 	int index = 0;
@@ -49,14 +51,17 @@ void UIManager::RenderGame(const std::map<std::string, Player>& data)
 	for (const auto& i : data)
 	{
 		++playerNum;
-		if (!i.second.connected)
+		if (!i.isConnected)
 			continue;
 
 		std::string playerScore
-		{ std::to_string(i.second.score) };
+		{ std::to_string(i.score) };
 
 		std::string playerText
-		{ i.second.portName + (!i.second.connected ? " not joined" : "") };
+		{
+			"Player " + std::to_string(playerNum + 1) +
+			(!i.isConnected ? " not joined" : "")
+		};
 
 		const float padding = 0.075f;
 
@@ -80,7 +85,7 @@ void UIManager::RenderGame(const std::map<std::string, Player>& data)
 	}
 }
 
-void UIManager::RenderResult(const std::map<std::string, Player>& data)
+void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 {
 	//4 player wait ui
 	int index = 0;
@@ -90,38 +95,44 @@ void UIManager::RenderResult(const std::map<std::string, Player>& data)
 
 	const auto& imageShader = Resource::Shader_List.find("Shaders\\shader_ui");
 
-	int playerNum = -1;
 
-	//find winner
-	Player p = data.begin()->second;
-	int score = 0;
-	for (const auto& i : data)
+	// Find winner
+	size_t winnerIndex = 0;
+	int score = data[0].score;
+
+	for (size_t i = 1; i < data.size(); ++i)
 	{
-		if (i.second.score > score)
+		// Check if player connected
+		if (data[i].isConnected)
 		{
-			score = i.second.score;
-			p = i.second;
+			// Check if that player's score is higher than current
+			score = data[i].score > score ? data[i].score : score;
+			winnerIndex = data[i].score > score ? i : winnerIndex;
 		}
 	}
 
-
+	int playerNum = -1;
 
 	//winner text
 	TextRender::RenderTextNormal
-	(std::string{ "Winner is " + p.portName },
+	(std::string{ "Winner is Player " + std::to_string(winnerIndex + 1)},
 		0.5f, 0.65f, 0, 0.65f,
 		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
 	for (const auto& i : data)
 	{
 		++playerNum;
-		if (!i.second.connected)
+		if (!i.isConnected)
 			continue;
 
 		std::string playerScore
-		{ std::to_string(i.second.score) };
+		{ std::to_string(i.score) };
 
 		std::string playerText
-		{ i.second.portName + (!i.second.connected ? " not joined" : "") };
+		{
+			"Player " + std::to_string(playerNum + 1) +
+			(!i.isConnected ? " not joined" : "")
+		};
 
 		const float padding = 0.075f;
 
@@ -157,7 +168,7 @@ void UIManager::Init()
 	ImageRender::Init();
 }
 
-void UIManager::Render(const std::map<std::string, Player>& data)
+void UIManager::Render(const NetworkManager::PlayerArray& data)
 {
 	switch (GameState::GetCurrentState())
 	{

@@ -62,47 +62,6 @@ Technology is prohibited.
 #include "Exceptions.h"
 #include <GLFW/glfw3.h>
 
-
-/******************************************************************************/
-/*!
-\brief  Parse main entry data
-*/
-/******************************************************************************/
-std::string Engine::ParseFirst
-(int argc, char** argv)
-{
-	(void)argc;
-		std::string temp = argv[1];
-		const auto& divider = temp.find_first_of(":");
-		return { temp.begin(),temp.begin() + divider };
-}
-/******************************************************************************/
-/*!
-\brief  Parse main entry data
-*/
-/******************************************************************************/
-std::map<std::string, Player>  Engine::ParseEntry
-(int argc, char** argv)
-{
-	int count = argc - 1;
-	std::map<std::string, Player > playerData;
-
-	for (int i = 1; i <= count; ++i)
-	{
-		std::string temp = argv[i];
-		const auto& divider = temp.find_first_of(":");
-		std::string l1{ temp.begin(),temp.begin() + divider };
-		std::string l2{ temp.begin() + divider + 1,temp.end() };
-		Player p{};
-		p.portName = l1;
-		p.portNumber = l2;
-		playerData.insert({ l1, p });
-
-	}
-	return playerData;
-}
-
-
 namespace
 {
 	Interface interface_game;
@@ -110,19 +69,17 @@ namespace
 	Window mainWindow;
 	Camera camera;
 	Lighting lighting;
-	NetworkManager network;
 	UIManager ui;
-	int ac;
-	char** av;
-
 }
-void Engine::Init(int argc, char** argv)
+
+void Engine::Init(char** argv)
 {
-	ac = argc;
-	av = argv;
+	network.Init(argv);
 
 	std::thread loopThread(std::bind(&Engine::EngineLoop, this));
 	std::thread networkThread(std::bind(&Engine::NetworkLoop, this));
+
+	network.ConnectToPeers();
 
 	loopThread.join();
 	networkThread.join();
@@ -170,18 +127,11 @@ void Engine::EngineLoop()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
-
 }
 
 void Engine::NetworkLoop()
 {
-	int argc = ac;
-	if (argc != 5)
-		throw
-		exceptionHandler("Wrong number of arguments ", 1);
-	const auto& entry = ParseEntry(ac, av);
-	network.Init(ParseFirst(ac, av), entry);
-	network.Update();
+	network.Receive();
 }
 
 void Engine::Loop()
@@ -201,6 +151,9 @@ void Engine::Loop()
 
 		//main game update
 		Game::Update();
+
+		//send any information to other clients if needed
+		network.Send();
 
 		//main render pass
 		Render::RenderPass(camera.calculateViewMatrix(),

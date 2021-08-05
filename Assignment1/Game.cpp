@@ -12,17 +12,17 @@
 
 namespace
 {
-	std::vector<std::string> names;
+	std::vector<std::string> names = { "Player 1", "Player 2", "Player 3", "Player 4" };
 	std::string clientName;
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 }
-void Game::InitPlayer
-(const std::string& mainPlayer,const std::vector<std::string>& playerName)
+
+void Game::InitPlayer(size_t playerID)
 {
-	clientName = mainPlayer;
-	names = playerName;
+	clientName = names[playerID];
 }
+
 void Game::Interaction()
 {
 	const auto& player =

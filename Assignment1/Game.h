@@ -12,7 +12,6 @@ class Game
 public:
 	static void CheckState();
 	static void Update();
-	static void InitPlayer
-	(const std::string& mainPlayer, const std::vector<std::string>& playerName);
+	static void InitPlayer(size_t playerID);
 };
 

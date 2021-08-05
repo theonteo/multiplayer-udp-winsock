@@ -217,11 +217,9 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="UDP.cpp" />
-    <ClCompile Include="UDPReceive.cpp" />
-    <ClCompile Include="UDPSend.cpp" />
     <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UIText.cpp" />
@@ -266,11 +264,9 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SocketAddress.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="UDP.h" />
-    <ClInclude Include="UDPReceive.h" />
-    <ClInclude Include="UDPSend.h" />
     <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UIText.h" />
