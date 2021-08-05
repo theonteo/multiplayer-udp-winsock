@@ -5,7 +5,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>localhost:2048 localhost:2049 localhost:2050 localhost:2051</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>player1:2048 player2:2049 player3:2050 player4:2051</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

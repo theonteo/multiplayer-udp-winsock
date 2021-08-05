@@ -62,16 +62,6 @@ Technology is prohibited.
 #include "Exceptions.h"
 #include <GLFW/glfw3.h>
 
-namespace
-{
-	Interface interface_game;
-	Resource main_editor;
-	Window mainWindow;
-	Camera camera;
-	Lighting lighting;
-	UIManager ui;
-}
-
 void Engine::Init(char** argv)
 {
 	network.Init(argv);
