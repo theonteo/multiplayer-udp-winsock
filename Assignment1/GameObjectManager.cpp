@@ -37,7 +37,7 @@ void GameObjectManager::AddPlayer()
 		go->scale = glm::vec3(1, 1, 1);
 
 		go->GameObjectName = "Main Object";
-		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
+		go->Model = "Models\\Sphere.obj";
 		go->shader = "Shaders\\shader";
 
 		go->colour =col[i] * 2.0f;
@@ -65,7 +65,7 @@ void GameObjectManager::AddScatterObjects()
 		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);
 
 		go->GameObjectName = "point";
-		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
+		go->Model = "Models\\Sphere.obj";
 		go->shader = "Shaders\\shader";
 
 		GameObjectList.insert
@@ -89,7 +89,7 @@ void GameObjectManager::AddLevel()
 
 
 	go->GameObjectName = "Main Object";
-	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
+	go->Model = "Models\\cube.obj";
 	go->shader = "Shaders\\shader";
 
 	GameObjectList.insert

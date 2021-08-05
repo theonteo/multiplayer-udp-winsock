@@ -29,8 +29,8 @@ class GameObject
 public:
 
 	//store pointers to data
-	Material* GameObjectMaterial;
-	Model* Model;
+	std::string GameObjectMaterial;
+	std::string Model;
 	std::string shader;
 
 	int score{ 0 };

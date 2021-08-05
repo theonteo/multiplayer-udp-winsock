@@ -109,10 +109,6 @@ void Engine::EngineLoop()
 	GameObjectManager::Create();
 	Loop();
 
-
-	//delete all
-	Resource::DeleteAllFiles();
-
 	//imgui shutdown
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

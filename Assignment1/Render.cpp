@@ -95,7 +95,7 @@ void Render::RenderShadow()
 		uniformModel = shader->GetModelLocation();
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		go.second->Model->RenderModel();
+		Resource::Model_List.find(go.second->Model)->second->RenderModel();
 	}
 }
 
@@ -144,7 +144,7 @@ void Render::RenderAll()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		//render model
-		go->Model->RenderModel();
+		Resource::Model_List.find(go->Model)->second->RenderModel();
 	}
 }
 /******************************************************************************/
@@ -261,7 +261,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		go->Model->RenderNormals();
+		Resource::Model_List.find(go->Model)->second->RenderNormals();
 	}
 
 	Lighting::mainLight.SetLightRotation(Resource::directionalRotation);
