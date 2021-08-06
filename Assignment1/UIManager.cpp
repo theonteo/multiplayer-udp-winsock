@@ -113,19 +113,19 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		std::string playerName = "Player " + std::to_string(playerNum + 1);
 		const auto& color = col.find(playerName)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			0.5f + (index - 2) * padding, 0.95f, 0, 0, 0, 100, 100,
+			(0.5f + (index - 2) * padding)+0.05f, 0.95f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			0.5f + (index - 2) * padding, 0.95f, 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0.65f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
-		TextRender::RenderTextNormal
+		TextRender::RenderTextLight
 		(std::string{ playerText },
-			0.5f + (index - 2) * padding, 0.875f, 0, 0.3f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.875f, 0, 0.6f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 		index++;
