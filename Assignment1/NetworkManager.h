@@ -72,6 +72,8 @@ public:
 	void Send();
 	void Receive();
 
+	void SendStepLockPacket(unsigned short collidingID);
+
 
 	void UnpackPacket(
 		char* buffer, const SocketAddress& sourceAddr);
@@ -85,9 +87,7 @@ public:
 		ConnectionConfirmation& conConfirm,
 		const SocketAddress& sourceAddr);
 
-	void ProcessConnectionNotification(
-		ConnectionNotification& conNotif,
-		const SocketAddress& sourceAddr);
+	void ProcessConnectionNotification(ConnectionNotification& conNotif);
 
 	void ProcessDataPacket(
 		DataPacket& dataPacket, const SocketAddress& sourceAddr);

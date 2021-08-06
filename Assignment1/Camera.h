@@ -34,29 +34,29 @@ class Camera
 
 private:
 	friend Interface;
-	glm::mat4 projection;
+	glm::mat4 projection{};
 
-	glm::vec3 position;
-	glm::vec3 front;
-	glm::vec3 up;
-	glm::vec3 right;
-	glm::vec3 worldUp;
+	glm::vec3 position{};
+	glm::vec3 front{};
+	glm::vec3 up{};
+	glm::vec3 right{};
+	glm::vec3 worldUp{};
 
-	GLfloat fov;
-	GLfloat nearPlane;
-	GLfloat farPlane;
+	GLfloat fov{};
+	GLfloat nearPlane{};
+	GLfloat farPlane{};
 
-	GLfloat yaw;
-	GLfloat pitch;
-	GLfloat moveSpeed;
-	GLfloat turnSpeed;
+	GLfloat yaw{};
+	GLfloat pitch{};
+	GLfloat moveSpeed{};
+	GLfloat turnSpeed{};
 
 	std::string lookTarget;
 
 	void update();
 
 public:
-	Camera();
+	Camera() = default;
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw,
 		GLfloat startPitch, GLfloat startMovespeed, GLfloat startTurnspeed);
 	
@@ -75,7 +75,6 @@ public:
 	GLfloat getFov();
 	GLfloat getNearPlane();
 	GLfloat getFarPlane();
-
 };
 
 #endif

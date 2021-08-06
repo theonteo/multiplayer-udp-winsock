@@ -29,5 +29,7 @@ public:
 	void EngineLoop();
 	void NetworkLoop();
 	void Loop();
+	
+	NetworkManager* GetNetworkManager();
 };
 

@@ -116,6 +116,7 @@ void Engine::EngineLoop()
 	Render::Init();
 	ui.Init();
 	GameObjectManager::Create();
+	Game::Init(&network);
 	Loop();
 
 
@@ -166,4 +167,9 @@ void Engine::Loop()
 		interface_game.ShowMainUI();
 		mainWindow.swapBuffers();
 	}
+}
+
+NetworkManager* Engine::GetNetworkManager()
+{
+	return &network;
 }

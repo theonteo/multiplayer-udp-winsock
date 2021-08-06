@@ -98,9 +98,6 @@ void NetworkManager::Init(char** argv)
 		WSACleanup();
 		throw exceptionHandler("bind() failed.", errorCode);
 	}
-
-	// remove this
-	Game::InitPlayer(0);
 }
 
 void NetworkManager::ConnectToPeers()
@@ -252,6 +249,27 @@ void NetworkManager::Send()
 		}
 	}
 
+	//if (lockStepMode)
+	//{
+	//	// Hash data
+	//	std::hash<std::string> a;
+	//	a(reinter);
+	//
+	//	// Sending of hashed data
+	//
+	//
+	//	// Wait for everyone to reply / timeout
+	//
+	//	// Send back the actual action to everyoone
+	//
+	//
+	//	// Wait for everyone's actual action
+	//
+	//	// Process all of the data
+	//
+	//	lockStepMode = false;
+	//}
+
 	//const auto& playerName = NetworkManager::GetPlayerData();
 	//
 	////player container is empty ,don't send
@@ -331,6 +349,11 @@ void NetworkManager::Receive()
 	}
 }
 
+void NetworkManager::SendStepLockPacket(unsigned short collidingID)
+{
+
+}
+
 void NetworkManager::UnpackPacket(
 	char* buffer, const SocketAddress& sourceAddr)
 {
@@ -353,8 +376,7 @@ void NetworkManager::UnpackPacket(
 	else if (packet->packetType == PacketType::CONNECTION_NOTIFICATION)
 	{
 		ProcessConnectionNotification(
-			*reinterpret_cast<ConnectionNotification*>(buffer),
-			sourceAddr);
+			*reinterpret_cast<ConnectionNotification*>(buffer));
 	}
 	else if (packet->packetType == PacketType::DATA_PACKET)
 	{
@@ -594,7 +616,7 @@ void NetworkManager::ProcessConnectionConfirmation(
 		ConnectionNotification conNotif;
 		conNotif.joiningID = conConfirm.assignedID;
 		conNotif.ip = sockAddrPtr->sin_addr;
-		conNotif.port = sockAddrPtr->sin_port;
+		conNotif.port = ntohs(sockAddrPtr->sin_port);
 		conNotif.HtoN();
 
 		for (const auto& playerAddress : playerAddressMap)
@@ -627,12 +649,17 @@ void NetworkManager::ProcessConnectionConfirmation(
 	}
 }
 
-void NetworkManager::ProcessConnectionNotification(
-	ConnectionNotification& conNotif, const SocketAddress& sourceAddr)
+void NetworkManager::ProcessConnectionNotification(ConnectionNotification& conNotif)
 {
 	conNotif.NtoH();
 
-	auto iter = playerAddressMap.find(sourceAddr);
+	sockaddr_in sockAddr;
+	sockAddr.sin_addr = conNotif.ip;
+	sockAddr.sin_port = htons(conNotif.port);
+
+	auto iter = playerAddressMap.find(
+		SocketAddress{*reinterpret_cast<sockaddr*>(&sockAddr)});
+
 	if (iter != playerAddressMap.end())
 	{
 		players[conNotif.joiningID].hasPreviouslyConnnected = true;

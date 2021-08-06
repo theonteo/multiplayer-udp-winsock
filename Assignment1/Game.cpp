@@ -18,6 +18,8 @@ namespace
 	const float playerMoveSpeed = 5.0f;
 }
 
+NetworkManager* Game::network = nullptr;
+
 void Game::InitPlayer(size_t playerID)
 {
 	clientName = names[playerID];
@@ -32,23 +34,30 @@ void Game::Interaction()
 	{
 		//basic collision
 		if (i.second->enabled && i.first != clientName && i.first != "Level")
-			if (Physics::CircleToCircle
-			(player->translate, player->scale.x,
-				i.second->translate, i.second->scale.x))
+		{
+			bool isColliding =
+				Physics::CircleToCircle(
+					player->translate,
+					player->scale.x,
+					i.second->translate,
+					i.second->scale.x);
+
+			if (isColliding)
 			{
 				//the player must have higher score to eat
-
-				if (!player->score && i.second->score > 0)
-					continue;
-
-				if (player->score &&player->score <= i.second->score )
+				if (player->score <= i.second->score)
 					continue;
 
 				player->score++;
 				range = player->scale.x * 4.0f;
 
 				i.second->enabled = false;
+
+				//network->SendStepLockPacket(
+				//	static_cast<unsigned short>(
+				//		stoul(i.first.substr(i.first.find(' ')))));
 			}
+		}
 
 		if (i.second->score > 0)
 			i.second->scale = glm::vec3(1 + i.second->score * 0.135f);
@@ -94,12 +103,21 @@ void Game::MoveLighting()
 
 void Game::CheckState()
 {
-
 	//change game state
 	if (Window::getKeyTriggered(GLFW_KEY_P))
 	{
 		GameState::AppendState();
 	}
+}
+
+void Game::Init(NetworkManager* _network)
+{
+	network = _network;
+
+	GameObjectManager::GameObjectList.find(names[0])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[1])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[2])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[3])->second->score = 0;
 }
 
 void Game::Update()
@@ -120,7 +138,8 @@ void Game::Update()
 		cam->SetPosition(player->translate + append);
 		cam->SetRotation(glm::vec2{ -45 , -135 });
 	}
-	else {
+	else
+	{
 		cam->SetPosition(glm::vec3(30, 30, 30));
 		cam->SetRotation(glm::vec2{ -45 , -135 });
 	}

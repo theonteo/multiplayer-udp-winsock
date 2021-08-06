@@ -33,7 +33,7 @@ public:
 	Model* Model;
 	std::string shader;
 
-	int score{ 0 };
+	int score{ -1 };
 
 	bool enabled{ true };
 
