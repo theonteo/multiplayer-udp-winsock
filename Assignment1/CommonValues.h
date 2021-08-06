@@ -20,7 +20,7 @@ Technology is prohibited.
 #ifndef COMMONVALUES_H
 #define COMMONVALUES_H
 
-constexpr int START_PLAYER = 2;
+constexpr int START_PLAYER = 4;
 constexpr int MAX_PLAYER = 4;
 constexpr int MAX_PEER = MAX_PLAYER - 1;
 

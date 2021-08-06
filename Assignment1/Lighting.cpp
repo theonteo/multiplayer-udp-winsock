@@ -43,12 +43,12 @@ void Lighting::UpdatePointLight
 /******************************************************************************/
 void Lighting::init()
 {
-	Resource::directionalRotation = glm::vec3(225, -45, 0);
+	Resource::directionalRotation = glm::vec3(225.0f, -25.0f, 0.0f);
 	mainLight = DirectionalLight(
 		4096, 4096,
-		0.25f,0.25f, 0.25f,
+		0.2f,0.2f, 0.25f,
 		0.25f, 1.15f,
-		45.0f, 15.0f, 10.0f);
+		225.0f, -25.0f, 0.0f);
 
 	pointLights[0] =
 		PointLight(

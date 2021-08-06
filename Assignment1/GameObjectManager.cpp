@@ -59,7 +59,9 @@ void GameObjectManager::AddPlayer()
 		go->Model = "Models\\Sphere.obj";
 		go->shader = "Shaders\\shader";
 
-		go->colour =col[i] * 2.0f;
+		std::string name = "Player " + std::to_string(i + 1);
+
+		go->colour = col.find(name)->second * 2.0f;
 
 		GameObjectList.insert
 		(std::pair<std::string, std::unique_ptr<GameObject>>

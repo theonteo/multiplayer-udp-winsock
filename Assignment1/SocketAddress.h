@@ -34,7 +34,7 @@ struct SocketAddress
 {
 	std::string ip;
 	std::string port;
-    sockaddr sockAddr{};
+  sockaddr sockAddr{};
 	size_t addrLen = 0;
 	
 	SocketAddress() = default;

@@ -110,7 +110,7 @@ void Game::MoveLighting()
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
-		Lighting::UpdatePointLight(i, col[i], player->translate);
+		Lighting::UpdatePointLight(i, col.find(names[i])->second, player->translate);
 	}
 }
 

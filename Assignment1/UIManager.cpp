@@ -32,7 +32,7 @@ void UIManager::RenderLobby(const NetworkManager::PlayerArray& data)
 {
 	//title screen
 	TextRender::RenderTextNormal
-	(std::string{ "PLANET.IO" }, 0.5f, 0.6f, 0, 1.75f,
+	(std::string{ "PLANET.IO" }, 0.5f, 0.75f, 0, 1.75f,
 		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//connection text
@@ -64,16 +64,14 @@ void UIManager::RenderLobby(const NetworkManager::PlayerArray& data)
 		};
 
 		const float padding = 0.115f;
-
+		const auto& color = col.find(playerText)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			(0.5f + (index - 2) * padding)+0.05f, 0.25f, 0, 0, 0, 80, 80,
-			glm::vec4(col[index].x, col[index].y, col[index].z, 1));
+			glm::vec4(color.x, color.y, color.z, 1));
 
 		ImageRender::RenderQuad(!i.isConnected ? cross :tick, *imageShader->second,
 			(0.5f + (index - 2) * padding) + 0.05f, 0.25f, 0, 0, 0, 50, 50,
 			glm::vec4(0, 0, 0, 0.6f));
-
-	
 
 			//name
 		TextRender::RenderTextLight
@@ -96,9 +94,6 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 
 	int playerNum = -1;
 
-
-
-
 	for (const auto& i : data)
 	{
 		++playerNum;
@@ -115,10 +110,11 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		};
 
 		const float padding = 0.075f;
-
+		std::string playerName = "Player " + std::to_string(playerNum + 1);
+		const auto& color = col.find(playerName)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			0.5f + (index - 2) * padding, 0.95f, 0, 0, 0, 100, 100,
-			glm::vec4(col[playerNum].x, col[playerNum].y, col[playerNum].z, 1));
+			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
 		TextRender::RenderTextNormal
@@ -185,17 +181,19 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 		std::string playerScore
 		{ std::to_string(i.score) };
 
+
+		std::string playerName = "Player " + std::to_string(playerNum + 1);
 		std::string playerText
 		{
-			"Player " + std::to_string(playerNum + 1) +
+			playerName + 
 			(!i.isConnected ? " not joined" : "")
 		};
 
 		const float padding = 0.075f;
-
+		const auto& color = col.find(playerName)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			0.5f + (index - 2) * padding, 0.45f, 0, 0, 0, 100, 100,
-			glm::vec4(col[playerNum].x, col[playerNum].y, col[playerNum].z, 1));
+			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
 		TextRender::RenderTextNormal
