@@ -249,6 +249,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Lighting.h" />
+    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Physics.h" />

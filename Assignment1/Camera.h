@@ -69,6 +69,7 @@ public:
 	glm::mat4 calculateViewMatrix();
 	glm::mat4 calculateProjectionMatrix(GLfloat aspect);
 	glm::vec3 getCameraPosition();
+	glm::vec2 getCameraRotation();
 
 	void SetPosition(const glm::vec3& pos);
 	void SetRotation(const glm::vec2& rot);

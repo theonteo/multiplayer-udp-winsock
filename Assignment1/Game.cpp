@@ -21,6 +21,7 @@ Technology is prohibited.
 #include "GameState.h"
 #include "Resource.h"
 #include "Camera.h"
+#include "MathHelper.h"
 #include "GameObjectManager.h"
 #include "Window.h"
 #include "DeltaTime.h"
@@ -60,7 +61,7 @@ void Game::Interaction()
 				if (!player->score && i.second->score > 0)
 					continue;
 
-				if (player->score &&player->score <= i.second->score )
+				if (player->score && player->score <= i.second->score)
 					continue;
 
 				player->score++;
@@ -70,7 +71,9 @@ void Game::Interaction()
 			}
 
 		if (i.second->score > 0)
-			i.second->scale = glm::vec3(1 + i.second->score * 0.135f);
+			i.second->scale = MathHelper::Vec3Lerp
+			(i.second->scale, glm::vec3(1 + i.second->score * 0.135f),
+				DeltaTime::GetDeltaTime());
 	}
 }
 
@@ -107,7 +110,7 @@ void Game::MoveLighting()
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
-		Lighting::UpdatePointLight(i,col[i], player->translate);
+		Lighting::UpdatePointLight(i, col[i], player->translate);
 	}
 }
 
@@ -123,24 +126,35 @@ void Game::CheckState()
 
 void Game::Update()
 {
-	MoveLighting();
-
 	CheckState();
-	
+	float interpolant = DeltaTime::GetDeltaTime() * 2.0f;
 	const auto& cam = Resource::camera;
 	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
 	{
 		MoveObject();
 		Interaction();
+		MoveLighting();
 
 		const auto& player =
 			GameObjectManager::GameObjectList.find(clientName)->second;
-		glm::vec3 append{ range,range + 1.0f,range };
-		cam->SetPosition(player->translate + append);
-		cam->SetRotation(glm::vec2{ -45 , -135 });
+
+		glm::vec3 append{ 0,range ,range };
+
+
+		cam->SetPosition
+		(MathHelper::Vec3Lerp
+		(cam->getCameraPosition(), (player->translate + append), interpolant));
+
+		cam->SetRotation
+		(MathHelper::Vec2Lerp
+		(cam->getCameraRotation(), glm::vec2{ -45 , -90 }, interpolant));
 	}
 	else {
-		cam->SetPosition(glm::vec3(30, 30, 30));
-		cam->SetRotation(glm::vec2{ -45 , -135 });
+		cam->SetPosition
+		(MathHelper::Vec3Lerp
+		(cam->getCameraPosition(), glm::vec3(30, 30, 30), interpolant));
+		cam->SetRotation
+		(MathHelper::Vec2Lerp
+		(cam->getCameraRotation(), glm::vec2{ -45 , -135 }, interpolant));
 	}
 }

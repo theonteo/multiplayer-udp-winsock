@@ -113,6 +113,11 @@ glm::vec3 Camera::getCameraPosition()
 	return position;
 }
 
+glm::vec2 Camera::getCameraRotation()
+{
+	return { pitch,yaw };
+}
+
 void Camera::SetPosition(const glm::vec3& pos)
 {
 	position = pos;

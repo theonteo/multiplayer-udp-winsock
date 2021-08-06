@@ -37,6 +37,7 @@ namespace TextRender
 	GLuint VAO, VBO;
 
 	Font* font;
+	Font* fontLight;
 
 	/******************************************************************************/
 	/*!
@@ -45,7 +46,8 @@ namespace TextRender
 	/******************************************************************************/
 	void Init()
 	{
-		font = new Font("Fonts/font.ttf", 60);
+		font = new Font("Fonts/round.otf", 60);
+		fontLight = new Font("Fonts/roundLight.ttf", 30);
 
 		// Configure VAO/VBO for texture quads
 		Graphics::GenVertexArrayDynamic(VAO, VBO, NULL, sizeof(GLfloat) * 6 * 4);
@@ -81,8 +83,17 @@ namespace TextRender
 	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z, 
 		GLfloat scale, const glm::vec4& color)
 	{
-		RenderText(font, *Resource::Shader_List.find("Shaders\\shader_text")->second, text,
-			_x, _y, _z, 0, 0,
+		RenderText
+		(font, *Resource::Shader_List.find("Shaders\\shader_text")->second, 
+			text,	_x, _y, _z, 0, 0,
+			scale, color, 0, 9999);
+	}
+	void RenderTextLight
+	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z,
+		GLfloat scale, const glm::vec4& color)
+	{
+		RenderText(fontLight, *Resource::Shader_List.find("Shaders\\shader_text")->second,
+			text,_x, _y, _z, 0, 0,
 			scale, color, 0, 9999);
 	}
 	void RenderText(Font* _character, Shader& shader, const std::string& text,

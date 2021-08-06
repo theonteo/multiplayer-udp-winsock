@@ -61,6 +61,10 @@ namespace TextRender
 	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z,
 		GLfloat scale, const glm::vec4& color);
 
+	void RenderTextLight
+	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z,
+		GLfloat scale, const glm::vec4& color);
+
 	void Init();
 }
 

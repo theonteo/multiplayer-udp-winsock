@@ -44,6 +44,9 @@
     <Filter Include="Pipeline">
       <UniqueIdentifier>{ec876d30-b42e-4341-a2eb-f5fefbde4a55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{dd4e20e3-b021-41da-872d-a4521e4bc797}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -297,6 +300,9 @@
     </ClInclude>
     <ClInclude Include="SocketAddress.h">
       <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
