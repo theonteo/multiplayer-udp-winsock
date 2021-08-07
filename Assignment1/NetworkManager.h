@@ -44,6 +44,7 @@ public:
 
 private:
 	static constexpr size_t TIMEOUT = 1;
+	static constexpr size_t TIMEOUT_LOCKSTEP = 2000000;
 
 	static constexpr unsigned short INVALID_ID =
 		static_cast<unsigned short>(-1);
@@ -53,12 +54,21 @@ private:
 	std::unordered_map<SocketAddress, Player*> playerAddressMap;
 	SocketAddress localSocketAddr;
 	PlayerArray players;
+	int connectedPlayers = 0;
 	unsigned short localPlayerID = INVALID_ID;
 
 	// To wait for timeout
 	std::mutex timeoutMutex;
 	std::condition_variable timeoutCondition;
 	bool receivedConnectionReply = false;
+
+	// Lockstep
+	bool lockstepMode = false;
+	bool startedLockstep = false;
+	std::array<std::pair<bool, HashedDataPacket>, MAX_PLAYER> hashedData;
+	int hashedDataReceived = 0;
+	std::array<std::pair<bool, LockstepDataPacket>, MAX_PLAYER> lockstepData;
+	int lockstepDataReceived = 0;
 
 public:
 	NetworkManager();
@@ -72,8 +82,9 @@ public:
 	void Send();
 	void Receive();
 
-	void SendStepLockPacket(unsigned short collidingID);
-
+	void StartLockstep(unsigned short collidingID);
+	void SendHashedPacket();
+	void SendLockstepPacket();
 
 	void UnpackPacket(
 		char* buffer, const SocketAddress& sourceAddr);
@@ -91,5 +102,13 @@ public:
 
 	void ProcessDataPacket(
 		DataPacket& dataPacket, const SocketAddress& sourceAddr);
+
+	void ProcessInitiateLockstepPacket();
+
+	void ProcessLockstepDataPacket(
+		LockstepDataPacket& dataPacket, const SocketAddress& sourceAddr);
+
+	void ProcessHashedDataPacket(
+		HashedDataPacket& dataPacket, const SocketAddress& sourceAddr);
 };
 

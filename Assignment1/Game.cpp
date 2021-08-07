@@ -48,19 +48,28 @@ void Game::Interaction()
 				if (player->score <= i.second->score)
 					continue;
 
-				player->score++;
-				range = player->scale.x * 4.0f;
+				unsigned short collidingID =
+					static_cast<unsigned short>(
+						stoul(i.first.substr(i.first.find(' ') + 1)));
 
-				i.second->enabled = false;
+				if (i.first.find("Player") != std::string::npos)
+				{
+					collidingID = collidingID + 1000;
+				}
 
-				//network->SendStepLockPacket(
-				//	static_cast<unsigned short>(
-				//		stoul(i.first.substr(i.first.find(' ')))));
+				network->StartLockstep(collidingID);
+
+				break;
 			}
 		}
+	}
 
-		if (i.second->score > 0)
+	for (const auto& i : GameObjectManager::GameObjectList)
+	{
+		if (i.second->score != -1)
+		{
 			i.second->scale = glm::vec3(1 + i.second->score * 0.135f);
+		}
 	}
 }
 
@@ -134,6 +143,7 @@ void Game::Update()
 
 		const auto& player =
 			GameObjectManager::GameObjectList.find(clientName)->second;
+		range = player->scale.x * 4.0f;
 		glm::vec3 append{ range,range + 1.0f,range };
 		cam->SetPosition(player->translate + append);
 		cam->SetRotation(glm::vec2{ -45 , -135 });

@@ -124,3 +124,93 @@ void DataPacket::HtoN()
 	temp = htonf(position.z);
 	position.z = *reinterpret_cast<float*>(&temp);
 }
+
+InitiateLockstepPacket::InitiateLockstepPacket() :
+	Packet{ PacketType::INITIATE_LOCKSTEP }
+{
+	// Nothing to do here
+}
+
+void InitiateLockstepPacket::NtoH()
+{
+	// Nothing to do here
+}
+
+void InitiateLockstepPacket::HtoN()
+{
+	// Nothing to do here
+}
+
+std::mt19937_64 LockstepDataPacket::uniformRandGen{ std::random_device{}() };
+std::uniform_int_distribution<unsigned short> LockstepDataPacket::u_i_distribution
+{
+	0,
+	(std::numeric_limits<unsigned short>::max)()
+};
+
+LockstepDataPacket::LockstepDataPacket() :
+	Packet{ PacketType::LOCKSTEP_DATA },
+	key{ u_i_distribution(uniformRandGen) }
+{
+	// Nothing to do here
+}
+
+LockstepDataPacket& LockstepDataPacket::operator=(
+	const LockstepDataPacket& rhs)
+{
+	collidingID = rhs.collidingID;
+	key = rhs.key;
+
+	return *this;
+}
+
+void LockstepDataPacket::SetCollidingID(unsigned short _collidingID)
+{
+	collidingID = _collidingID;
+	key = u_i_distribution(uniformRandGen);
+}
+
+unsigned short LockstepDataPacket::GetCollidingID() const
+{
+	return collidingID;
+}
+
+unsigned short LockstepDataPacket::GetKey() const
+{
+	return key;
+}
+
+void LockstepDataPacket::NtoH()
+{
+	collidingID = ntohs(collidingID);
+	key = ntohs(key);
+}
+
+void LockstepDataPacket::HtoN()
+{
+	collidingID = htons(collidingID);
+	key = htons(key);
+}
+
+HashedDataPacket::HashedDataPacket() :
+	Packet{ PacketType::HASHED_DATA }
+{
+	// Nothing to do here
+}
+
+HashedDataPacket& HashedDataPacket::operator=(
+	const HashedDataPacket& rhs)
+{
+	hashedData = rhs.hashedData;
+	return *this;
+}
+
+void HashedDataPacket::NtoH()
+{
+	hashedData = ntohll(hashedData);
+}
+
+void HashedDataPacket::HtoN()
+{
+	hashedData = htonll(hashedData);
+}
