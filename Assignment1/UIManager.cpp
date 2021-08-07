@@ -167,6 +167,18 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	}
 	else {
 
+		int score = data[0].score;
+
+		for (size_t i = 1; i < data.size(); ++i)
+		{
+			// Check if player connected
+			if (data[i].isConnected)
+			{
+				// Check if that player's score is higher than current
+				score = data[i].score > score ? data[i].score : score;
+				winnerIndex = data[i].score > data[winnerIndex].score ? i : winnerIndex;
+			}
+		}
 		const auto& winner =
 			GameObjectManager::GameObjectList.find(names[winnerIndex])->second;
 
