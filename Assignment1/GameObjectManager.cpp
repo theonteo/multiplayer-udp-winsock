@@ -76,15 +76,17 @@ void GameObjectManager::AddScatterObjects()
 
 	
 
-		float x = static_cast<float>(((rand() % 100) - 50)) *1.25f;
+		float x = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 		float z = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 
 		std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
 
-		glm::vec3 pos{ x, 0.0f, z };
-		if (glm::length(pos) < 5.0f)
+		if (x * x + z * z <= 25.0f)
+		{
+			--i;
 			continue;
-
+		}
+		
 		//set initial object
 		go->translate = pos;
 		go->rotation = glm::vec3(0, 0, 0);

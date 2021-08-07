@@ -257,109 +257,137 @@ void NetworkManager::Send()
 		}
 	}
 
-	if (lockstepMode)
 	{
-		if (!startedLockstep)
+		std::lock_guard<std::mutex> lock(lockstepMutex);
+		if (lockstepMode)
 		{
-			++hashedDataReceived;
-			++lockstepDataReceived;
-		}
-
-		// Sending of hashed data
-		SendHashedPacket();
-	
-		// Wait for everyone to reply / timeout
-		{
-			std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
-
-			timeoutCondition.wait_for(
-				timeoutLock,
-				std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
-				[&]() { return hashedDataReceived == connectedPlayers; });
-		}
-
-		// Send back the actual action to everyoone
-		SendLockstepPacket();
-	
-		// Wait for everyone's actual action
-		{
-			std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
-
-			timeoutCondition.wait_for(
-				timeoutLock,
-				std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
-				[&]() { return lockstepDataReceived == connectedPlayers; });
-		}
-
-		// Process all of the data
-		for (size_t i = 0; i < MAX_PLAYER; ++i)
-		{
-			if (!hashedData[i].first || !lockstepData[i].first)
+			if (!startedLockstep)
 			{
-				continue;
+				++hashedDataReceived;
+				++lockstepDataReceived;
 			}
 
-			size_t tempHashedData =
-				std::hash<LockstepDataPacket>()(lockstepData[i].second);
+			// Sending of hashed data
+			SendHashedPacket();
 
-			if (tempHashedData != hashedData[i].second.hashedData)
+			// Wait for everyone to reply / timeout
 			{
-				continue;
+				std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
+
+				timeoutCondition.wait_for(
+					timeoutLock,
+					std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
+					[&](){ return hashedDataReceived == connectedPlayers; });
 			}
 
-			unsigned short collidingID =
-				lockstepData[i].second.GetCollidingID();
+			// Send back the actual action to everyoone
+			SendLockstepPacket();
 
-			if (collidingID == INVALID_ID)
+			// Wait for everyone's actual action
 			{
-				continue;
+				std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
+
+				timeoutCondition.wait_for(
+					timeoutLock,
+					std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
+					[&](){ return lockstepDataReceived == connectedPlayers; });
 			}
 
-			if (collidingID < 1000)
+			// Process all of the data
+			for (size_t i = 0; i < MAX_PLAYER; ++i)
 			{
-				++players[i].score;
+				if (!hashedData[i].first || !lockstepData[i].first)
+				{
+					continue;
+				}
 
-				auto& otherGO =
+				size_t tempHashedData =
+					std::hash<LockstepDataPacket>()(lockstepData[i].second);
+
+				if (tempHashedData != hashedData[i].second.hashedData)
+				{
+					continue;
+				}
+
+				unsigned short collidingID =
+					lockstepData[i].second.GetCollidingID();
+
+				if (collidingID == INVALID_ID)
+				{
+					continue;
+				}
+
+				if (collidingID < 1000)
+				{
+					++players[i].score;
+
+					auto& otherGO =
+						GameObjectManager::GameObjectList.find(
+							"item " + std::to_string(collidingID))->second;
+
+					otherGO->enabled = false;
+				}
+				else
+				{
+					players[i].score += 3;
+					collidingID -= 1000;
+
+					auto& otherGO =
+						GameObjectManager::GameObjectList.find(
+							"Player " + std::to_string(collidingID))->second;
+
+					otherGO->enabled = false;
+
+					int deadCount = 0;
+
+					deadCount +=
+						!GameObjectManager::GameObjectList.find(
+							"Player 1")->second->enabled;
+
+					deadCount +=
+						!GameObjectManager::GameObjectList.find(
+							"Player 2")->second->enabled;
+
+					deadCount +=
+						!GameObjectManager::GameObjectList.find(
+							"Player 3")->second->enabled;
+
+					deadCount +=
+						!GameObjectManager::GameObjectList.find(
+							"Player 4")->second->enabled;
+
+					//one winner left
+					if (deadCount >= MAX_PEER)
+					{
+						GameState::SetState(GameState::State::STATE_RESULTS);
+					}
+				}
+
+				auto& playerGO =
 					GameObjectManager::GameObjectList.find(
-						"item " + std::to_string(collidingID))->second;
+						"Player " + std::to_string(i + 1))->second;
 
-				otherGO->enabled = false;
+				playerGO->score = players[i].score;
 			}
-			else
+
+			// Reset
+			for (size_t i = 0; i < MAX_PLAYER; ++i)
 			{
-				players[i].score += 3;
-				collidingID -= 1000;
-
-				auto& otherGO =
-					GameObjectManager::GameObjectList.find(
-						"Player " + std::to_string(collidingID))->second;
-
-				otherGO->enabled = false;
+				hashedData[i].first = false;
+				lockstepData[i].first = false;
 			}
+			lockstepData[localPlayerID].second.SetCollidingID(INVALID_ID);
 
-			auto& playerGO =
-				GameObjectManager::GameObjectList.find(
-					"Player " + std::to_string(i + 1))->second;
+			hashedData[localPlayerID].second.hashedData =
+				std::hash<LockstepDataPacket>()(
+					lockstepData[localPlayerID].second);
 
-			playerGO->score = players[i].score;
+			hashedDataReceived = 0;
+			lockstepDataReceived = 0;
+
+			--lockstepMode;
+			startedLockstep = false;
 		}
-
-		// Reset
-		for (size_t i = 0; i < MAX_PLAYER; ++i)
-		{
-			hashedData[i].first = false;
-			lockstepData[i].first = false;
-		}
-		lockstepData[localPlayerID].second.SetCollidingID(INVALID_ID);
-
-		hashedData[localPlayerID].second.hashedData =
-			std::hash<LockstepDataPacket>()(lockstepData[localPlayerID].second);
-		
-		hashedDataReceived = 0;
-		lockstepDataReceived = 0;
-		
-		lockstepMode = false;
-		startedLockstep = false;
 	}
 
 	//const auto& playerName = NetworkManager::GetPlayerData();
@@ -444,14 +472,17 @@ void NetworkManager::Receive()
 void NetworkManager::StartLockstep(unsigned short collidingID)
 {
 	lockstepMode = true;
-	startedLockstep = true;
-
+	{
+		std::lock_guard<std::mutex> lock(lockstepMutex);
+		startedLockstep = true;
+	}
 	lockstepData[localPlayerID].first = true;
 	lockstepData[localPlayerID].second.SetCollidingID(collidingID);
 
 	hashedData[localPlayerID].first = true;
 	hashedData[localPlayerID].second.hashedData =
-		std::hash<LockstepDataPacket>()(lockstepData[localPlayerID].second);
+		std::hash<LockstepDataPacket>()(
+			lockstepData[localPlayerID].second);
 
 	++hashedDataReceived;
 	++lockstepDataReceived;
@@ -890,7 +921,11 @@ void NetworkManager::ProcessDataPacket(
 
 void NetworkManager::ProcessInitiateLockstepPacket()
 {
-	lockstepMode = true;
+	std::lock_guard<std::mutex> lock(lockstepMutex);
+	if (!startedLockstep)
+	{
+		++lockstepMode;
+	}
 }
 
 void NetworkManager::ProcessLockstepDataPacket(
@@ -901,8 +936,6 @@ void NetworkManager::ProcessLockstepDataPacket(
 	auto iter = playerAddressMap.find(sourceAddr);
 	if (iter != playerAddressMap.end())
 	{
-		lockstepMode = true;
-
 		size_t senderIndex = iter->second - &players[0];
 
 		lockstepData[senderIndex].first = true;
@@ -925,8 +958,6 @@ void NetworkManager::ProcessHashedDataPacket(
 	auto iter = playerAddressMap.find(sourceAddr);
 	if (iter != playerAddressMap.end())
 	{
-		lockstepMode = true;
-
 		size_t senderIndex = iter->second - &players[0];
 
 		hashedData[senderIndex].first = true;
