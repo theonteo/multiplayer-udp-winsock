@@ -43,8 +43,8 @@ public:
 	using PlayerArray = std::array<Player, MAX_PLAYER>;
 
 private:
-	static constexpr size_t TIMEOUT = 1;
-	static constexpr size_t TIMEOUT_LOCKSTEP = 2000000;
+	static constexpr size_t TIMEOUT = 1;				// in seconds
+	static constexpr size_t TIMEOUT_LOCKSTEP = 100;		// in milliseconds
 
 	static constexpr unsigned short INVALID_ID =
 		static_cast<unsigned short>(-1);
