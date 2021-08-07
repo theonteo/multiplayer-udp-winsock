@@ -35,7 +35,7 @@ public:
 	static unsigned int pointLightCount;
 	static unsigned int spotLightCount;
 
-	static void UpdatePointLight(int index, const glm::vec3& col, const glm::vec3& pos);
+	static void UpdatePointLight(int index, const glm::vec3& col, const glm::vec3& pos,float intensity);
 	static void init();
 };
 

@@ -126,7 +126,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor)
 	vec3 R = reflect(I, normalize(Normal));
 	
 	//cubemap value
-	vec4 cubemapcolor = vec4(texture(theTextureCubeMap, R).rgb, 1.0) * 0.05;
+	vec4 cubemapcolor = vec4(texture(theTextureCubeMap, R).rgb, 1.0) * 0.1;
 
 	//ambient value
 	vec4 ambientColour = vec4(diffuseColour,1.0f) * vec4(light.colour, 1.0f) * light.ambientIntensity;

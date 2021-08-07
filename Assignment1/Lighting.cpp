@@ -30,8 +30,9 @@ unsigned int Lighting::pointLightCount = 0;
 unsigned int Lighting::spotLightCount = 0;
 
 void Lighting::UpdatePointLight
-(int index,const glm::vec3& col, const glm::vec3& pos)
+(int index,const glm::vec3& col, const glm::vec3& pos, float intensity)
 {
+	pointLights[index].SetIntensity(intensity);
 	pointLights[index].SetColour(col);
 	pointLights[index].SetPosition(pos);
 }
@@ -47,15 +48,15 @@ void Lighting::init()
 	mainLight = DirectionalLight(
 		4096, 4096,
 		0.2f,0.2f, 0.25f,
-		0.25f, 1.15f,
+		0.f, 1.15f,
 		225.0f, -25.0f, 0.0f);
 
 	pointLights[0] =
 		PointLight(
 			1024, 1024,
 			1.0f, 1.0f, 1.0f,
-			0.1f, 0.4f,
-			-5.2f, 0.0f, 0.0f,
+			0.1f, 0.0f,
+			-5.2f, -10.0f, 0.0f,
 			0.3f, 0.2f,0.1f);
 	pointLightCount++;
 
@@ -63,8 +64,8 @@ void Lighting::init()
 		PointLight(
 			1024, 1024,
 			1.0f, 1.0f, 1.0f,
-			0.1f, 0.9f,
-			3.1f, 1.0f, -2.1f,
+			0.1f, 0.0f,
+			3.1f, -10.0f, -2.1f,
 			0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 
@@ -72,8 +73,8 @@ void Lighting::init()
 		PointLight(
 			1024, 1024,
 			1.0f,1.0f, 1.0f,
-			0.1f, 1.0f,
-			3.1f, 1.0f, -2.1f,
+			0.1f, 0.0f,
+			3.1f, -10.0f, -2.1f,
 			0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 
@@ -81,8 +82,8 @@ void Lighting::init()
 		PointLight(
 			1024, 1024,
 			1.0f, 1.0f, 1.0f,
-			0.1f, 1.0f,
-			3.1f, 1.0f, -2.1f,
+			0.1f, 0.0f,
+			3.1f, -10.0f, -2.1f,
 			0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 

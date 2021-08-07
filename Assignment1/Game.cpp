@@ -169,7 +169,9 @@ void Game::MoveLighting()
 		const auto& colour = 
 			player->enabled ? col.find(names[i])->second : glm::vec3(-0.2f, -0.2f, -0.2f);
 
-		Lighting::UpdatePointLight(i, colour, player->translate);
+		const auto pos = player->translate + glm::vec3(0, player->scale.x/2, 0);
+
+		Lighting::UpdatePointLight(i, colour, pos,player->scale.x* player->scale.x);
 	}
 }
 

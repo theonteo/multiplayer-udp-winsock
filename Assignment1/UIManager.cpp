@@ -121,22 +121,34 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 
 		const float padding = 0.075f;
 		std::string playerName = "Player " + std::to_string(playerNum + 1);
+
+		const auto& go = GameObjectManager::GameObjectList.find(playerName)->second;
+
 		const auto& color = col.find(playerName)->second;
+
+		const int size = (playerName == clientName) ? 120 : 100;
+		const float flagAlpha = go->enabled ? 1.0f : 0.5f;
+		const auto colText = go->enabled ? glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) :
+			glm::vec4(1.0f, 0.7f, 0.7f, 0.9f);
+
+		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0, 0, 100, 100,
-			glm::vec4(color.x, color.y, color.z, 1));
+			(0.5f + (index - 2) * padding) + 0.05f,
+			0.95f	-((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+			glm::vec4(color.x, color.y, color.z, flagAlpha));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f , 0, 0.65f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.875f, 0, 0.6f,
-			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			(0.5f + (index - 2) * padding) + 0.05f, 0.875f - 
+		((playerName == clientName) ? 0.0175f : 0.0f), 0, 0.6f,
+			colText);
 
 		index++;
 	}
@@ -147,15 +159,19 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		GameObjectManager::GameObjectList.find(clientName)->second;
 
 	if (!player->enabled)
+	{
 		TextRender::RenderTextNormal
 		(std::string{ "YOU ARE EATEN!" }, 0.5f, 0.75f, 0, 1.75f,
 			glm::vec4(1.0f, 0.75f, 0.75f, 0.7f));
+	}
+	else {
 
-	//instructions
-	TextRender::RenderTextLight
-	(std::string{ "Eliminate all opponents to win the game" },
-		0.5f, 0.15f, 0, 0.65f,
-		glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		//instructions
+		TextRender::RenderTextLight
+		(std::string{ "Eliminate all opponents to win the game" },
+			0.5f, 0.15f, 0, 0.65f,
+			glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+	}
 }
 
 void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
@@ -211,6 +227,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 
 		const float padding = 0.075f;
 		const auto& color = col.find(playerName)->second;
+
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			0.5f + (index - 2) * padding, 0.45f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));

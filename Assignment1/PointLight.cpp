@@ -73,6 +73,11 @@ void PointLight::UseLight(GLint ambientIntensityLocation,
 
 }
 
+void PointLight::SetIntensity(float intensity)
+{
+	diffuseIntensity = intensity;
+}
+
 void PointLight::SetPosition(const glm::vec3& pos)
 {
 	position = pos;

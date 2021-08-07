@@ -71,18 +71,18 @@ void GameObjectManager::AddPlayer()
 
 void GameObjectManager::AddScatterObjects()
 {
-	for (size_t i = 0; i < 50; ++i)
+	for (size_t i = 0; i < 250; ++i)
 	{
 
 		std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
 
-		float x = static_cast<float>(((rand() % 100) - 50)) * 0.5f;
-		float z = static_cast<float>(((rand() % 100) - 50)) * 0.5f;
+		float x = static_cast<float>(((rand() % 100) - 50)) *1.25f;
+		float z = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 
 		//set initial object
 		go->translate = glm::vec3(x, 0.0f, z);
 		go->rotation = glm::vec3(0, 0, 0);
-		go->scale = glm::vec3(0.25f, 0.25f, 0.25f);
+		go->scale = glm::vec3(0.3f, 0.3f, 0.3f);
 		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);
 
 		go->GameObjectName = "point";
@@ -105,8 +105,8 @@ void GameObjectManager::AddLevel()
 	//set initial object
 	go->translate = glm::vec3(0.0f, -1.0f, 0.0f);
 	go->rotation = glm::vec3(0, 0, 0);
-	go->scale = glm::vec3(100, 1, 100);
-	go->colour = glm::vec3(0.1f, 0.1f, 0.1f);
+	go->scale = glm::vec3(5000, 1, 5000);
+	go->colour = glm::vec3(0.05f, 0.05f, 0.05f);
 
 
 	go->GameObjectName = "Main Object";
