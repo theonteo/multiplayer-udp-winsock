@@ -448,11 +448,6 @@ void NetworkManager::StartLockstep(unsigned short collidingID)
 		std::hash<LockstepDataPacket>()(lockstepData[localPlayerID].second);
 
 	++hashedDataReceived;
-	if (hashedDataReceived == connectedPlayers)
-	{
-		timeoutCondition.notify_one();
-	}
-
 	++lockstepDataReceived;
 
 
