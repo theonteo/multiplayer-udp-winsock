@@ -128,8 +128,8 @@ void Engine::Loop()
 	while (!mainWindow.getShouldClose())
 	{
 		//calculate delta time
-
 		DeltaTime::CalculateDeltaTime();
+
 		//Handle User Input
 		glfwPollEvents();
 

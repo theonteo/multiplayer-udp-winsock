@@ -146,7 +146,6 @@ void Resource::FileLoad_Textures()
 	// load all textures in files
 	for (auto& entry : std::filesystem::directory_iterator(pathextension))
 	{
-
 		// get path string
 		pathString = PathReformat(entry.path().string(), "Textures");
 

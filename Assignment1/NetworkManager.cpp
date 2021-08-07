@@ -675,5 +675,6 @@ void NetworkManager::ProcessDataPacket(
 		const auto& player = goIter->second;
 		
 		player->translate = dataPacket.position;
+		player->direction = dataPacket.moveInfo;
 	}
 }

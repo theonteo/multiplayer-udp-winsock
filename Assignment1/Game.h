@@ -23,10 +23,10 @@ Technology is prohibited.
 #include <vector>
 class Game
 {
-
 	static void Interaction();
 	static void MoveObject();
 	static void MoveLighting();
+	static void DeadReckoning(const float& delay = 0.05f);
 
 public:
 	static void CheckState();

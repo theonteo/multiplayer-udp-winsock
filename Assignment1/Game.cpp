@@ -36,6 +36,29 @@ namespace
 	std::string clientName;
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
+
+	enum class DIRECTION : unsigned char
+	{
+		UP = 1,
+		DOWN = 2,
+		LEFT = 4,
+		RIGHT = 8,
+	};
+
+	void ClearMovementFlag(unsigned char& flag)
+	{
+		flag ^= flag;
+	}
+
+	void UpdateMovementFlag(unsigned char& flag, const DIRECTION& direction)
+	{
+		flag |= static_cast<unsigned char>(direction);
+	}
+
+	bool CheckMovementFlag(const unsigned char& flag, const DIRECTION& direction)
+	{
+		return (flag & static_cast<unsigned char>(direction)) != 0;
+	}
 }
 
 void Game::InitPlayer(size_t playerID)
@@ -82,24 +105,30 @@ void Game::MoveObject()
 	const auto& player =
 		GameObjectManager::GameObjectList.find(clientName)->second;
 
+	ClearMovementFlag(player->direction);
+
 	//Player control
 	if (Window::getKey(GLFW_KEY_A))
 	{
+		UpdateMovementFlag(player->direction, DIRECTION::LEFT);
 		player->translate.x -=
 			playerMoveSpeed * DeltaTime::GetDeltaTime();
 	}
 	if (Window::getKey(GLFW_KEY_D))
 	{
+		UpdateMovementFlag(player->direction, DIRECTION::RIGHT);
 		player->translate.x +=
 			playerMoveSpeed * DeltaTime::GetDeltaTime();
 	}
 	if (Window::getKey(GLFW_KEY_W))
 	{
+		UpdateMovementFlag(player->direction, DIRECTION::UP);
 		player->translate.z -=
 			playerMoveSpeed * DeltaTime::GetDeltaTime();
 	}
 	if (Window::getKey(GLFW_KEY_S))
 	{
+		UpdateMovementFlag(player->direction, DIRECTION::DOWN);
 		player->translate.z +=
 			playerMoveSpeed * DeltaTime::GetDeltaTime();
 	}
@@ -116,11 +145,57 @@ void Game::MoveLighting()
 
 void Game::CheckState()
 {
-
 	//change game state
 	if (Window::getKeyTriggered(GLFW_KEY_P))
 	{
 		GameState::AppendState();
+	}
+}
+
+//Delay is in seconds
+void Game::DeadReckoning(const float& delay)
+{
+	//float interpolant = DeltaTime::GetDeltaTime() * 2.0f;
+	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
+	{
+		const float time = delay + DeltaTime::GetDeltaTime();
+		for (auto& name : names)
+		{
+			//If name is the client. don't dead reckon.
+			if (name == clientName)
+				continue;
+
+			const auto& itr =
+				GameObjectManager::GameObjectList.find(name);
+
+			//Safety, If the player is not in the object list. 
+			if (itr == GameObjectManager::GameObjectList.end())
+				continue;
+
+			auto& player = itr->second;
+
+			const auto& flag = player->direction;
+			if (CheckMovementFlag(flag, DIRECTION::LEFT))
+			{
+				player->translate.x -=
+					playerMoveSpeed * time;
+			}
+			if (CheckMovementFlag(flag, DIRECTION::RIGHT))
+			{
+				player->translate.x +=
+					playerMoveSpeed * time;
+			}
+			if (CheckMovementFlag(flag, DIRECTION::UP))
+			{
+				player->translate.z -=
+					playerMoveSpeed * time;
+			}
+			if (CheckMovementFlag(flag, DIRECTION::DOWN))
+			{
+				player->translate.z +=
+					playerMoveSpeed * time;
+			}
+		}
 	}
 }
 
@@ -132,6 +207,7 @@ void Game::Update()
 	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
 	{
 		MoveObject();
+		DeadReckoning(0.0f);
 		Interaction();
 		MoveLighting();
 

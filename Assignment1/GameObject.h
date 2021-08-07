@@ -39,6 +39,8 @@ public:
 
 	bool enabled{ true };
 
+	unsigned char direction; // Bool flag
+
 	//store transforms
 	glm::vec3 translate = glm::vec3(0, 0, 0);
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
@@ -46,6 +48,5 @@ public:
 	glm::vec3 colour = glm::vec3(1, 1, 1);
 
 	std::string GameObjectName;
-
 };
 #endif
