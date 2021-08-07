@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Lighting.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -41,12 +43,12 @@ void Lighting::UpdatePointLight
 /******************************************************************************/
 void Lighting::init()
 {
-	Resource::directionalRotation = glm::vec3(225, -45, 0);
+	Resource::directionalRotation = glm::vec3(225.0f, -25.0f, 0.0f);
 	mainLight = DirectionalLight(
 		4096, 4096,
-		0.25f,0.25f, 0.25f,
+		0.2f,0.2f, 0.25f,
 		0.25f, 1.15f,
-		45.0f, 15.0f, 10.0f);
+		225.0f, -25.0f, 0.0f);
 
 	pointLights[0] =
 		PointLight(

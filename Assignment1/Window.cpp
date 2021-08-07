@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Window.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -282,6 +284,7 @@ void Window::mouse_button_callback(GLFWwindow* window, int button, int action, i
 /******************************************************************************/
 void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
 {
+	(void)mode; (void)code;
 	Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
 	if (key >= 0 && key < 1024)

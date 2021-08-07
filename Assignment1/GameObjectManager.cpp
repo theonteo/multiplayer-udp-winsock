@@ -1,3 +1,22 @@
+/*****************************************************************************/
+/*!
+\file GameObjectManager.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
+\par Course: cs260
+\par Assignment 4
+\date 1/8/21
+
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/*****************************************************************************/
+
 #include "GameObjectManager.h"
 #include "Resource.h"
 #include <Colors.h>
@@ -37,10 +56,12 @@ void GameObjectManager::AddPlayer()
 		go->scale = glm::vec3(1, 1, 1);
 
 		go->GameObjectName = "Main Object";
-		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
+		go->Model = "Models\\Sphere.obj";
 		go->shader = "Shaders\\shader";
 
-		go->colour =col[i] * 2.0f;
+		std::string name = "Player " + std::to_string(i + 1);
+
+		go->colour = col.find(name)->second * 2.0f;
 
 		GameObjectList.insert
 		(std::pair<std::string, std::unique_ptr<GameObject>>
@@ -65,7 +86,7 @@ void GameObjectManager::AddScatterObjects()
 		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);
 
 		go->GameObjectName = "point";
-		go->Model = (*Resource::Model_List.find("Models\\Sphere.obj")).second;
+		go->Model = "Models\\Sphere.obj";
 		go->shader = "Shaders\\shader";
 
 		GameObjectList.insert
@@ -89,7 +110,7 @@ void GameObjectManager::AddLevel()
 
 
 	go->GameObjectName = "Main Object";
-	go->Model = (*Resource::Model_List.find("Models\\cube.obj")).second;
+	go->Model = "Models\\cube.obj";
 	go->shader = "Shaders\\shader";
 
 	GameObjectList.insert

@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file NetworkManager.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -880,6 +882,7 @@ void NetworkManager::ProcessDataPacket(
 		const auto& player = goIter->second;
 		
 		player->translate = dataPacket.position;
+		player->direction = dataPacket.moveInfo;
 	}
 }
 

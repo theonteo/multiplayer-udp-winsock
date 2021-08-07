@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file PointLight.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -43,6 +45,7 @@ PointLight::PointLight
 	GLfloat con, GLfloat lin, GLfloat exp):
 	Light(1024,1024,red,green,blue,aIntensity,dIntensity)
 {
+	(void)shadowWidth; (void)shadowHeight;
 	position = glm::vec3(xPos, yPos, zPos);
 	constant = con;
 	linear = lin;

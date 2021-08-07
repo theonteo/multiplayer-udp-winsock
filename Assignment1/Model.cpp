@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Model.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -130,7 +132,6 @@ void Model::LoadAssetModel(const std::string& model_name)
 		{
 			std::string t;
 			int slash = 0;
-			bool indexType = false;
 			//form triangle
 			for (auto& i : fullLine)
 			{
@@ -319,9 +320,9 @@ glm::vec3 Model::generateNormals(int index)
 bool Model::FaceContainVertex(int face, int vertex) const
 {
 
-	if (allIndices[face * 3] == vertex ||
-		allIndices[face * 3 + 1] == vertex ||
-		allIndices[face * 3 + 2] == vertex)
+	if (allIndices[face * 3] ==(unsigned int) vertex ||
+		allIndices[face * 3 + 1] == (unsigned int)vertex ||
+		allIndices[face * 3 + 2] == (unsigned int)vertex)
 		return true;
 
 	return false;

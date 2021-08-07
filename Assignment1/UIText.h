@@ -1,3 +1,22 @@
+/*****************************************************************************/
+/*!
+\file UIText.h
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
+\par Course: cs260
+\par Assignment 4
+\date 1/8/21
+
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/*****************************************************************************/
+
 #pragma once
 
 #include "ft2build.h"
@@ -39,6 +58,10 @@ namespace TextRender
 		GLfloat scale, const glm::vec4& color, int start, int end);
 
 	void RenderTextNormal
+	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z,
+		GLfloat scale, const glm::vec4& color);
+
+	void RenderTextLight
 	(const std::string& text, GLfloat _x, GLfloat _y, GLfloat _z,
 		GLfloat scale, const glm::vec4& color);
 

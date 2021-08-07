@@ -1,14 +1,21 @@
-// ============================================================================
-// \file       DeltaTime.h
-// \brief      Declares the collection of delta-time related functions.
-// 
-// \author     Theon Teo Zheng Yong
-// \author     Kevin Hartono
-// 
-// \copyright Copyright (c) 2020 DigiPen Institute of Technology. Reproduction
-// or disclosure of this file or its contents without the prior
-// written consent of DigiPen Institute of Technology is prohibited.
-// ============================================================================
+/*****************************************************************************/
+/*!
+\file DeltaTime.h
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
+\par Course: cs260
+\par Assignment 4
+\date 1/8/21
+
+Copyright (C) 2021 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/*****************************************************************************/
 
 #pragma once
 

@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Render.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -95,7 +97,7 @@ void Render::RenderShadow()
 		uniformModel = shader->GetModelLocation();
 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		go.second->Model->RenderModel();
+		Resource::Model_List.find(go.second->Model)->second->RenderModel();
 	}
 }
 
@@ -144,7 +146,7 @@ void Render::RenderAll()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		//render model
-		go->Model->RenderModel();
+		Resource::Model_List.find(go->Model)->second->RenderModel();
 	}
 }
 /******************************************************************************/
@@ -153,7 +155,7 @@ void Render::RenderAll()
 */
 /******************************************************************************/
 void Render::DirectionalShadowPass
-(DirectionalLight* light, glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
+(DirectionalLight* light)
 {
 	const std::unique_ptr<Shader>& shader =
 		Resource::Shader_List.find(directionalShadowShader)->second;
@@ -182,7 +184,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	const std::unique_ptr<GameObject>& go = 
 		GameObjectManager::GameObjectList.begin()->second;
 
-	DirectionalShadowPass(&Lighting::mainLight, viewMatrix, projectionMatrix);
+	DirectionalShadowPass(&Lighting::mainLight);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, postprocess.GetFrameBuffer());
 	glEnable(GL_DEPTH_TEST);
@@ -261,7 +263,7 @@ void Render::RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-		go->Model->RenderNormals();
+		Resource::Model_List.find(go->Model)->second->RenderNormals();
 	}
 
 	Lighting::mainLight.SetLightRotation(Resource::directionalRotation);

@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file 
-\author 
-\par email: 
-\par DigiPen login: 
+\file Interface.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date 
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -26,6 +28,16 @@ Technology is prohibited.
 #include "Material.h"
 #include "GameObject.h"
 #include "GameObjectManager.h"
+
+bool Interface::GetShowUI() const
+{
+	return showUI;
+}
+
+void Interface::ToggleShowUI()
+{
+	showUI = !showUI;
+}
 
 /******************************************************************************/
 /*!
@@ -124,7 +136,7 @@ void Interface::ShowMainUI()
 		ImGui::SetNextWindowViewport(viewport->ID);
 		ImGui::SetNextWindowBgAlpha(0.0f);
 
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking ;
+		window_flags |= ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking ;
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	}
@@ -217,29 +229,30 @@ void Interface::ShowMainUI()
 			std::string intensity = "##intensity" + i.first;
 			std::string aintensity = "##aintensity" + i.first;
 			ImGui::Columns(3, NULL, false);
-			ImGui::DragFloat(x.c_str(), &static_cast<PointLight*>(i.second)->position.x, 0.1f);
+			PointLight* pl = static_cast<PointLight*>(&*i.second);
+			ImGui::DragFloat(x.c_str(), &pl->position.x, 0.1f);
 			ImGui::NextColumn();
-			ImGui::DragFloat(y.c_str(), &static_cast<PointLight*>(i.second)->position.y, 0.1f);
+			ImGui::DragFloat(y.c_str(), &pl->position.y, 0.1f);
 			ImGui::NextColumn();
-			ImGui::DragFloat(z.c_str(), &static_cast<PointLight*>(i.second)->position.z, 0.1f);
+			ImGui::DragFloat(z.c_str(), &pl->position.z, 0.1f);
 			ImGui::Columns(1);
 			ImGui::Text("Colour");
 			ImGui::Columns(3, NULL, false);
-			ImGui::DragFloat(x_col.c_str(), &static_cast<PointLight*>(i.second)->colour.x, 0.1f);
+			ImGui::DragFloat(x_col.c_str(), &pl->colour.x, 0.1f);
 			ImGui::NextColumn();
-			ImGui::DragFloat(y_col.c_str(), &static_cast<PointLight*>(i.second)->colour.y, 0.1f);
+			ImGui::DragFloat(y_col.c_str(), &pl->colour.y, 0.1f);
 			ImGui::NextColumn();
-			ImGui::DragFloat(z_col.c_str(), &static_cast<PointLight*>(i.second)->colour.z, 0.1f);
+			ImGui::DragFloat(z_col.c_str(), &pl->colour.z, 0.1f);
 			ImGui::Columns(1);
 
 			ImGui::Text("Light Intensity");
 
 			ImGui::Columns(3, NULL, false);
-			ImGui::DragFloat(intensity.c_str(), &static_cast<PointLight*>(i.second)->diffuseIntensity, 0.1f);
+			ImGui::DragFloat(intensity.c_str(), &pl->diffuseIntensity, 0.1f);
 			ImGui::Columns(1);
 			ImGui::Text("Ambient Intensity");
 			ImGui::Columns(3, NULL, false);
-			ImGui::DragFloat(aintensity.c_str(), &static_cast<PointLight*>(i.second)->ambientIntensity, 0.1f);
+			ImGui::DragFloat(aintensity.c_str(), &pl->ambientIntensity, 0.1f);
 			ImGui::Columns(1);
 			ImGui::TreePop();
 		}

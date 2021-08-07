@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Engine.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -14,6 +16,7 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /*****************************************************************************/
+
 #include "Engine.h"
 
 #include <imgui.h>
@@ -29,7 +32,6 @@ Technology is prohibited.
 #include <Player.h>
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <cmath>
 #include <vector>
@@ -60,16 +62,7 @@ Technology is prohibited.
 #include <imgui.h>
 #include <Lighting.h>
 #include "Exceptions.h"
-
-namespace
-{
-	Interface interface_game;
-	Resource main_editor;
-	Window mainWindow;
-	Camera camera;
-	Lighting lighting;
-	UIManager ui;
-}
+#include <GLFW/glfw3.h>
 
 void Engine::Init(char** argv)
 {
@@ -100,7 +93,7 @@ void Engine::EngineLoop()
 	//set up imgui
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
+	//ImFont* pFont = io.Fonts->AddFontFromFileTTF("Fonts/font.ttf", 17.5f);
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	ImGui::StyleColorsDark();
@@ -119,10 +112,6 @@ void Engine::EngineLoop()
 	Game::Init(&network);
 	Loop();
 
-
-	//delete all
-	Resource::DeleteAllFiles();
-
 	//imgui shutdown
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -140,8 +129,8 @@ void Engine::Loop()
 	while (!mainWindow.getShouldClose())
 	{
 		//calculate delta time
-
 		DeltaTime::CalculateDeltaTime();
+
 		//Handle User Input
 		glfwPollEvents();
 
@@ -164,7 +153,10 @@ void Engine::Loop()
 		ui.Render(network.GetPlayerData());
 
 		//show show editor
-		interface_game.ShowMainUI();
+		if (Window::getKeyReleased(GLFW_KEY_I))
+			interface_game.ToggleShowUI();
+		if (interface_game.GetShowUI())
+			interface_game.ShowMainUI();
 		mainWindow.swapBuffers();
 	}
 }

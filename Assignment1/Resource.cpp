@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Resource.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -31,10 +33,10 @@ Camera* Resource::camera;
 
 
 std::map<std::string, std::unique_ptr<Shader>>Resource::Shader_List;
-std::map<std::string, Material*>Resource::Material_List;
-std::map<std::string, Model*>Resource::Model_List;
-std::map<std::string, Texture*>Resource::Texture_List;
-std::map<std::string, Light*>Resource::Light_List;
+std::map<std::string, std::unique_ptr<Material>>Resource::Material_List;
+std::map<std::string, std::unique_ptr< Model>>Resource::Model_List;
+std::map<std::string, std::unique_ptr< Texture>>Resource::Texture_List;
+std::map<std::string, std::unique_ptr< Light>>Resource::Light_List;
 
 glm::vec3 Resource::directionalRotation;
 
@@ -106,22 +108,6 @@ void Resource::loadFiles()
 
 	FileLoad_Shaders();
 }
-/******************************************************************************/
-/*!
-\brief   delete all files
-*/
-/******************************************************************************/
-void Resource::DeleteAllFiles()
-{
-	//for (auto& i : Shader_List)
-	//	delete i.second;
-
-	for (auto& i : Model_List)
-		delete i.second;
-
-	for (auto& i : Texture_List)
-		delete i.second;
-}
 
 /******************************************************************************/
 /*!
@@ -160,7 +146,6 @@ void Resource::FileLoad_Textures()
 	// load all textures in files
 	for (auto& entry : std::filesystem::directory_iterator(pathextension))
 	{
-
 		// get path string
 		pathString = PathReformat(entry.path().string(), "Textures");
 

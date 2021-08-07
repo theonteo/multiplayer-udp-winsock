@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file Camera.cpp
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -47,24 +49,7 @@ Camera::Camera
 */
 /******************************************************************************/
 void Camera::keyControl(bool* keys, GLfloat deltaTime) 
-{
-	if (keys[GLFW_KEY_W]) 
-	{
-		position += front * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_S])
-	{
-		position -= front * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_A])
-	{
-		position -= right * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_D])
-	{
-		position += right * moveSpeed * deltaTime;
-	}
-}
+{}
 
 /******************************************************************************/
 /*!
@@ -110,6 +95,11 @@ glm::vec3 Camera::getCameraPosition()
 	return position;
 }
 
+glm::vec2 Camera::getCameraRotation()
+{
+	return { pitch,yaw };
+}
+
 void Camera::SetPosition(const glm::vec3& pos)
 {
 	position = pos;
@@ -119,8 +109,6 @@ void Camera::SetRotation(const glm::vec2& rot)
 	pitch = rot.x;
 	yaw = rot.y;
 }
-
-
 
 /******************************************************************************/
 /*!

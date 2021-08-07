@@ -1,12 +1,14 @@
 /*****************************************************************************/
 /*!
-\file
-\author
-\par email:
-\par DigiPen login:
+\file GameObject.h
+
+\author Bryan Choo
+\author Kevin Hartono
+\author Teo Zheng Yong Theon
+
 \par Course: cs260
 \par Assignment 4
-\date
+\date 1/8/21
 
 Copyright (C) 2021 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -29,13 +31,15 @@ class GameObject
 public:
 
 	//store pointers to data
-	Material* GameObjectMaterial;
-	Model* Model;
+	std::string GameObjectMaterial;
+	std::string Model;
 	std::string shader;
 
 	int score{ -1 };
 
 	bool enabled{ true };
+
+	unsigned char direction; // Bool flag
 
 	//store transforms
 	glm::vec3 translate = glm::vec3(0, 0, 0);
@@ -44,6 +48,5 @@ public:
 	glm::vec3 colour = glm::vec3(1, 1, 1);
 
 	std::string GameObjectName;
-
 };
 #endif
