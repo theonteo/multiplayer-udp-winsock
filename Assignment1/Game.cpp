@@ -36,6 +36,7 @@ namespace
 	std::string clientName;
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
+	const float camInterpolateSpeed = 4.0f;
 
 	enum class DIRECTION : unsigned char
 	{
@@ -139,7 +140,12 @@ void Game::MoveLighting()
 	for (int i = 0; i < MAX_PLAYER; ++i)
 	{
 		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
-		Lighting::UpdatePointLight(i, col.find(names[i])->second, player->translate);
+
+		//negative lighting if dead
+		const auto& colour = 
+			player->enabled ? col.find(names[i])->second : glm::vec3(-0.2f, -0.2f, -0.2f);
+
+		Lighting::UpdatePointLight(i, colour, player->translate);
 	}
 }
 
@@ -155,7 +161,6 @@ void Game::CheckState()
 //Delay is in seconds
 void Game::DeadReckoning(const float& delay)
 {
-	//float interpolant = DeltaTime::GetDeltaTime() * 2.0f;
 	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
 	{
 		const float time = delay + DeltaTime::GetDeltaTime();
@@ -202,7 +207,7 @@ void Game::DeadReckoning(const float& delay)
 void Game::Update()
 {
 	CheckState();
-	float interpolant = DeltaTime::GetDeltaTime() * 2.0f;
+	float interpolant = DeltaTime::GetDeltaTime() * camInterpolateSpeed;
 	const auto& cam = Resource::camera;
 	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
 	{

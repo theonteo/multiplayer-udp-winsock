@@ -50,24 +50,7 @@ Camera::Camera
 */
 /******************************************************************************/
 void Camera::keyControl(bool* keys, GLfloat deltaTime) 
-{
-	if (keys[GLFW_KEY_W]) 
-	{
-		position += front * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_S])
-	{
-		position -= front * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_A])
-	{
-		position -= right * moveSpeed * deltaTime;
-	}
-	if (keys[GLFW_KEY_D])
-	{
-		position += right * moveSpeed * deltaTime;
-	}
-}
+{}
 
 /******************************************************************************/
 /*!
@@ -127,8 +110,6 @@ void Camera::SetRotation(const glm::vec2& rot)
 	pitch = rot.x;
 	yaw = rot.y;
 }
-
-
 
 /******************************************************************************/
 /*!
