@@ -65,7 +65,8 @@ private:
 	bool receivedConnectionReply = false;
 
 	// Lockstep
-	bool lockstepMode = false;
+	std::mutex lockstepMutex{};
+	int lockstepMode = 0;
 	bool startedLockstep = false;
 	std::array<std::pair<bool, HashedDataPacket>, MAX_PLAYER> hashedData;
 	int hashedDataReceived = 0;
