@@ -73,9 +73,6 @@ void GameObjectManager::AddScatterObjects()
 {
 	for (size_t i = 0; i < 250; ++i)
 	{
-
-	
-
 		float x = static_cast<float>(((rand() % 100) - 50)) *1.25f;
 		float z = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 
