@@ -24,10 +24,20 @@ Technology is prohibited.
 
 #include"Resource.h"
 #include "GameState.h"
+#include "GameObjectManager.h"
 #include "CommonValues.h"
 #include "Colors.h"
 #include "Texture.h"
+namespace
+{
+	std::vector<std::string> names = { "Player 1", "Player 2", "Player 3", "Player 4" };
+	std::string clientName;
+}
 
+void  UIManager::InitPlayer(size_t playerID)
+{
+	clientName = names[playerID];
+}
 void UIManager::RenderLobby(const NetworkManager::PlayerArray& data)
 {
 	//title screen
@@ -66,14 +76,14 @@ void UIManager::RenderLobby(const NetworkManager::PlayerArray& data)
 		const float padding = 0.115f;
 		const auto& color = col.find(playerText)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			(0.5f + (index - 2) * padding)+0.05f, 0.25f, 0, 0, 0, 80, 80,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.25f, 0, 0, 0, 80, 80,
 			glm::vec4(color.x, color.y, color.z, 1));
 
-		ImageRender::RenderQuad(!i.isConnected ? cross :tick, *imageShader->second,
+		ImageRender::RenderQuad(!i.isConnected ? cross : tick, *imageShader->second,
 			(0.5f + (index - 2) * padding) + 0.05f, 0.25f, 0, 0, 0, 50, 50,
 			glm::vec4(0, 0, 0, 0.6f));
 
-			//name
+		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
 			(0.5f + (index - 2) * padding) + 0.05f, 0.175f, 0, 0.75f,
@@ -113,7 +123,7 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		std::string playerName = "Player " + std::to_string(playerNum + 1);
 		const auto& color = col.find(playerName)->second;
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			(0.5f + (index - 2) * padding)+0.05f, 0.95f, 0, 0, 0, 100, 100,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
@@ -131,11 +141,21 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		index++;
 	}
 
+	//if player dead
+		//title screen
+	const auto& player =
+		GameObjectManager::GameObjectList.find(clientName)->second;
+
+	if (!player->enabled)
+		TextRender::RenderTextNormal
+		(std::string{ "YOU ARE EATEN!" }, 0.5f, 0.75f, 0, 1.75f,
+			glm::vec4(1.0f, 0.75f, 0.75f, 0.7f));
+
 	//instructions
 	TextRender::RenderTextLight
 	(std::string{ "Eliminate all opponents to win the game" },
 		0.5f, 0.15f, 0, 0.65f,
-		glm::vec4(1.0f,1.0f, 1.0f, 0.5f));
+		glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
 }
 
 void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
@@ -168,7 +188,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 
 	//winner text
 	TextRender::RenderTextNormal
-	(std::string{ "Winner is Player " + std::to_string(winnerIndex + 1)},
+	(std::string{ "Winner is Player " + std::to_string(winnerIndex + 1) },
 		0.5f, 0.65f, 0, 0.65f,
 		glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -185,7 +205,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 		std::string playerName = "Player " + std::to_string(playerNum + 1);
 		std::string playerText
 		{
-			playerName + 
+			playerName +
 			(!i.isConnected ? " not joined" : "")
 		};
 

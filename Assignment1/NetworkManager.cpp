@@ -28,6 +28,7 @@ Technology is prohibited.
 #include <functional>
 #include "GameState.h"
 #include "GameObjectManager.h"
+#include "UIManager.h"
 #include "Exceptions.h"
 #include "Game.h"
 #include "DeltaTime.h"
@@ -103,6 +104,7 @@ void NetworkManager::Init(char** argv)
 
 	// remove this
 	Game::InitPlayer(0);
+	UIManager::InitPlayer(0);
 }
 
 void NetworkManager::ConnectToPeers()

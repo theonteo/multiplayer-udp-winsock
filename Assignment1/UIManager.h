@@ -25,6 +25,7 @@ Technology is prohibited.
 class Player;
 class UIManager
 {
+	
 	void RenderLobby(const NetworkManager::PlayerArray& data);
 	void RenderGame(const NetworkManager::PlayerArray& data);
 	void RenderResult(const NetworkManager::PlayerArray& data);
@@ -32,6 +33,7 @@ class UIManager
 public:
 
 	void Init();
+	static void InitPlayer(size_t playerID);
 	void Render(const NetworkManager::PlayerArray& data);
 };
 

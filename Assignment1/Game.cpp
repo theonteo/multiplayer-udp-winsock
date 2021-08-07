@@ -109,30 +109,33 @@ void Game::MoveObject()
 
 	ClearMovementFlag(player->direction);
 
-	//Player control
-	if (Window::getKey(GLFW_KEY_A))
+	if (player->enabled)
 	{
-		UpdateMovementFlag(player->direction, DIRECTION::LEFT);
-		player->translate.x -=
-			playerMoveSpeed * DeltaTime::GetDeltaTime();
-	}
-	if (Window::getKey(GLFW_KEY_D))
-	{
-		UpdateMovementFlag(player->direction, DIRECTION::RIGHT);
-		player->translate.x +=
-			playerMoveSpeed * DeltaTime::GetDeltaTime();
-	}
-	if (Window::getKey(GLFW_KEY_W))
-	{
-		UpdateMovementFlag(player->direction, DIRECTION::UP);
-		player->translate.z -=
-			playerMoveSpeed * DeltaTime::GetDeltaTime();
-	}
-	if (Window::getKey(GLFW_KEY_S))
-	{
-		UpdateMovementFlag(player->direction, DIRECTION::DOWN);
-		player->translate.z +=
-			playerMoveSpeed * DeltaTime::GetDeltaTime();
+		//Player control
+		if (Window::getKey(GLFW_KEY_A))
+		{
+			UpdateMovementFlag(player->direction, DIRECTION::LEFT);
+			player->translate.x -=
+				playerMoveSpeed * DeltaTime::GetDeltaTime();
+		}
+		if (Window::getKey(GLFW_KEY_D))
+		{
+			UpdateMovementFlag(player->direction, DIRECTION::RIGHT);
+			player->translate.x +=
+				playerMoveSpeed * DeltaTime::GetDeltaTime();
+		}
+		if (Window::getKey(GLFW_KEY_W))
+		{
+			UpdateMovementFlag(player->direction, DIRECTION::UP);
+			player->translate.z -=
+				playerMoveSpeed * DeltaTime::GetDeltaTime();
+		}
+		if (Window::getKey(GLFW_KEY_S))
+		{
+			UpdateMovementFlag(player->direction, DIRECTION::DOWN);
+			player->translate.z +=
+				playerMoveSpeed * DeltaTime::GetDeltaTime();
+		}
 	}
 }
 
@@ -222,14 +225,24 @@ void Game::Update()
 
 		glm::vec3 append{ 0,range ,range };
 
+		if (player->enabled)
+		{
+			cam->SetPosition
+			(MathHelper::Vec3Lerp
+			(cam->getCameraPosition(), (player->translate + append), interpolant));
 
-		cam->SetPosition
-		(MathHelper::Vec3Lerp
-		(cam->getCameraPosition(), (player->translate + append), interpolant));
-
-		cam->SetRotation
-		(MathHelper::Vec2Lerp
-		(cam->getCameraRotation(), glm::vec2{ -45 , -90 }, interpolant));
+			cam->SetRotation
+			(MathHelper::Vec2Lerp
+			(cam->getCameraRotation(), glm::vec2{ -45 , -90 }, interpolant));
+		}
+		else {
+			cam->SetPosition
+			(MathHelper::Vec3Lerp
+			(cam->getCameraPosition(), glm::vec3(20, 20, 20), interpolant));
+			cam->SetRotation
+			(MathHelper::Vec2Lerp
+			(cam->getCameraRotation(), glm::vec2{ -45 , -135 }, interpolant));
+		}
 	}
 	else {
 		cam->SetPosition
