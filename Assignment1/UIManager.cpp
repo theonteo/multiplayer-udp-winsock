@@ -140,7 +140,7 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f , 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f , 0, 0.575f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
@@ -196,7 +196,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 		{
 			// Check if that player's score is higher than current
 			score = data[i].score > score ? data[i].score : score;
-			winnerIndex = data[i].score > score ? i : winnerIndex;
+			winnerIndex = data[i].score > data[winnerIndex].score ? i : winnerIndex;
 		}
 	}
 
@@ -225,23 +225,23 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 			(!i.isConnected ? " not joined" : "")
 		};
 
-		const float padding = 0.075f;
+		const float padding = 0.115f;
 		const auto& color = col.find(playerName)->second;
 
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			0.5f + (index - 2) * padding, 0.45f, 0, 0, 0, 100, 100,
+		(	0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			0.5f + (index - 2) * padding, 0.45f, 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0.65f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
-			0.5f + (index - 2) * padding, 0.375f, 0, 0.6f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.375f, 0, 0.6f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		index++;
 	}
