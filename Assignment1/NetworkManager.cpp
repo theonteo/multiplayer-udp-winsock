@@ -127,7 +127,6 @@ void NetworkManager::ConnectToPeers()
 
 	// Wait for a reply with a timeout condition
 	{
-		// Wait for a timeout / acknowledgement packet
 		std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
 
 		bool receivedReply =
@@ -143,6 +142,7 @@ void NetworkManager::ConnectToPeers()
 			localPlayerID = 0;
 			players[0].hasPreviouslyConnnected = true;
 			players[0].isConnected = true;
+			connectedPlayers = 1;
 			Game::InitPlayer(localPlayerID);
 		}
 	}
@@ -256,6 +256,111 @@ void NetworkManager::Send()
 		}
 	}
 
+	if (lockstepMode)
+	{
+		if (!startedLockstep)
+		{
+			++hashedDataReceived;
+			++lockstepDataReceived;
+		}
+
+		// Sending of hashed data
+		SendHashedPacket();
+	
+		// Wait for everyone to reply / timeout
+		{
+			std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
+
+			timeoutCondition.wait_for(
+				timeoutLock,
+				std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
+				[&]() { return hashedDataReceived == connectedPlayers; });
+		}
+
+		// Send back the actual action to everyoone
+		SendLockstepPacket();
+	
+		// Wait for everyone's actual action
+		{
+			std::unique_lock<std::mutex> timeoutLock{ timeoutMutex };
+
+			timeoutCondition.wait_for(
+				timeoutLock,
+				std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
+				[&]() { return lockstepDataReceived == connectedPlayers; });
+		}
+
+		// Process all of the data
+		for (size_t i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (!hashedData[i].first || !lockstepData[i].first)
+			{
+				continue;
+			}
+
+			size_t tempHashedData =
+				std::hash<LockstepDataPacket>()(lockstepData[i].second);
+
+			if (tempHashedData != hashedData[i].second.hashedData)
+			{
+				continue;
+			}
+
+			unsigned short collidingID =
+				lockstepData[i].second.GetCollidingID();
+
+			if (collidingID == INVALID_ID)
+			{
+				continue;
+			}
+
+			if (collidingID < 1000)
+			{
+				++players[i].score;
+
+				auto& otherGO =
+					GameObjectManager::GameObjectList.find(
+						"item " + std::to_string(collidingID))->second;
+
+				otherGO->enabled = false;
+			}
+			else
+			{
+				players[i].score += 3;
+				collidingID -= 1000;
+
+				auto& otherGO =
+					GameObjectManager::GameObjectList.find(
+						"Player " + std::to_string(collidingID))->second;
+
+				otherGO->enabled = false;
+			}
+
+			auto& playerGO =
+				GameObjectManager::GameObjectList.find(
+					"Player " + std::to_string(i + 1))->second;
+
+			playerGO->score = players[i].score;
+		}
+
+		// Reset
+		for (size_t i = 0; i < MAX_PLAYER; ++i)
+		{
+			hashedData[i].first = false;
+			lockstepData[i].first = false;
+		}
+		lockstepData[localPlayerID].second.SetCollidingID(INVALID_ID);
+
+		hashedData[localPlayerID].second.hashedData =
+			std::hash<LockstepDataPacket>()(lockstepData[localPlayerID].second);
+		
+		hashedDataReceived = 0;
+		lockstepDataReceived = 0;
+		
+		lockstepMode = false;
+		startedLockstep = false;
+	}
+
 	//const auto& playerName = NetworkManager::GetPlayerData();
 	//
 	////player container is empty ,don't send
@@ -335,6 +440,89 @@ void NetworkManager::Receive()
 	}
 }
 
+void NetworkManager::StartLockstep(unsigned short collidingID)
+{
+	lockstepMode = true;
+	startedLockstep = true;
+
+	lockstepData[localPlayerID].first = true;
+	lockstepData[localPlayerID].second.SetCollidingID(collidingID);
+
+	hashedData[localPlayerID].first = true;
+	hashedData[localPlayerID].second.hashedData =
+		std::hash<LockstepDataPacket>()(lockstepData[localPlayerID].second);
+
+	++hashedDataReceived;
+	if (hashedDataReceived == connectedPlayers)
+	{
+		timeoutCondition.notify_one();
+	}
+
+	++lockstepDataReceived;
+
+
+	InitiateLockstepPacket initLockstepPack{};
+
+	for (const auto& playerAddress : playerAddressMap)
+	{
+		if (playerAddress.second)
+		{
+			// Send a connection notification to the other players
+			sendto(
+				clientSocket,
+				reinterpret_cast<char*>(&initLockstepPack),
+				sizeof(initLockstepPack),
+				0,
+				&playerAddress.first.sockAddr,
+				sizeof(playerAddress.first.sockAddr));
+		}
+	}
+}
+
+void NetworkManager::SendHashedPacket()
+{
+	HashedDataPacket data = hashedData[localPlayerID].second;
+	data.HtoN();
+
+	for (const auto& playerAddress : playerAddressMap)
+	{
+		if (playerAddress.second &&
+			playerAddress.second->isConnected)
+		{
+			// Send a hashed packet to the other players
+			sendto(
+				clientSocket,
+				reinterpret_cast<char*>(&data),
+				sizeof(data),
+				0,
+				&playerAddress.first.sockAddr,
+				sizeof(playerAddress.first.sockAddr));
+		}
+	}
+}
+
+void NetworkManager::SendLockstepPacket()
+{
+	LockstepDataPacket data = lockstepData[localPlayerID].second;
+	data.HtoN();
+
+	for (const auto& playerAddress : playerAddressMap)
+	{
+		if (playerAddress.second &&
+			playerAddress.second->isConnected)
+		{
+			// Send a hashed packet to the other players
+			sendto(
+				clientSocket,
+				reinterpret_cast<char*>(&data),
+				sizeof(data),
+				0,
+				&playerAddress.first.sockAddr,
+				sizeof(playerAddress.first.sockAddr));
+		}
+	}
+}
+
 void NetworkManager::UnpackPacket(
 	char* buffer, const SocketAddress& sourceAddr)
 {
@@ -357,13 +545,26 @@ void NetworkManager::UnpackPacket(
 	else if (packet->packetType == PacketType::CONNECTION_NOTIFICATION)
 	{
 		ProcessConnectionNotification(
-			*reinterpret_cast<ConnectionNotification*>(buffer),
-			sourceAddr);
+			*reinterpret_cast<ConnectionNotification*>(buffer));
 	}
 	else if (packet->packetType == PacketType::DATA_PACKET)
 	{
 		ProcessDataPacket(
 			*reinterpret_cast<DataPacket*>(buffer), sourceAddr);
+	}
+	else if (packet->packetType == PacketType::INITIATE_LOCKSTEP)
+	{
+		ProcessInitiateLockstepPacket();
+	}
+	else if (packet->packetType == PacketType::LOCKSTEP_DATA)
+	{
+		ProcessLockstepDataPacket(
+			*reinterpret_cast<LockstepDataPacket*>(buffer), sourceAddr);
+	}
+	else if (packet->packetType == PacketType::HASHED_DATA)
+	{
+		ProcessHashedDataPacket(
+			*reinterpret_cast<HashedDataPacket*>(buffer), sourceAddr);
 	}
 
 	////same person - return
@@ -529,6 +730,7 @@ void NetworkManager::ProcessConnectionReply(
 		Game::InitPlayer(localPlayerID);
 		players[localPlayerID].hasPreviouslyConnnected = true;
 		players[localPlayerID].isConnected = true;
+		++connectedPlayers;
 
 		for (int i = 0; i < MAX_PEER; ++i)
 		{
@@ -547,6 +749,7 @@ void NetworkManager::ProcessConnectionReply(
 
 				playerAddressMap[peerAddr]->hasPreviouslyConnnected = true;
 				playerAddressMap[peerAddr]->isConnected = true;
+				++connectedPlayers;
 			}
 		}
 
@@ -588,6 +791,7 @@ void NetworkManager::ProcessConnectionConfirmation(
 	{
 		players[conConfirm.assignedID].hasPreviouslyConnnected = true;
 		players[conConfirm.assignedID].isConnected = true;
+		++connectedPlayers;
 		iter->second = &players[conConfirm.assignedID];
 
 		// Send a connection notification to the other players
@@ -598,7 +802,7 @@ void NetworkManager::ProcessConnectionConfirmation(
 		ConnectionNotification conNotif;
 		conNotif.joiningID = conConfirm.assignedID;
 		conNotif.ip = sockAddrPtr->sin_addr;
-		conNotif.port = sockAddrPtr->sin_port;
+		conNotif.port = ntohs(sockAddrPtr->sin_port);
 		conNotif.HtoN();
 
 		for (const auto& playerAddress : playerAddressMap)
@@ -631,16 +835,22 @@ void NetworkManager::ProcessConnectionConfirmation(
 	}
 }
 
-void NetworkManager::ProcessConnectionNotification(
-	ConnectionNotification& conNotif, const SocketAddress& sourceAddr)
+void NetworkManager::ProcessConnectionNotification(ConnectionNotification& conNotif)
 {
 	conNotif.NtoH();
 
-	auto iter = playerAddressMap.find(sourceAddr);
+	sockaddr_in sockAddr;
+	sockAddr.sin_addr = conNotif.ip;
+	sockAddr.sin_port = htons(conNotif.port);
+
+	auto iter = playerAddressMap.find(
+		SocketAddress{*reinterpret_cast<sockaddr*>(&sockAddr)});
+
 	if (iter != playerAddressMap.end())
 	{
 		players[conNotif.joiningID].hasPreviouslyConnnected = true;
 		players[conNotif.joiningID].isConnected = true;
+		++connectedPlayers;
 		iter->second = &players[conNotif.joiningID];
 
 		if (GameState::GetCurrentState() == GameState::State::STATE_LOBBY)
@@ -678,5 +888,58 @@ void NetworkManager::ProcessDataPacket(
 		
 		player->translate = dataPacket.position;
 		player->direction = dataPacket.moveInfo;
+	}
+}
+
+void NetworkManager::ProcessInitiateLockstepPacket()
+{
+	lockstepMode = true;
+}
+
+void NetworkManager::ProcessLockstepDataPacket(
+	LockstepDataPacket& dataPacket, const SocketAddress& sourceAddr)
+{
+	dataPacket.NtoH();
+
+	auto iter = playerAddressMap.find(sourceAddr);
+	if (iter != playerAddressMap.end())
+	{
+		lockstepMode = true;
+
+		size_t senderIndex = iter->second - &players[0];
+
+		lockstepData[senderIndex].first = true;
+		lockstepData[senderIndex].second = dataPacket;
+
+		++lockstepDataReceived;
+
+		if (lockstepDataReceived == connectedPlayers)
+		{
+			timeoutCondition.notify_one();
+		}
+	}
+}
+
+void NetworkManager::ProcessHashedDataPacket(
+	HashedDataPacket& dataPacket, const SocketAddress& sourceAddr)
+{
+	dataPacket.NtoH();
+
+	auto iter = playerAddressMap.find(sourceAddr);
+	if (iter != playerAddressMap.end())
+	{
+		lockstepMode = true;
+
+		size_t senderIndex = iter->second - &players[0];
+
+		hashedData[senderIndex].first = true;
+		hashedData[senderIndex].second = dataPacket;
+
+		++hashedDataReceived;
+
+		if (hashedDataReceived == connectedPlayers)
+		{
+			timeoutCondition.notify_one();
+		}
 	}
 }

@@ -24,6 +24,7 @@ Technology is prohibited.
 #include <WinSock2.h>
 #include <array>
 #include <algorithm>
+#include <random>
 #include "Player.h"
 #include "CommonValues.h"
 
@@ -34,6 +35,9 @@ enum class PacketType : unsigned char
 	CONNECTION_CONFIRMATION,
 	CONNECTION_NOTIFICATION,
 	DATA_PACKET,
+	INITIATE_LOCKSTEP,
+	LOCKSTEP_DATA,
+	HASHED_DATA,
 
 	NUM_OF_PACKET_TYPES			// Must be last
 };
@@ -113,6 +117,53 @@ struct DataPacket : Packet
 	virtual void HtoN() override;
 };
 
+struct InitiateLockstepPacket : Packet
+{
+	InitiateLockstepPacket();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct LockstepDataPacket : Packet
+{
+private:
+	// Random number generator to generate key
+	static std::mt19937_64 uniformRandGen;
+	static std::uniform_int_distribution<unsigned short> u_i_distribution;
+
+	unsigned short collidingID{static_cast<unsigned short>(-1)};
+
+	// Randomly generated key to ensure that the other clients
+	// will not be able to brute force the hash
+	unsigned short key{};
+
+public:
+
+	LockstepDataPacket();
+	LockstepDataPacket& operator=(const LockstepDataPacket& rhs);
+
+	void SetCollidingID(unsigned short _collidingID);
+	unsigned short GetCollidingID() const;
+	unsigned short GetKey() const;
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+
+
+struct HashedDataPacket : Packet
+{
+	size_t hashedData{};
+
+	HashedDataPacket();
+	HashedDataPacket& operator=(const HashedDataPacket& rhs);
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
 namespace
 {
 	constexpr std::array
@@ -125,11 +176,31 @@ namespace
 		sizeof(ConnectionReply),
 		sizeof(ConnectionConfirmation),
 		sizeof(ConnectionNotification),
-		sizeof(DataPacket)
+		sizeof(DataPacket),
+		sizeof(InitiateLockstepPacket),
+		sizeof(LockstepDataPacket),
+		sizeof(HashedDataPacket)
 	};
 }
 
 constexpr size_t MAX_PACKET_SIZE =
 	*std::max_element(packetSizes.begin(), packetSizes.end());
+
+namespace std
+{
+	// Hashing function used to hash LockstepDataPacket
+	template <>
+	struct hash<LockstepDataPacket>
+	{
+		std::size_t operator()(const LockstepDataPacket& data) const
+		{
+			return
+			(
+				(hash<unsigned short>()(data.GetCollidingID())) ^
+				(hash<short>()(data.GetKey()) << 1)
+			);
+		}
+	};
+}
 
 #endif

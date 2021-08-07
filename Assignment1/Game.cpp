@@ -63,6 +63,8 @@ namespace
 	}
 }
 
+NetworkManager* Game::network = nullptr;
+
 void Game::InitPlayer(size_t playerID)
 {
 	clientName = names[playerID];
@@ -77,28 +79,46 @@ void Game::Interaction()
 	{
 		//basic collision
 		if (i.second->enabled && i.first != clientName && i.first != "Level")
-			if (Physics::CircleToCircle
-			(player->translate, player->scale.x * radiusAllowance,
-				i.second->translate, i.second->scale.x * radiusAllowance))
+		{
+			bool isColliding =
+				Physics::CircleToCircle(
+					player->translate,
+					player->scale.x * radiusAllowance,
+					i.second->translate,
+					i.second->scale.x * radiusAllowance);
+
+			if (isColliding)
 			{
 				//the player must have higher score to eat
-
-				if (!player->score && i.second->score > 0)
+				if (player->score <= i.second->score)
 					continue;
 
-				if (player->score && player->score <= i.second->score)
-					continue;
+				unsigned short collidingID =
+					static_cast<unsigned short>(
+						stoul(i.first.substr(i.first.find(' ') + 1)));
 
-				player->score++;
-				range = player->scale.x * 4.0f;
+				if (i.first.find("Player") != std::string::npos)
+				{
+					collidingID = collidingID + 1000;
+				}
 
-				i.second->enabled = false;
+				network->StartLockstep(collidingID);
+
+				break;
 			}
+		}
+	}
 
+	for (const auto& i : GameObjectManager::GameObjectList)
+	{
 		if (i.second->score > 0)
-			i.second->scale = MathHelper::Vec3Lerp
-			(i.second->scale, glm::vec3(1 + i.second->score * 0.135f),
-				DeltaTime::GetDeltaTime());
+		{
+			i.second->scale =
+				MathHelper::Vec3Lerp(
+					i.second->scale,
+					glm::vec3(1 + i.second->score * 0.135f),
+					DeltaTime::GetDeltaTime());
+		}
 	}
 }
 
@@ -162,6 +182,16 @@ void Game::CheckState()
 	}
 }
 
+void Game::Init(NetworkManager* _network)
+{
+	network = _network;
+
+	GameObjectManager::GameObjectList.find(names[0])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[1])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[2])->second->score = 0;
+	GameObjectManager::GameObjectList.find(names[3])->second->score = 0;
+}
+
 //Delay is in seconds
 void Game::DeadReckoning(const float& delay)
 {
@@ -222,6 +252,8 @@ void Game::Update()
 
 		const auto& player =
 			GameObjectManager::GameObjectList.find(clientName)->second;
+			
+		range = player->scale.x * 4.0f;
 
 		glm::vec3 append{ 0,range ,range };
 
@@ -244,12 +276,18 @@ void Game::Update()
 			(cam->getCameraRotation(), glm::vec2{ -45 , -135 }, interpolant));
 		}
 	}
-	else {
-		cam->SetPosition
-		(MathHelper::Vec3Lerp
-		(cam->getCameraPosition(), glm::vec3(30, 30, 30), interpolant));
-		cam->SetRotation
-		(MathHelper::Vec2Lerp
-		(cam->getCameraRotation(), glm::vec2{ -45 , -135 }, interpolant));
+	else
+	{
+		cam->SetPosition(
+			MathHelper::Vec3Lerp(
+				cam->getCameraPosition(),
+				glm::vec3(30, 30, 30),
+				interpolant));
+				
+		cam->SetRotation(
+			MathHelper::Vec2Lerp(
+				cam->getCameraRotation(),
+				glm::vec2{ -45 , -135 },
+				interpolant));
 	}
 }
