@@ -73,9 +73,6 @@ void GameObjectManager::AddScatterObjects()
 {
 	for (size_t i = 0; i < 250; ++i)
 	{
-
-	
-
 		float x = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 		float z = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 
@@ -88,7 +85,7 @@ void GameObjectManager::AddScatterObjects()
 		}
 		
 		//set initial object
-		go->translate = pos;
+		go->translate = glm::vec3(x, 0.0f, z);
 		go->rotation = glm::vec3(0, 0, 0);
 		go->scale = glm::vec3(0.3f, 0.3f, 0.3f);
 		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);
