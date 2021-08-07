@@ -32,6 +32,7 @@ namespace
 {
 	std::vector<std::string> names = { "Player 1", "Player 2", "Player 3", "Player 4" };
 	std::string clientName;
+	size_t winnerIndex = 0;
 }
 
 void  UIManager::InitPlayer(size_t playerID)
@@ -134,19 +135,19 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			(0.5f + (index - 2) * padding) + 0.05f,
-			0.95f	-((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+			0.95f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
 			glm::vec4(color.x, color.y, color.z, flagAlpha));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f , 0, 0.575f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0.575f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.875f - 
+			(0.5f + (index - 2) * padding) + 0.05f, 0.875f -
 		((playerName == clientName) ? 0.0175f : 0.0f), 0, 0.6f,
 			colText);
 
@@ -166,11 +167,20 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	}
 	else {
 
+		const auto& winner =
+			GameObjectManager::GameObjectList.find(names[winnerIndex])->second;
+
+		const auto& c = col.find(names[winnerIndex])->second
+			* glm::vec3(0.5f, 0.5f, 0.5f) + glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+
 		//instructions
-		TextRender::RenderTextLight
-		(std::string{ "Eliminate all opponents to win the game" },
-			0.5f, 0.15f, 0, 0.65f,
-			glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		if (winner->score > 0)
+			TextRender::RenderTextLight
+			(std::string{ names[winnerIndex] + " is taking the lead!" },
+				0.5f, 0.1f, 0, 0.8f,
+				glm::vec4(c.x, c.y, c.z, 0.5f));
 	}
 }
 
@@ -186,7 +196,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 
 
 	// Find winner
-	size_t winnerIndex = 0;
+
 	int score = data[0].score;
 
 	for (size_t i = 1; i < data.size(); ++i)
@@ -229,7 +239,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 		const auto& color = col.find(playerName)->second;
 
 		ImageRender::RenderQuad(circle, *imageShader->second,
-		(	0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0, 0, 100, 100,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
