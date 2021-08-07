@@ -102,6 +102,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2015;$(SolutionDir)External Libs\GLEW\lib\Release\Win32;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -131,6 +134,18 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)Assignment1\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,6 +170,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2015;$(SolutionDir)External Libs\GLEW\lib\Release\Win32;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -183,6 +201,18 @@
       <SpecifySectionAttributes>
       </SpecifySectionAttributes>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)Assignment1\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\External Libs\GUI\imgui.cpp" />
