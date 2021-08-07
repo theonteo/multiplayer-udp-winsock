@@ -37,6 +37,7 @@ namespace
 	float range = 4.0f;
 	const float playerMoveSpeed = 5.0f;
 	const float camInterpolateSpeed = 4.0f;
+	const float radiusAllowance = 0.5f;
 
 	enum class DIRECTION : unsigned char
 	{
@@ -77,8 +78,8 @@ void Game::Interaction()
 		//basic collision
 		if (i.second->enabled && i.first != clientName && i.first != "Level")
 			if (Physics::CircleToCircle
-			(player->translate, player->scale.x,
-				i.second->translate, i.second->scale.x))
+			(player->translate, player->scale.x * radiusAllowance,
+				i.second->translate, i.second->scale.x * radiusAllowance))
 			{
 				//the player must have higher score to eat
 
