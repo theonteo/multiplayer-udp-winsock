@@ -26,6 +26,28 @@ GameObjectManager::GameObjectList;
 namespace
 {
 	constexpr size_t maxPlayerCount = 4;
+
+	glm::vec3 randomVector()
+	{
+		int direction = (rand() % 4);
+
+		if (direction == 0)
+		{
+			return glm::vec3{ -1.0f, 0.0f, 0.0f };
+		}
+		else if (direction == 1)
+		{
+			return glm::vec3{ 1.0f, 0.0f, 0.0f };
+		}
+		else if (direction == 2)
+		{
+			return glm::vec3{ 0.0f, 0.0f, -1.0f };
+		}
+		else
+		{
+			return glm::vec3{ 0.0f, 0.0f, 1.0f };
+		}
+	}
 }
 
 /******************************************************************************/
@@ -45,8 +67,6 @@ void GameObjectManager::Create()
 
 void GameObjectManager::AddPlayer()
 {
-
-
 	for (size_t i = 0; i < maxPlayerCount; ++i)
 	{
 		std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
@@ -86,6 +106,8 @@ void GameObjectManager::AddScatterObjects()
 		
 		//set initial object
 		go->translate = glm::vec3(x, 0.0f, z);
+		go->point1 = go->translate;
+		go->point2 = randomVector();
 		go->rotation = glm::vec3(0, 0, 0);
 		go->scale = glm::vec3(0.3f, 0.3f, 0.3f);
 		go->colour = glm::vec3(5.0f, 5.0f, 5.0f);

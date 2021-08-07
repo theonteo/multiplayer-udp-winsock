@@ -157,6 +157,25 @@ void Game::MoveObject()
 				playerMoveSpeed * DeltaTime::GetDeltaTime();
 		}
 	}
+
+
+	float dt = DeltaTime::GetDeltaTime();
+
+	for (auto& itr : GameObjectManager::GameObjectList)
+	{
+		if (itr.second->enabled == false)
+			continue;
+
+		if (itr.first.find("item") == std::string::npos)
+			continue;
+
+		std::unique_ptr<GameObject>& item = itr.second;
+		
+		item->counter += dt;
+
+		float t = sinf(item->counter);
+		item->translate = item->point1 + (t * item->point2);
+	}
 }
 
 void Game::MoveLighting()
@@ -211,6 +230,9 @@ void Game::DeadReckoning(const float& delay)
 
 			//Safety, If the player is not in the object list. 
 			if (itr == GameObjectManager::GameObjectList.end())
+				continue;
+
+			if (itr->second->enabled == false)
 				continue;
 
 			auto& player = itr->second;
