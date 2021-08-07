@@ -166,12 +166,12 @@ void Game::MoveLighting()
 		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
 
 		//negative lighting if dead
-		const auto& colour = 
+		const auto& colour =
 			player->enabled ? col.find(names[i])->second : glm::vec3(-0.2f, -0.2f, -0.2f);
 
-		const auto pos = player->translate + glm::vec3(0, player->scale.x/2, 0);
+		const auto pos = player->translate + glm::vec3(0, player->scale.x / 2, 0);
 
-		Lighting::UpdatePointLight(i, colour, pos,player->scale.x* player->scale.x);
+		Lighting::UpdatePointLight(i, colour, pos, player->scale.x * player->scale.x);
 	}
 }
 
@@ -254,8 +254,8 @@ void Game::Update()
 
 		const auto& player =
 			GameObjectManager::GameObjectList.find(clientName)->second;
-			
-		range = player->scale.x * 4.0f;
+
+		range = (3 + player->scale.x) * 1.5f;
 
 		glm::vec3 append{ 0,range ,range };
 
@@ -285,7 +285,7 @@ void Game::Update()
 				cam->getCameraPosition(),
 				glm::vec3(30, 30, 30),
 				interpolant));
-				
+
 		cam->SetRotation(
 			MathHelper::Vec2Lerp(
 				cam->getCameraRotation(),
