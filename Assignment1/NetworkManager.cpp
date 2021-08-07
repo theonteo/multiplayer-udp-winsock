@@ -144,6 +144,7 @@ void NetworkManager::ConnectToPeers()
 			players[0].isConnected = true;
 			connectedPlayers = 1;
 			Game::InitPlayer(localPlayerID);
+			UIManager::InitPlayer(localPlayerID);
 		}
 	}
 }
@@ -728,6 +729,7 @@ void NetworkManager::ProcessConnectionReply(
 		// Save this client's assigned ID
 		localPlayerID = replyPacket.assignedID;
 		Game::InitPlayer(localPlayerID);
+		UIManager::InitPlayer(localPlayerID);
 		players[localPlayerID].hasPreviouslyConnnected = true;
 		players[localPlayerID].isConnected = true;
 		++connectedPlayers;
