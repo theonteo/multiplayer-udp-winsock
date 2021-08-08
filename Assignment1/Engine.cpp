@@ -128,7 +128,7 @@ void Engine::NetworkLoop()
 void Engine::Loop()
 {
 	//main loop
-	while (!mainWindow.getShouldClose())
+	while (!network.GetShutDownStatus() && !mainWindow.getShouldClose())
 	{
 		//calculate delta time
 		DeltaTime::CalculateDeltaTime();

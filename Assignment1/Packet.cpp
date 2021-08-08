@@ -291,3 +291,51 @@ void ReconnectionReply::HtoN()
 		positions[i].z = *reinterpret_cast<float*>(&temp);
 	}
 }
+
+PingPacket::PingPacket() :
+	Packet{ PacketType::PING_PACKET }
+{
+	// Nothing to do here
+}
+
+void PingPacket::NtoH()
+{
+	pingIndex = ntohl(pingIndex);
+}
+
+void PingPacket::HtoN()
+{
+	pingIndex = htonl(pingIndex);
+}
+
+PingReply::PingReply() :
+	Packet{ PacketType::PING_REPLY }
+{
+	// Nothing to do here
+}
+
+void PingReply::NtoH()
+{
+	pingIndex = ntohl(pingIndex);
+}
+
+void PingReply::HtoN()
+{
+	pingIndex = htonl(pingIndex);
+}
+
+ForceDisconnectPacket::ForceDisconnectPacket() :
+	Packet{ PacketType::FORCE_DISCONNECT }
+{
+	// Nothing to do here
+}
+
+void ForceDisconnectPacket::NtoH()
+{
+	playerID = ntohs(playerID);
+}
+
+void ForceDisconnectPacket::HtoN()
+{
+	playerID = htons(playerID);
+}

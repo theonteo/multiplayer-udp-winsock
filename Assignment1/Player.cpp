@@ -18,3 +18,18 @@ Technology is prohibited.
 /*****************************************************************************/
 
 #include "Player.h"
+
+float Player::GetAveragePing()
+{
+	float result = 0.0f;
+
+	for (const auto& pingData : latestPings)
+	{
+		auto diff = pingData.end - pingData.start;
+		result += diff.count();
+	}
+	
+	result /= PING_ARRAY_SIZE;
+
+	return result;
+}

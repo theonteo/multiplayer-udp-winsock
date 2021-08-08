@@ -77,11 +77,16 @@ private:
 	//Shutdown
 	bool isShuttingDown = false;
 
+	//Pinging
+	static constexpr float PING_INTERVAL = 0.2f;			// in seconds
+	float pingTime{ 0 };
+
 public:
 	NetworkManager();
 	~NetworkManager();
 
 	void ShutDown();
+	bool GetShutDownStatus() const;
 
 	const PlayerArray& GetPlayerData() const;
 
@@ -125,11 +130,21 @@ public:
 	void ProcessReconnectionReply(
 		ReconnectionReply& replyPacket, const SocketAddress& sourceAddr);
 
+	void ProcessPingPacket(
+		PingPacket& pingPacket, const SocketAddress& sourceAddr);
+
+	void ProcessPingReply(
+		PingReply& pingReply, const SocketAddress& sourceAddr);
+
+	void ProcessForceDisconnection(ForceDisconnectPacket& packet);
+
 	void GenerateConnectionReply(
 		ConnectionReply& replyPacket,
 		const SocketAddress& sourceAddr,
 		unsigned short assignedID);
 
 	void GenerateReconnectionReply(ReconnectionReply& replyPacket);
+
+	void SendPingPacket();
 };
 

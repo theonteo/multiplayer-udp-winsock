@@ -26,7 +26,6 @@ Technology is prohibited.
 #include <algorithm>
 #include <random>
 #include <bitset>
-#include "Player.h"
 #include "CommonValues.h"
 
 enum class PacketType : unsigned char
@@ -41,6 +40,9 @@ enum class PacketType : unsigned char
 	LOCKSTEP_DATA,
 	HASHED_DATA,
 	DISCONNECT_NOTIFICATION,
+	PING_PACKET,
+	PING_REPLY,
+	FORCE_DISCONNECT,
 
 	NUM_OF_PACKET_TYPES			// Must be last
 };
@@ -199,6 +201,36 @@ struct DisconnectNotification : Packet
 	virtual void HtoN() override;
 };
 
+struct PingPacket : Packet
+{
+	unsigned int pingIndex{ 0 };
+
+	PingPacket();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct PingReply : Packet
+{
+	unsigned int pingIndex{ 0 };
+
+	PingReply();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
+struct ForceDisconnectPacket : Packet
+{
+	unsigned short playerID;
+
+	ForceDisconnectPacket();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
 namespace
 {
 	constexpr std::array
@@ -216,7 +248,10 @@ namespace
 		sizeof(InitiateLockstepPacket),
 		sizeof(LockstepDataPacket),
 		sizeof(HashedDataPacket),
-		sizeof(DisconnectNotification)
+		sizeof(DisconnectNotification),
+		sizeof(PingPacket),
+		sizeof(PingReply),
+		sizeof(ForceDisconnectPacket)
 	};
 }
 

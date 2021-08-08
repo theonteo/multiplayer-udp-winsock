@@ -40,6 +40,7 @@ class Engine
 	Camera camera;
 	Lighting lighting;
 	UIManager ui;
+
 public:
 	void Init(char** argv);
 	void EngineLoop();

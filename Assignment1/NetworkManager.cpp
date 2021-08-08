@@ -87,6 +87,11 @@ void NetworkManager::ShutDown()
 	}
 }
 
+bool NetworkManager::GetShutDownStatus() const
+{
+	return isShuttingDown;
+}
+
 const NetworkManager::PlayerArray& NetworkManager::GetPlayerData() const
 {
 	return players;
@@ -183,6 +188,14 @@ void NetworkManager::Send()
 	{
 		return;
 	}
+
+	SendPingPacket();
+	std::cout << std::endl;
+	std::cout << "Player 1: " << players[0].GetAveragePing() << std::endl;
+	std::cout << "Player 2: " << players[1].GetAveragePing() << std::endl;
+	std::cout << "Player 3: " << players[2].GetAveragePing() << std::endl;
+	std::cout << "Player 4: " << players[3].GetAveragePing() << std::endl;
+
 	bool isWPressed = Window::getKeyTriggered(GLFW_KEY_W);
 	bool isAPressed = Window::getKeyTriggered(GLFW_KEY_A);
 	bool isSPressed = Window::getKeyTriggered(GLFW_KEY_S);
@@ -522,7 +535,21 @@ void NetworkManager::UnpackPacket(
 	{
 		ProcessDisconnectNotification(sourceAddr);
 	}
-	
+	else if (packet->packetType == PacketType::PING_PACKET)
+	{
+		ProcessPingPacket(
+			*reinterpret_cast<PingPacket*>(buffer), sourceAddr);
+	}
+	else if (packet->packetType == PacketType::PING_REPLY)
+	{
+		ProcessPingReply(
+			*reinterpret_cast<PingReply*>(buffer), sourceAddr);
+	}
+	else if (packet->packetType == PacketType::FORCE_DISCONNECT)
+	{
+		ProcessForceDisconnection(
+			*reinterpret_cast<ForceDisconnectPacket*>(buffer));
+	}
 
 	else if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
 	{
@@ -633,6 +660,7 @@ void NetworkManager::ProcessConnectionReply(
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
 		players[localPlayerID].isConnected = true;
+		players[localPlayerID].missedPings = 0;
 		++connectedPlayers;
 
 		for (int i = 0; i < MAX_PEER; ++i)
@@ -651,6 +679,7 @@ void NetworkManager::ProcessConnectionReply(
 					&players[replyPacket.playerIndices[i]];
 
 				playerAddressMap[peerAddr]->isConnected = true;
+				playerAddressMap[peerAddr]->missedPings = 0;
 				++connectedPlayers;
 			}
 		}
@@ -692,6 +721,7 @@ void NetworkManager::ProcessConnectionConfirmation(
 	if (iter != playerAddressMap.end())
 	{
 		players[conConfirm.assignedID].isConnected = true;
+		players[conConfirm.assignedID].missedPings = 0;
 		++connectedPlayers;
 		iter->second = &players[conConfirm.assignedID];
 
@@ -750,6 +780,7 @@ void NetworkManager::ProcessConnectionNotification(ConnectionNotification& conNo
 	if (iter != playerAddressMap.end())
 	{
 		players[conNotif.joiningID].isConnected = true;
+		players[conNotif.joiningID].missedPings = 0;
 		++connectedPlayers;
 		iter->second = &players[conNotif.joiningID];
 
@@ -855,7 +886,9 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 {
 	auto iter = playerAddressMap.find(sourceAddr);
 
-	if (iter != playerAddressMap.end() && iter->second)
+	if (iter != playerAddressMap.end() &&
+		iter->second &&
+		iter->second->isConnected)
 	{
 		iter->second->isConnected = false;
 		--connectedPlayers;
@@ -897,6 +930,7 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
 		players[localPlayerID].isConnected = true;
+		players[localPlayerID].missedPings = 0;
 		++connectedPlayers;
 
 		for (int i = 0; i < MAX_PEER; ++i)
@@ -915,6 +949,7 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 					&players[replyPacket.playerIndices[i]];
 
 				playerAddressMap[peerAddr]->isConnected = true;
+				playerAddressMap[peerAddr]->missedPings = 0;
 				++connectedPlayers;
 			}
 		}
@@ -973,6 +1008,90 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 			}
 		}
 		GameState::SetState(GameState::State::STATE_GAMEPLAY);
+	}
+}
+
+void NetworkManager::ProcessPingPacket(
+	PingPacket& pingPacket, const SocketAddress& sourceAddr)
+{
+	pingPacket.NtoH();
+
+	PingReply pingReply{};
+	pingReply.pingIndex = pingPacket.pingIndex;
+
+	pingReply.HtoN();
+
+	// Send a ping reply immediately
+	sendto(
+		clientSocket,
+		reinterpret_cast<char*>(&pingReply),
+		sizeof(pingReply),
+		0,
+		&sourceAddr.sockAddr,
+		sizeof(sourceAddr.sockAddr));
+}
+
+void NetworkManager::ProcessPingReply(PingReply& pingReply, const SocketAddress& sourceAddr)
+{
+	pingReply.NtoH();
+
+	auto playerAddress = playerAddressMap.find(sourceAddr);
+
+	if (playerAddress != playerAddressMap.end())
+	{
+		--playerAddress->second->missedPings;
+
+		for (auto& pingData : playerAddress->second->latestPings)
+		{
+			if (pingData.index == pingReply.pingIndex)
+			{
+				pingData.end = std::chrono::system_clock::now();
+				break;
+			}
+		}
+	}
+}
+
+void NetworkManager::ProcessForceDisconnection(ForceDisconnectPacket& packet)
+{
+	packet.NtoH();
+
+	if (packet.playerID != localPlayerID)
+	{
+		if(players[packet.playerID].isConnected)
+		{
+			players[packet.playerID].isConnected = false;
+			--connectedPlayers;
+
+			if (packet.playerID == hostID)
+			{
+				for (int i = 0; i < MAX_PLAYER; ++i)
+				{
+					if (players[i].isConnected)
+					{
+						hostID = static_cast<unsigned short>(i);
+						break;
+					}
+				}
+			}
+
+			if (GameState::GetCurrentState() ==
+				GameState::State::STATE_LOBBY)
+			{
+				for (auto& playerAddress : playerAddressMap)
+				{
+					if (playerAddress.second - &players[0] == packet.playerID)
+					{
+						playerAddress.second = nullptr;
+						break;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		ShutDown();
 	}
 }
 
@@ -1069,5 +1188,80 @@ void NetworkManager::GenerateReconnectionReply(ReconnectionReply& replyPacket)
 	{
 		replyPacket.isConnected |= players[i - 1].isConnected << (i - 1);
 		replyPacket.latestPackets[i - 1] = players[i - 1].latestPacket;
+	}
+}
+
+void NetworkManager::SendPingPacket()
+{
+	pingTime += DeltaTime::GetDeltaTime();
+
+	if (pingTime >= PING_INTERVAL)
+	{
+		pingTime -= PING_INTERVAL;
+
+		PingPacket pingPacket{};
+
+		++players[localPlayerID].latestPingIndex;
+		pingPacket.pingIndex = players[localPlayerID].latestPingIndex;
+
+		for (auto& playerAddress : playerAddressMap)
+		{
+			if (playerAddress.second &&
+				playerAddress.second->isConnected)
+			{
+				unsigned int arrayIndex =
+					pingPacket.pingIndex % Player::PING_ARRAY_SIZE;
+
+				pingPacket.HtoN();
+
+				++playerAddress.second->missedPings;
+
+				if (playerAddress.second->missedPings > Player::MAX_MISSED_PING)
+				{
+					playerAddress.second->isConnected = false;
+					--connectedPlayers;
+
+					if (GameState::GetCurrentState() ==
+						GameState::State::STATE_LOBBY)
+					{
+						playerAddress.second = nullptr;
+					}
+
+					for (const auto& playerAddressInner : playerAddressMap)
+					{
+						ForceDisconnectPacket forceDisconnectPacket{};
+						forceDisconnectPacket.playerID =
+							static_cast<unsigned short>(
+								playerAddress.second - &players[0]);
+
+						forceDisconnectPacket.HtoN();
+
+						sendto(
+							clientSocket,
+							reinterpret_cast<char*>(&forceDisconnectPacket),
+							sizeof(forceDisconnectPacket),
+							0,
+							&playerAddressInner.first.sockAddr,
+							sizeof(playerAddressInner.first.sockAddr));
+					}
+				}
+				else
+				{
+					playerAddress.second->latestPings[arrayIndex].index =
+						pingPacket.pingIndex;
+
+					playerAddress.second->latestPings[arrayIndex].start =
+						std::chrono::system_clock::now();
+
+					sendto(
+						clientSocket,
+						reinterpret_cast<char*>(&pingPacket),
+						sizeof(pingPacket),
+						0,
+						&playerAddress.first.sockAddr,
+						sizeof(playerAddress.first.sockAddr));
+				}
+			}
+		}
 	}
 }

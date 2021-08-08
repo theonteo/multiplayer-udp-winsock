@@ -19,12 +19,25 @@ Technology is prohibited.
 
 #pragma once
 #include <string>
+#include <array>
+#include <chrono>
+#include "Packet.h"
 
 enum class MoveType : unsigned char;
+
+struct PingData
+{
+	unsigned int index{ 0 };
+	std::chrono::system_clock::time_point start{};
+	std::chrono::system_clock::time_point end{};
+};
 
 class Player
 {
 public:
+	static constexpr unsigned int PING_ARRAY_SIZE = 20;
+	static constexpr unsigned int MAX_MISSED_PING = 20;
+
 	//Flag to check if player is currently connected
 	bool isConnected{ false };
 
@@ -37,6 +50,15 @@ public:
 	//player score
 	int score{ 0 };
 
-	
+	//Counter to keep track of lasest ping index
+	unsigned int latestPingIndex{ 0 };
+
+	//Array to keep track of latest ping data
+	std::array<PingData, PING_ARRAY_SIZE> latestPings{ 0 };
+
+	//Counter to keep track of how many missed pings
+	unsigned int missedPings{ 0 };
+
+	float GetAveragePing();
 };
 
