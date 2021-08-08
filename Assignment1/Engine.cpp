@@ -67,6 +67,7 @@ Technology is prohibited.
 void Engine::Init(char** argv)
 {
 	network.Init(argv);
+	srand(369420);
 
 	std::thread loopThread(std::bind(&Engine::EngineLoop, this));
 	std::thread networkThread(std::bind(&Engine::NetworkLoop, this));

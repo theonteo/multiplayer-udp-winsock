@@ -32,6 +32,7 @@ namespace
 {
 	std::vector<std::string> names = { "Player 1", "Player 2", "Player 3", "Player 4" };
 	std::string clientName;
+	size_t winnerIndex = 0;
 }
 
 void  UIManager::InitPlayer(size_t playerID)
@@ -99,6 +100,8 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 
 	int circle =
 		Resource::Texture_List.find("Textures\\flag.png")->second->textureID;
+	int disconnected =
+		Resource::Texture_List.find("Textures\\disconnected.png")->second->textureID;
 
 	const auto& imageShader = Resource::Shader_List.find("Shaders\\shader_ui");
 
@@ -107,16 +110,16 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	for (const auto& i : data)
 	{
 		++playerNum;
-		if (!i.isConnected)
-			continue;
+
+		//if (i.score == 0 && !i.isConnected)
+		//	continue;
 
 		std::string playerScore
 		{ std::to_string(i.score) };
 
 		std::string playerText
 		{
-			"Player " + std::to_string(playerNum + 1) +
-			(!i.isConnected ? " not joined" : "")
+			"Player " + std::to_string(playerNum + 1)
 		};
 
 		const float padding = 0.075f;
@@ -131,22 +134,30 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		const auto colText = go->enabled ? glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) :
 			glm::vec4(1.0f, 0.7f, 0.7f, 0.9f);
 
+		if (!i.isConnected)
+		{
+			ImageRender::RenderQuad(disconnected, *imageShader->second,
+				(0.5f + (index - 2) * padding) + 0.05f,
+				0.81f - ((playerName == clientName) ? 0.05f : 0.0f), 0, 0, 0, size * 0.35f, size * 0.35f,
+				glm::vec4(color.x, color.y, color.z, flagAlpha));
+		}
+
 		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			(0.5f + (index - 2) * padding) + 0.05f,
-			0.95f	-((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+			0.95f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
 			glm::vec4(color.x, color.y, color.z, flagAlpha));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f , 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, i.score < 100 ? 0.575f : 0.475f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.875f - 
+			(0.5f + (index - 2) * padding) + 0.05f, 0.875f -
 		((playerName == clientName) ? 0.0175f : 0.0f), 0, 0.6f,
 			colText);
 
@@ -166,11 +177,32 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	}
 	else {
 
+		int score = data[0].score;
+
+		for (size_t i = 1; i < data.size(); ++i)
+		{
+			// Check if player connected
+			if (data[i].isConnected)
+			{
+				// Check if that player's score is higher than current
+				score = data[i].score > score ? data[i].score : score;
+				winnerIndex = data[i].score > data[winnerIndex].score ? i : winnerIndex;
+			}
+		}
+		const auto& winner =
+			GameObjectManager::GameObjectList.find(names[winnerIndex])->second;
+
+		const auto& c = col.find(names[winnerIndex])->second
+			* glm::vec3(0.5f, 0.5f, 0.5f) + glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+
 		//instructions
-		TextRender::RenderTextLight
-		(std::string{ "Eliminate all opponents to win the game" },
-			0.5f, 0.15f, 0, 0.65f,
-			glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		if (winner->score > 0)
+			TextRender::RenderTextLight
+			(std::string{ names[winnerIndex] + " is taking the lead!" },
+				0.5f, 0.1f, 0, 0.8f,
+				glm::vec4(c.x, c.y, c.z, 0.5f));
 	}
 }
 
@@ -186,7 +218,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 
 
 	// Find winner
-	size_t winnerIndex = 0;
+
 	int score = data[0].score;
 
 	for (size_t i = 1; i < data.size(); ++i)
@@ -196,7 +228,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 		{
 			// Check if that player's score is higher than current
 			score = data[i].score > score ? data[i].score : score;
-			winnerIndex = data[i].score > score ? i : winnerIndex;
+			winnerIndex = data[i].score > data[winnerIndex].score ? i : winnerIndex;
 		}
 	}
 
@@ -225,23 +257,23 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 			(!i.isConnected ? " not joined" : "")
 		};
 
-		const float padding = 0.075f;
+		const float padding = 0.115f;
 		const auto& color = col.find(playerName)->second;
 
 		ImageRender::RenderQuad(circle, *imageShader->second,
-			0.5f + (index - 2) * padding, 0.45f, 0, 0, 0, 100, 100,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0, 0, 100, 100,
 			glm::vec4(color.x, color.y, color.z, 1));
 
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			0.5f + (index - 2) * padding, 0.45f, 0, 0.65f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.45f, 0, 0.65f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
 		TextRender::RenderTextLight
 		(std::string{ playerText },
-			0.5f + (index - 2) * padding, 0.375f, 0, 0.6f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.375f, 0, 0.6f,
 			glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		index++;
 	}
