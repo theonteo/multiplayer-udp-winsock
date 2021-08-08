@@ -255,7 +255,7 @@ void Game::DeadReckoning(const float& delay)
 
 			player->counter += time;
 			
-			float Tprime = std::min(player->counter / 0.1f, 1.0f);
+			float Tprime = std::min(player->counter / 0.25f, 1.0f);
 
 			glm::vec3 blendedVel = player->clientVel + ((player->serverVel - player->clientVel) * Tprime);
 			glm::vec3 projPos = player->clientPos + (blendedVel * player->counter);
