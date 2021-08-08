@@ -62,16 +62,16 @@ struct Packet
 
 	Packet(PacketType _packetType);
 
-	virtual void NtoH() = 0;
-	virtual void HtoN() = 0;
+	void NtoH();
+	void HtoN();
 };
 
 struct ConnectionPacket : Packet
 {
 	ConnectionPacket();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct ConnectionReply : Packet
@@ -85,8 +85,8 @@ struct ConnectionReply : Packet
 
 	ConnectionReply();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct ConnectionConfirmation : Packet
@@ -95,8 +95,8 @@ struct ConnectionConfirmation : Packet
 
 	ConnectionConfirmation();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct ConnectionNotification : Packet
@@ -108,8 +108,8 @@ struct ConnectionNotification : Packet
 
 	ConnectionNotification();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct ReconnectionReply : Packet
@@ -132,8 +132,8 @@ struct ReconnectionReply : Packet
 
 	ReconnectionReply();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct DataPacket : Packet
@@ -144,16 +144,16 @@ struct DataPacket : Packet
 
 	DataPacket();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct InitiateLockstepPacket : Packet
 {
 	InitiateLockstepPacket();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct LockstepDataPacket : Packet
@@ -178,8 +178,8 @@ public:
 	unsigned short GetCollidingID() const;
 	unsigned short GetKey() const;
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct HashedDataPacket : Packet
@@ -189,16 +189,16 @@ struct HashedDataPacket : Packet
 	HashedDataPacket();
 	HashedDataPacket& operator=(const HashedDataPacket& rhs);
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct DisconnectNotification : Packet
 {
 	DisconnectNotification();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct PingPacket : Packet
@@ -207,8 +207,8 @@ struct PingPacket : Packet
 
 	PingPacket();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct PingReply : Packet
@@ -217,18 +217,18 @@ struct PingReply : Packet
 
 	PingReply();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 struct ForceDisconnectPacket : Packet
 {
-	unsigned short playerID;
+	unsigned short playerID{ 0 };
 
 	ForceDisconnectPacket();
 
-	virtual void NtoH() override;
-	virtual void HtoN() override;
+	void NtoH();
+	void HtoN();
 };
 
 namespace
