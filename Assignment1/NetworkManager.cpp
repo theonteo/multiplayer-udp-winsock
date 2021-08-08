@@ -50,14 +50,41 @@ NetworkManager::NetworkManager()
 
 NetworkManager::~NetworkManager()
 {
-	if (clientSocket != INVALID_SOCKET)
-	{
-		closesocket(clientSocket);
-		clientSocket = INVALID_SOCKET;
-	}
+	ShutDown();
+}
 
-	// WinSock cleanup
-	WSACleanup();
+void NetworkManager::ShutDown()
+{
+	if (!isShuttingDown)
+	{
+		isShuttingDown = true;
+
+		// Send shutdown notification to other clients
+		for (const auto& playerAddress : playerAddressMap)
+		{
+			DisconnectNotification disconnectNotif;
+
+			disconnectNotif.HtoN();
+
+			// Send a connection request to each of the other players
+			sendto(
+				clientSocket,
+				reinterpret_cast<char*>(&disconnectNotif),
+				sizeof(disconnectNotif),
+				0,
+				&playerAddress.first.sockAddr,
+				sizeof(playerAddress.first.sockAddr));
+		}
+
+		if (clientSocket != INVALID_SOCKET)
+		{
+			closesocket(clientSocket);
+			clientSocket = INVALID_SOCKET;
+		}
+
+		// WinSock cleanup
+		WSACleanup();
+	}
 }
 
 const NetworkManager::PlayerArray& NetworkManager::GetPlayerData() const
@@ -140,7 +167,6 @@ void NetworkManager::ConnectToPeers()
 			// Assume there is no existing "session"
 			// Start own "session"
 			localPlayerID = 0;
-			players[0].hasPreviouslyConnnected = true;
 			players[0].isConnected = true;
 			connectedPlayers = 1;
 			Game::InitPlayer(localPlayerID);
@@ -148,50 +174,6 @@ void NetworkManager::ConnectToPeers()
 		}
 	}
 }
-
-//void NetworkManager::Idle()
-//{
-//	//while (1)
-//	//{
-//	//	//check states of players for transition to gameplay
-//	//	switch (GameState::GetCurrentState())
-//	//	{
-//	//	case  GameState::State::STATE_LOBBY:
-//	//	{
-//	//		const auto& playerName = NetworkManager::GetPlayerData();
-//	//		int connectCount = 0;
-//	//		for (const auto& p : playerName)
-//	//		{
-//	//			if (p.connected)
-//	//				connectCount++;
-//	//		}
-//	//		if (connectCount >= START_PLAYER)
-//	//			GameState::SetState(GameState::State::STATE_GAMEPLAY);
-//	//	}
-//	//	break;
-//	//	case  GameState::State::STATE_GAMEPLAY:
-//	//	{
-//	//		const auto& playerName = NetworkManager::GetPlayerData();
-//	//		int deadCount = 0;
-//	//		int connectCount = 0;
-//	//		for (const auto& p : playerName)
-//	//		{
-//	//			if (p.connected)
-//	//				connectCount++;
-//	//
-//	//			if (p.connected && !p.alive)
-//	//				deadCount++;
-//	//		}
-//	//		//one winner left
-//	//		if (deadCount == connectCount-1)
-//	//			GameState::SetState(GameState::State::STATE_RESULTS);
-//	//	}
-//	//	break;
-//	//	}
-//	//
-//	//}
-//
-//}
 
 void NetworkManager::Send()
 {
@@ -277,7 +259,7 @@ void NetworkManager::Send()
 				timeoutCondition.wait_for(
 					timeoutLock,
 					std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
-					[&](){ return hashedDataReceived == connectedPlayers; });
+					[&]() { return hashedDataReceived == connectedPlayers; });
 			}
 
 			// Send back the actual action to everyoone
@@ -290,7 +272,7 @@ void NetworkManager::Send()
 				timeoutCondition.wait_for(
 					timeoutLock,
 					std::chrono::milliseconds(TIMEOUT_LOCKSTEP),
-					[&](){ return lockstepDataReceived == connectedPlayers; });
+					[&]() { return lockstepDataReceived == connectedPlayers; });
 			}
 
 			// Process all of the data
@@ -389,63 +371,11 @@ void NetworkManager::Send()
 			startedLockstep = false;
 		}
 	}
-
-	//const auto& playerName = NetworkManager::GetPlayerData();
-	//
-	////player container is empty ,don't send
-	//if (playerName.empty()) return;
-	//
-	////placeholder testing - change to proper packet next time
-	//const auto& iter =
-	//	GameObjectManager::GameObjectList.find(clientPlayer);
-	//
-	//
-	////cannot find own player gameobject , don't send
-	//if (iter == GameObjectManager::GameObjectList.end()) return;
-	//
-	////collate player data from gameobject
-	//auto& pl = playerData.find(clientPlayer)->second;
-	//pl.score = iter->second->score;
-	//
-	////placeholder
-	//MoveType type{ MoveType::MOVE_DOWN };
-	////send player data
-	//Packet packet
-	//{
-	//	clientPlayer.c_str(),
-	//	type,pl,iter->second->translate
-	//};
-	//
-	//
-	////check if other player gameobject is alive
-	//mutex.lock();
-	//for (auto& i : playerData)
-	//{
-	//	if (i.second.alive)
-	//	{
-	//		const auto& iter = GameObjectManager::GameObjectList.find
-	//		(i.second.portName);
-	//		if (iter == GameObjectManager::GameObjectList.end()) break;
-	//		if (i.second.connected && !iter->second->enabled)
-	//		{
-	//			strcpy(&packet.actionName[0], iter->first.c_str());
-	//			packet.actionLength = static_cast<int>(iter->first.size());
-	//			packet.moveType = MoveType::KILL;
-	//			i.second.alive = false;
-	//		}
-	//	}
-	//}
-	//mutex.unlock();
-	//
-	//
-	//
-	////send player info - for testing
-	//udp.SendBroadcast(packet);
 }
 
 void NetworkManager::Receive()
 {
-	while (true)
+	while (!isShuttingDown)
 	{
 		//keep receiving packet then process them accordingly
 		char buffer[MAX_PACKET_SIZE];
@@ -574,88 +504,34 @@ void NetworkManager::UnpackPacket(
 		ProcessConnectionNotification(
 			*reinterpret_cast<ConnectionNotification*>(buffer));
 	}
-	else if (packet->packetType == PacketType::DATA_PACKET)
+	else if (packet->packetType == PacketType::DISCONNECT_NOTIFICATION)
 	{
-		ProcessDataPacket(
-			*reinterpret_cast<DataPacket*>(buffer), sourceAddr);
+		ProcessDisconnectNotification(sourceAddr);
 	}
-	else if (packet->packetType == PacketType::INITIATE_LOCKSTEP)
-	{
-		ProcessInitiateLockstepPacket();
-	}
-	else if (packet->packetType == PacketType::LOCKSTEP_DATA)
-	{
-		ProcessLockstepDataPacket(
-			*reinterpret_cast<LockstepDataPacket*>(buffer), sourceAddr);
-	}
-	else if (packet->packetType == PacketType::HASHED_DATA)
-	{
-		ProcessHashedDataPacket(
-			*reinterpret_cast<HashedDataPacket*>(buffer), sourceAddr);
-	}
+	
 
-	////same person - return
-	//
-	//std::string temp
-	//{ packet.hostName,packet.hostName + packet.hostNameLength };
-	//
-	//
-	//
-	//mutex.lock();
-	//auto& pl = playerData.find(clientPlayer)->second;
-	//for (auto& i : playerData)
-	//{
-	//	//received an active player
-	//	if (i.second.portName == pl.portName ||
-	//		i.second.portName == packet.hostName)
-	//		i.second.connected = true;
-	//
-	//	if (i.second.portName == packet.hostName)
-	//	{
-	//		//temp - fix later - alive state
-	//		bool tempAlive = i.second.alive;
-	//		i.second = packet.playerData;
-	//		i.second.alive = tempAlive;
-	//	}
-	//
-	//	//check if killed
-	//	if (packet.moveType == MoveType::KILL)
-	//	{
-	//		std::string action
-	//		{ packet.actionName,(packet.actionName) + packet.actionLength };
-	//		if (i.second.alive && i.second.portName == action)
-	//		{
-	//			i.second.alive = false;
-	//			const auto& iter = GameObjectManager::GameObjectList.find(action);
-	//			iter->second->enabled = false;
-	//			std::cout << "killed" << std::endl;
-	//			break;
-	//		}
-	//
-	//
-	//	}
-	//
-	//	if (i.second.portName != packet.hostName)
-	//		i.second.connectionTimer += DeltaTime::GetDeltaTime();
-	//}
-	//mutex.unlock();
-	//if (GameObjectManager::GameObjectList.empty() ||
-	//	pl.portName == packet.hostName)
-	//{
-	//	return;
-	//}
-	//
-	//const auto& iter = GameObjectManager::GameObjectList.find(temp);
-	//
-	////cannot find player from gameobject container
-	//if (iter == GameObjectManager::GameObjectList.end())
-	//	return;
-	//
-	////update player position
-	//const auto& player = iter->second;
-	//
-	//player->score = packet.playerData.score;
-	//player->translate = packet.position;
+	else if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
+	{
+		if (packet->packetType == PacketType::DATA_PACKET)
+		{
+			ProcessDataPacket(
+				*reinterpret_cast<DataPacket*>(buffer), sourceAddr);
+		}
+		else if (packet->packetType == PacketType::INITIATE_LOCKSTEP)
+		{
+			ProcessInitiateLockstepPacket();
+		}
+		else if (packet->packetType == PacketType::LOCKSTEP_DATA)
+		{
+			ProcessLockstepDataPacket(
+				*reinterpret_cast<LockstepDataPacket*>(buffer), sourceAddr);
+		}
+		else if (packet->packetType == PacketType::HASHED_DATA)
+		{
+			ProcessHashedDataPacket(
+				*reinterpret_cast<HashedDataPacket*>(buffer), sourceAddr);
+		}
+	}
 }
 
 void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
@@ -681,7 +557,7 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 				unsigned short assignedID = 0;
 				for (unsigned short i = 0; i < MAX_PLAYER; ++i)
 				{
-					if (!players[i].hasPreviouslyConnnected)
+					if (!players[i].isConnected)
 					{
 						assignedID = i;
 						break;
@@ -756,7 +632,6 @@ void NetworkManager::ProcessConnectionReply(
 		localPlayerID = replyPacket.assignedID;
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
-		players[localPlayerID].hasPreviouslyConnnected = true;
 		players[localPlayerID].isConnected = true;
 		++connectedPlayers;
 
@@ -775,7 +650,6 @@ void NetworkManager::ProcessConnectionReply(
 				playerAddressMap[peerAddr] =
 					&players[replyPacket.playerIndices[i]];
 
-				playerAddressMap[peerAddr]->hasPreviouslyConnnected = true;
 				playerAddressMap[peerAddr]->isConnected = true;
 				++connectedPlayers;
 			}
@@ -817,7 +691,6 @@ void NetworkManager::ProcessConnectionConfirmation(
 	auto iter = playerAddressMap.find(sourceAddr);
 	if (iter != playerAddressMap.end())
 	{
-		players[conConfirm.assignedID].hasPreviouslyConnnected = true;
 		players[conConfirm.assignedID].isConnected = true;
 		++connectedPlayers;
 		iter->second = &players[conConfirm.assignedID];
@@ -876,7 +749,6 @@ void NetworkManager::ProcessConnectionNotification(ConnectionNotification& conNo
 
 	if (iter != playerAddressMap.end())
 	{
-		players[conNotif.joiningID].hasPreviouslyConnnected = true;
 		players[conNotif.joiningID].isConnected = true;
 		++connectedPlayers;
 		iter->second = &players[conNotif.joiningID];
@@ -969,5 +841,16 @@ void NetworkManager::ProcessHashedDataPacket(
 		{
 			timeoutCondition.notify_one();
 		}
+	}
+}
+
+void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAddr)
+{
+	auto iter = playerAddressMap.find(sourceAddr);
+
+	if (iter != playerAddressMap.end())
+	{
+		iter->second->isConnected = false;
+		--connectedPlayers;
 	}
 }

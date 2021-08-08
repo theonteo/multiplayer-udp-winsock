@@ -73,9 +73,14 @@ private:
 	std::array<std::pair<bool, LockstepDataPacket>, MAX_PLAYER> lockstepData;
 	int lockstepDataReceived = 0;
 
+	//Shutdown
+	bool isShuttingDown = false;
+
 public:
 	NetworkManager();
 	~NetworkManager();
+
+	void ShutDown();
 
 	const PlayerArray& GetPlayerData() const;
 
@@ -113,5 +118,7 @@ public:
 
 	void ProcessHashedDataPacket(
 		HashedDataPacket& dataPacket, const SocketAddress& sourceAddr);
+
+	void ProcessDisconnectNotification(const SocketAddress& sourceAddr);
 };
 
