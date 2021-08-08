@@ -999,6 +999,7 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 			players[i - 1].isConnected = replyPacket.isConnected & (1 << (i - 1));
 			players[i - 1].latestPacket = replyPacket.latestPackets[i - 1];
 			playerGO->score = replyPacket.scores[i - 1];
+			playerGO->translate = replyPacket.positions[i - 1];
 			playerGO->clientPos = replyPacket.positions[i - 1];
 			playerGO->serverPos = replyPacket.positions[i - 1];
 
