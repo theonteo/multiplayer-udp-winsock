@@ -918,7 +918,8 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 	}
 }
 
-void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, const SocketAddress& sourceAddr)
+void NetworkManager::ProcessReconnectionReply(
+	ReconnectionReply& replyPacket, const SocketAddress& sourceAddr)
 {
 	// Check if this client has already started its own session
 	if (localPlayerID == INVALID_ID)
@@ -934,9 +935,12 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 		hostID = replyPacket.hostID;
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
-		players[localPlayerID].isConnected = true;
-		players[localPlayerID].missedPings = 0;
-		++connectedPlayers;
+		if (!players[localPlayerID].isConnected)
+		{
+			players[localPlayerID].isConnected = true;
+			players[localPlayerID].missedPings = 0;
+			++connectedPlayers;
+		}
 
 		for (int i = 0; i < MAX_PEER; ++i)
 		{
