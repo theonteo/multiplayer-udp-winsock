@@ -110,11 +110,9 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	for (const auto& i : data)
 	{
 		++playerNum;
-		if (i.score==0&&!i.isConnected)
+
+		if (i.score == 0 && !i.isConnected)
 			continue;
-
-	
-
 
 		std::string playerScore
 		{ std::to_string(i.score) };
@@ -141,11 +139,9 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		{
 			ImageRender::RenderQuad(disconnected, *imageShader->second,
 				(0.5f + (index - 2) * padding) + 0.05f,
-				0.875f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+				0.81f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size * 0.35f, size * 0.35f,
 				glm::vec4(color.x, color.y, color.z, flagAlpha));
 		}
-
-
 
 		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
