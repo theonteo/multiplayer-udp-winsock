@@ -2,7 +2,7 @@
 /*!
 \file Spotlight.h
 
-\author Bryan Choo
+\author Choo Chi Keong Bryan
 \author Kevin Hartono
 \author Teo Zheng Yong Theon
 

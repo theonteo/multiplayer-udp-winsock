@@ -8,4 +8,7 @@
     <LocalDebuggerCommandArguments>localhost:2048 localhost:2049 localhost:2050 localhost:2051</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup>
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
 </Project>
