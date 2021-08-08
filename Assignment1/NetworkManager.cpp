@@ -919,10 +919,10 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 				GameObjectManager::GameObjectList.find(
 					"Player " + std::to_string(i))->second;
 
-			int index = MAX_FOOD + i;
+			int index = MAX_FOOD + i - 1;
 
 			playerGO->enabled =
-				replyPacket.isEnabled[index / 8 & (1 << (index % 8))];
+				replyPacket.isEnabled[index / 8] & (1 << (index % 8));
 
 			players[i - 1].score = replyPacket.scores[i - 1];
 			playerGO->score = replyPacket.scores[i - 1];
