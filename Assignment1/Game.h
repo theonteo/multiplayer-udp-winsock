@@ -41,5 +41,6 @@ public:
 
 	static float GetGameTime();
 	static void SetGameTime(float _gameTime);
+	static glm::vec3 CreateVectorFromFlag(unsigned char flag);
 };
 

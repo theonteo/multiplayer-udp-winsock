@@ -61,6 +61,11 @@ namespace
 	{
 		return (flag & static_cast<unsigned char>(direction)) != 0;
 	}
+
+	void PredictPosition(glm::vec3& position, const glm::vec3 velocity, const float dt)
+	{
+		position += velocity * dt;
+	}
 }
 
 NetworkManager* Game::network = nullptr;
@@ -245,28 +250,18 @@ void Game::DeadReckoning(const float& delay)
 				continue;
 
 			auto& player = itr->second;
-
 			const auto& flag = player->direction;
-			if (CheckMovementFlag(flag, DIRECTION::LEFT))
-			{
-				player->translate.x -=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::RIGHT))
-			{
-				player->translate.x +=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::UP))
-			{
-				player->translate.z -=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::DOWN))
-			{
-				player->translate.z +=
-					playerMoveSpeed * time;
-			}
+			glm::vec3 velocity = CreateVectorFromFlag(flag);
+
+			player->counter += time;
+			
+			float Tprime = std::min(player->counter / 0.1f, 1.0f);
+
+			glm::vec3 blendedVel = player->clientVel + ((player->serverVel - player->clientVel) * Tprime);
+			glm::vec3 projPos = player->clientPos + (blendedVel * player->counter);
+			glm::vec3 projServerPos = player->serverPos + (player->serverVel * player->counter);
+
+			player->translate = projPos + ((projServerPos - projPos) * Tprime);
 		}
 	}
 }
@@ -323,4 +318,31 @@ void Game::Update()
 				glm::vec2{ -45 , -135 },
 				interpolant));
 	}
+}
+
+glm::vec3 Game::CreateVectorFromFlag(unsigned char flag)
+{
+	glm::vec3 translate = glm::vec3(0, 0, 0);
+	if (CheckMovementFlag(flag, DIRECTION::LEFT))
+	{
+		translate.x -=
+			playerMoveSpeed;
+	}
+	if (CheckMovementFlag(flag, DIRECTION::RIGHT))
+	{
+		translate.x +=
+			playerMoveSpeed;
+	}
+	if (CheckMovementFlag(flag, DIRECTION::UP))
+	{
+		translate.z -=
+			playerMoveSpeed;
+	}
+	if (CheckMovementFlag(flag, DIRECTION::DOWN))
+	{
+		translate.z +=
+			playerMoveSpeed;
+	}
+
+	return translate;
 }

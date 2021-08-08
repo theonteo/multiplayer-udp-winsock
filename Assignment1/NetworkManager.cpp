@@ -792,8 +792,13 @@ void NetworkManager::ProcessDataPacket(
 			//update player position
 			const auto& player = goIter->second;
 
-			player->translate = dataPacket.position;
-			player->direction = dataPacket.moveInfo;
+			player->clientPos = player->translate;
+			player->clientVel = player->serverVel;
+
+			player->serverPos = dataPacket.position;
+			player->serverVel = Game::CreateVectorFromFlag(dataPacket.moveInfo);
+
+			player->counter = 0.0f;
 		}
 	}
 }
