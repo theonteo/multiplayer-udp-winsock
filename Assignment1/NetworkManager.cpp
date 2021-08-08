@@ -577,11 +577,10 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 	if (localPlayerID == hostID)
 	{
 		const auto& iter = playerAddressMap.find(sourceAddr);
-		if (iter != playerAddressMap.end() &&
-			!iter->second->isConnected)
+		if (iter != playerAddressMap.end())
 		{
 			// Check if client requesting to join has previously connected
-			if (iter->second)
+			if (iter->second && !iter->second->isConnected)
 			{
 				// Reconnect the player
 				unsigned short assignedID =
