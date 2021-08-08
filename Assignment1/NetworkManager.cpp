@@ -925,11 +925,21 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 				replyPacket.isEnabled[index / 8] & (1 << (index % 8));
 
 			players[i - 1].score = replyPacket.scores[i - 1];
+			players[i - 1].isConnected = replyPacket.isConnected & (1 << (i - 1));
 			playerGO->score = replyPacket.scores[i - 1];
 			playerGO->translate = replyPacket.positions[i - 1];
 			playerGO->direction = replyPacket.moveInfos[i - 1];
 		}
 
+		players[localPlayerID].isConnected = true;
+		connectedPlayers = 0;
+		for (int i = 0; i < MAX_PLAYER; ++i)
+		{
+			if (players[i].isConnected)
+			{
+				++connectedPlayers;
+			}
+		}
 		GameState::SetState(GameState::State::STATE_GAMEPLAY);
 	}
 }
@@ -1021,5 +1031,10 @@ void NetworkManager::GenerateReconnectionReply(ReconnectionReply& replyPacket)
 				replyPacket.isEnabled[i] |= (isEnabled[index + j] << j);
 			}
 		}
+	}
+
+	for (int i = 1; i <= MAX_PLAYER; ++i)
+	{
+		replyPacket.isConnected |= players[i - 1].isConnected << (i - 1);
 	}
 }

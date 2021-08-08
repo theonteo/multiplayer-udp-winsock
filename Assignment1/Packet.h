@@ -112,6 +112,7 @@ struct ConnectionNotification : Packet
 struct ReconnectionReply : Packet
 {
 	static constexpr int MAX_ENABLED = (MAX_FOOD + MAX_PLAYER) / 8 + 1;
+
 	unsigned short assignedID;
 	unsigned short playerIndices[MAX_PEER];
 	unsigned short ports[MAX_PEER];
@@ -119,6 +120,7 @@ struct ReconnectionReply : Packet
 
 	float gameTime = 0.0f;
 	char isEnabled[MAX_ENABLED]{ false };
+	char isConnected{ 0 };
 	unsigned short scores[MAX_PLAYER]{ 0 };
 	unsigned char moveInfos[MAX_PLAYER]{ 0 };
 	glm::vec3 positions[MAX_PLAYER]{};
