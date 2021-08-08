@@ -547,11 +547,13 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 			if (iter->second)
 			{
 				// Reconnect the player
-				// Set isConnected to true
+				iter->second->isConnected = true;
+
 				// Reply with a reconnection confirmation of some sort
 				// Maybe send the entire game data for the client to "catch up"
 			}
-			else
+			else if(GameState::GetCurrentState() ==
+				    GameState::State::STATE_LOBBY)
 			{
 				// Find an empty player slot
 				unsigned short assignedID = 0;
@@ -852,5 +854,11 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 	{
 		iter->second->isConnected = false;
 		--connectedPlayers;
+
+		if (GameState::GetCurrentState() ==
+			GameState::State::STATE_LOBBY)
+		{
+			playerAddressMap[sourceAddr] = nullptr;
+		}
 	}
 }

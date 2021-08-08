@@ -43,7 +43,7 @@ public:
 	static std::map<std::string, std::unique_ptr<Shader>>Shader_List;
 	static std::map<std::string, std::unique_ptr<Material>>Material_List;
 	static std::map<std::string, std::unique_ptr<Model>>Model_List;
-	static std::map<std::string, std::unique_ptr<Light>>Light_List;
+	static std::map<std::string, Light*>Light_List;
 
 	static Texture* Texture_Selected;
 	static Material* Material_Selected;
