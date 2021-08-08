@@ -203,7 +203,7 @@ struct DisconnectNotification : Packet
 
 struct PingPacket : Packet
 {
-	unsigned int pingIndex{ 0 };
+	unsigned long pingIndex{ 0 };
 
 	PingPacket();
 
@@ -213,7 +213,7 @@ struct PingPacket : Packet
 
 struct PingReply : Packet
 {
-	unsigned int pingIndex{ 0 };
+	unsigned long pingIndex{ 0 };
 
 	PingReply();
 

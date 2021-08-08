@@ -190,11 +190,6 @@ void NetworkManager::Send()
 	}
 
 	SendPingPacket();
-	std::cout << std::endl;
-	std::cout << "Player 1: " << players[0].GetAveragePing() << std::endl;
-	std::cout << "Player 2: " << players[1].GetAveragePing() << std::endl;
-	std::cout << "Player 3: " << players[2].GetAveragePing() << std::endl;
-	std::cout << "Player 4: " << players[3].GetAveragePing() << std::endl;
 
 	bool isWPressed = Window::getKeyTriggered(GLFW_KEY_W);
 	bool isAPressed = Window::getKeyTriggered(GLFW_KEY_A);
@@ -829,6 +824,11 @@ void NetworkManager::ProcessDataPacket(
 			player->serverPos = dataPacket.position;
 			player->serverVel = Game::CreateVectorFromFlag(dataPacket.moveInfo);
 
+			// Account for delay
+			// Multiply by half to get half of Roundtrip time
+			player->serverPos +=
+				player->serverVel * iter->second->GetAveragePing() * 0.5f;
+
 			player->counter = 0.0f;
 		}
 	}
@@ -1217,8 +1217,6 @@ void NetworkManager::SendPingPacket()
 				unsigned int arrayIndex =
 					pingPacket.pingIndex % Player::PING_ARRAY_SIZE;
 
-				pingPacket.HtoN();
-
 				++playerAddress.second->missedPings;
 
 				if (playerAddress.second->missedPings > Player::MAX_MISSED_PING)
@@ -1257,6 +1255,8 @@ void NetworkManager::SendPingPacket()
 
 					playerAddress.second->latestPings[arrayIndex].start =
 						std::chrono::system_clock::now();
+
+					pingPacket.HtoN();
 
 					sendto(
 						clientSocket,

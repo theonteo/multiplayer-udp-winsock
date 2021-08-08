@@ -25,7 +25,7 @@ float Player::GetAveragePing()
 
 	for (const auto& pingData : latestPings)
 	{
-		auto diff = pingData.end - pingData.start;
+		std::chrono::duration<double> diff = pingData.end - pingData.start;
 		result += diff.count();
 	}
 	

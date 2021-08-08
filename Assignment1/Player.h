@@ -27,7 +27,7 @@ enum class MoveType : unsigned char;
 
 struct PingData
 {
-	unsigned int index{ 0 };
+	unsigned long index{ 0 };
 	std::chrono::system_clock::time_point start{};
 	std::chrono::system_clock::time_point end{};
 };
