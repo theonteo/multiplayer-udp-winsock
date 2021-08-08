@@ -112,6 +112,7 @@ DataPacket::DataPacket() :
 
 void DataPacket::NtoH()
 {
+	packetNum = ntohl(packetNum);
 	position.x = ntohf(*reinterpret_cast<unsigned int*>(&position.x));
 	position.y = ntohf(*reinterpret_cast<unsigned int*>(&position.y));
 	position.z = ntohf(*reinterpret_cast<unsigned int*>(&position.z));
@@ -119,6 +120,7 @@ void DataPacket::NtoH()
 
 void DataPacket::HtoN()
 {
+	packetNum = htonl(packetNum);
 	unsigned int temp = htonf(position.x);
 	position.x = *reinterpret_cast<float*>(&temp);
 	temp = htonf(position.y);
@@ -252,6 +254,7 @@ void ReconnectionReply::NtoH()
 	
 	for (size_t i = 0; i < MAX_PLAYER; ++i)
 	{
+		latestPackets[i] = ntohl(latestPackets[i]);
 		scores[i] = ntohs(scores[i]);
 		positions[i].x = ntohf(*reinterpret_cast<unsigned int*>(&positions[i].x));
 		positions[i].y = ntohf(*reinterpret_cast<unsigned int*>(&positions[i].y));
@@ -274,6 +277,7 @@ void ReconnectionReply::HtoN()
 		
 	for (size_t i = 0; i < MAX_PLAYER; ++i)
 	{
+		latestPackets[i] = htonl(latestPackets[i]);
 		scores[i] = htons(scores[i]);
 		temp = htonf(positions[i].x);
 		positions[i].x = *reinterpret_cast<float*>(&temp);

@@ -208,6 +208,9 @@ void NetworkManager::Send()
 			Window::getKey(GLFW_KEY_D) *
 			static_cast<unsigned char>(MoveType::MOVE_RIGHT);
 
+		++players[localPlayerID].latestPacket;
+		dataPacket.packetNum = players[localPlayerID].latestPacket;
+
 		// Make sure that this client has a valid assigned ID
 		if (localPlayerID == INVALID_ID)
 		{
@@ -764,19 +767,26 @@ void NetworkManager::ProcessDataPacket(
 	auto iter = playerAddressMap.find(sourceAddr);
 	if (iter != playerAddressMap.end())
 	{
-		auto goIter =
-			GameObjectManager::GameObjectList.find(
-				"Player " + std::to_string((iter->second - &players[0]) + 1));
-		
-		//cannot find player from gameobject container
-		if (goIter == GameObjectManager::GameObjectList.end())
-			return;
-		
-		//update player position
-		const auto& player = goIter->second;
-		
-		player->translate = dataPacket.position;
-		player->direction = dataPacket.moveInfo;
+		// Ensure the we only process the latest packets
+		// Ignore outdated packets
+		if (dataPacket.packetNum > iter->second->latestPacket)
+		{
+			iter->second->latestPacket = dataPacket.packetNum;
+
+			auto goIter =
+				GameObjectManager::GameObjectList.find(
+					"Player " + std::to_string((iter->second - &players[0]) + 1));
+
+			//cannot find player from gameobject container
+			if (goIter == GameObjectManager::GameObjectList.end())
+				return;
+
+			//update player position
+			const auto& player = goIter->second;
+
+			player->translate = dataPacket.position;
+			player->direction = dataPacket.moveInfo;
+		}
 	}
 }
 
@@ -926,6 +936,7 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 
 			players[i - 1].score = replyPacket.scores[i - 1];
 			players[i - 1].isConnected = replyPacket.isConnected & (1 << (i - 1));
+			players[i - 1].latestPacket = replyPacket.latestPackets[i - 1];
 			playerGO->score = replyPacket.scores[i - 1];
 			playerGO->translate = replyPacket.positions[i - 1];
 			playerGO->direction = replyPacket.moveInfos[i - 1];
@@ -1036,5 +1047,6 @@ void NetworkManager::GenerateReconnectionReply(ReconnectionReply& replyPacket)
 	for (int i = 1; i <= MAX_PLAYER; ++i)
 	{
 		replyPacket.isConnected |= players[i - 1].isConnected << (i - 1);
+		replyPacket.latestPackets[i - 1] = players[i - 1].latestPacket;
 	}
 }

@@ -121,6 +121,7 @@ struct ReconnectionReply : Packet
 	float gameTime = 0.0f;
 	char isEnabled[MAX_ENABLED]{ false };
 	char isConnected{ 0 };
+	unsigned int latestPackets[MAX_PLAYER]{ 0 };
 	unsigned short scores[MAX_PLAYER]{ 0 };
 	unsigned char moveInfos[MAX_PLAYER]{ 0 };
 	glm::vec3 positions[MAX_PLAYER]{};
@@ -133,6 +134,7 @@ struct ReconnectionReply : Packet
 
 struct DataPacket : Packet
 {
+	unsigned int packetNum{ 0 };
 	unsigned char moveInfo{};
 	glm::vec3 position{};
 

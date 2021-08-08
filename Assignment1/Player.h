@@ -28,6 +28,9 @@ public:
 	//Flag to check if player is currently connected
 	bool isConnected{ false };
 
+	//Counter to keep track of latest packet index
+	unsigned int latestPacket{ 0 };
+
 	//connection timeout
 	float connectionTimer{ 0.0f };
 
