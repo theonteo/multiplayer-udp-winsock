@@ -74,6 +74,8 @@ void GameObjectManager::AddPlayer()
 		std::unique_ptr<GameObject> go = std::make_unique<GameObject>();
 		//set initial object
 		go->translate = glm::vec3(0.0f + (i * 2), 0.0f, 0.0f);
+		go->serverPos = go->translate;
+		go->clientPos = go->serverPos;
 		go->rotation = glm::vec3(0, 0, 0);
 		go->scale = glm::vec3(1, 1, 1);
 

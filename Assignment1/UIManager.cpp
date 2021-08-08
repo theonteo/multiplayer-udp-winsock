@@ -145,7 +145,8 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
 			(0.5f + (index - 2) * padding) + 0.05f,
-			0.95f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+			0.95f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0,
+			static_cast<float>(size), static_cast<float>(size),
 			glm::vec4(color.x, color.y, color.z, flagAlpha));
 
 		//point
