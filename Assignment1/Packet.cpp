@@ -51,6 +51,7 @@ ConnectionReply::ConnectionReply() :
 void ConnectionReply::NtoH()
 {
 	assignedID = ntohs(assignedID);
+	hostID = ntohs(hostID);
 
 	for (size_t i = 0; i < MAX_PEER; ++i)
 	{
@@ -62,6 +63,7 @@ void ConnectionReply::NtoH()
 void ConnectionReply::HtoN()
 {
 	assignedID = htons(assignedID);
+	hostID = htons(hostID);
 
 	for (size_t i = 0; i < MAX_PEER; ++i)
 	{
@@ -243,6 +245,7 @@ ReconnectionReply::ReconnectionReply() :
 void ReconnectionReply::NtoH()
 {
 	assignedID = ntohs(assignedID);
+	hostID = ntohs(hostID);
 
 	for (size_t i = 0; i < MAX_PEER; ++i)
 	{
@@ -265,6 +268,7 @@ void ReconnectionReply::NtoH()
 void ReconnectionReply::HtoN()
 {
 	assignedID = htons(assignedID);
+	hostID = htons(hostID);
 
 	for (size_t i = 0; i < MAX_PEER; ++i)
 	{

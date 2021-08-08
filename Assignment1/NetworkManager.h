@@ -58,6 +58,7 @@ private:
 	PlayerArray players;
 	int connectedPlayers = 0;
 	unsigned short localPlayerID = INVALID_ID;
+	unsigned short hostID = INVALID_ID;
 
 	// To wait for timeout
 	std::mutex timeoutMutex;

@@ -74,11 +74,12 @@ struct ConnectionPacket : Packet
 
 struct ConnectionReply : Packet
 {
-	unsigned short assignedID;
+	unsigned short assignedID{ 0 };
+	unsigned short hostID{ 0 };
 
-	unsigned short playerIndices[MAX_PEER];
-	unsigned short ports[MAX_PEER];
-	IN_ADDR ips[MAX_PEER];
+	unsigned short playerIndices[MAX_PEER]{ 0 };
+	unsigned short ports[MAX_PEER]{ 0 };
+	IN_ADDR ips[MAX_PEER]{};
 
 	ConnectionReply();
 
@@ -114,6 +115,7 @@ struct ReconnectionReply : Packet
 	static constexpr int MAX_ENABLED = (MAX_FOOD + MAX_PLAYER) / 8 + 1;
 
 	unsigned short assignedID;
+	unsigned short hostID{ 0 };
 	unsigned short playerIndices[MAX_PEER];
 	unsigned short ports[MAX_PEER];
 	IN_ADDR ips[MAX_PEER];

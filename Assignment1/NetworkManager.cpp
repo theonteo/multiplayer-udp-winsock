@@ -169,6 +169,7 @@ void NetworkManager::ConnectToPeers()
 			localPlayerID = 0;
 			players[0].isConnected = true;
 			connectedPlayers = 1;
+			hostID = 0;
 			Game::InitPlayer(localPlayerID);
 			UIManager::InitPlayer(localPlayerID);
 		}
@@ -546,7 +547,7 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 {
 	// Check if this client is the current host
 	// Only the host need to reply
-	if (localPlayerID == 0)	// Changer later to "== hostID"
+	if (localPlayerID == hostID)
 	{
 		const auto& iter = playerAddressMap.find(sourceAddr);
 		if (iter != playerAddressMap.end())
@@ -622,6 +623,7 @@ void NetworkManager::ProcessConnectionReply(
 
 		// Save this client's assigned ID
 		localPlayerID = replyPacket.assignedID;
+		hostID = replyPacket.hostID;
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
 		players[localPlayerID].isConnected = true;
@@ -847,10 +849,22 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 {
 	auto iter = playerAddressMap.find(sourceAddr);
 
-	if (iter != playerAddressMap.end())
+	if (iter != playerAddressMap.end() && iter->second)
 	{
 		iter->second->isConnected = false;
 		--connectedPlayers;
+
+		if (iter->second - &players[0] == hostID)
+		{
+			for (int i = 0; i < MAX_PLAYER; ++i)
+			{
+				if (players[i].isConnected)
+				{
+					hostID = i;
+					break;
+				}
+			}
+		}
 
 		if (GameState::GetCurrentState() ==
 			GameState::State::STATE_LOBBY)
@@ -873,6 +887,7 @@ void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, co
 
 		// Save this client's assigned ID
 		localPlayerID = replyPacket.assignedID;
+		hostID = replyPacket.hostID;
 		Game::InitPlayer(localPlayerID);
 		UIManager::InitPlayer(localPlayerID);
 		players[localPlayerID].isConnected = true;
@@ -966,7 +981,7 @@ void NetworkManager::GenerateConnectionReply(
 
 	replyPacket.ports[0] = ntohs(sockAddrPtr->sin_port);
 	replyPacket.ips[0] = sockAddrPtr->sin_addr;
-	replyPacket.playerIndices[0] = 0;
+	replyPacket.playerIndices[0] = localPlayerID;
 
 	int counter = 1;
 	for (const auto& playerAddress : playerAddressMap)
