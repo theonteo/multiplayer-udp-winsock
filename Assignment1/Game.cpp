@@ -157,6 +157,25 @@ void Game::MoveObject()
 				playerMoveSpeed * DeltaTime::GetDeltaTime();
 		}
 	}
+
+
+	float dt = DeltaTime::GetDeltaTime();
+
+	for (auto& itr : GameObjectManager::GameObjectList)
+	{
+		if (itr.second->enabled == false)
+			continue;
+
+		if (itr.first.find("item") == std::string::npos)
+			continue;
+
+		std::unique_ptr<GameObject>& item = itr.second;
+		
+		item->counter += dt;
+
+		float t = sinf(item->counter);
+		item->translate = item->point1 + (t * item->point2);
+	}
 }
 
 void Game::MoveLighting()
@@ -166,12 +185,12 @@ void Game::MoveLighting()
 		const auto& player = GameObjectManager::GameObjectList.find(names[i])->second;
 
 		//negative lighting if dead
-		const auto& colour = 
+		const auto& colour =
 			player->enabled ? col.find(names[i])->second : glm::vec3(-0.2f, -0.2f, -0.2f);
 
-		const auto pos = player->translate + glm::vec3(0, player->scale.x/2, 0);
+		const auto pos = player->translate + glm::vec3(0, player->scale.x / 2, 0);
 
-		Lighting::UpdatePointLight(i, colour, pos,player->scale.x* player->scale.x);
+		Lighting::UpdatePointLight(i, colour, pos, player->scale.x * player->scale.x);
 	}
 }
 
@@ -211,6 +230,9 @@ void Game::DeadReckoning(const float& delay)
 
 			//Safety, If the player is not in the object list. 
 			if (itr == GameObjectManager::GameObjectList.end())
+				continue;
+
+			if (itr->second->enabled == false)
 				continue;
 
 			auto& player = itr->second;
@@ -254,8 +276,8 @@ void Game::Update()
 
 		const auto& player =
 			GameObjectManager::GameObjectList.find(clientName)->second;
-			
-		range = player->scale.x * 4.0f;
+
+		range = (3 + player->scale.x) * 1.5f;
 
 		glm::vec3 append{ 0,range ,range };
 
@@ -285,7 +307,7 @@ void Game::Update()
 				cam->getCameraPosition(),
 				glm::vec3(30, 30, 30),
 				interpolant));
-				
+
 		cam->SetRotation(
 			MathHelper::Vec2Lerp(
 				cam->getCameraRotation(),
