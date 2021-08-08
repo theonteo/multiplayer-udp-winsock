@@ -100,6 +100,8 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 
 	int circle =
 		Resource::Texture_List.find("Textures\\flag.png")->second->textureID;
+	int disconnected =
+		Resource::Texture_List.find("Textures\\disconnected.png")->second->textureID;
 
 	const auto& imageShader = Resource::Shader_List.find("Shaders\\shader_ui");
 
@@ -108,8 +110,11 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	for (const auto& i : data)
 	{
 		++playerNum;
-		if (!i.isConnected)
+		if (i.score==0&&!i.isConnected)
 			continue;
+
+	
+
 
 		std::string playerScore
 		{ std::to_string(i.score) };
@@ -131,6 +136,16 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		const float flagAlpha = go->enabled ? 1.0f : 0.5f;
 		const auto colText = go->enabled ? glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) :
 			glm::vec4(1.0f, 0.7f, 0.7f, 0.9f);
+
+		if (!i.isConnected)
+		{
+			ImageRender::RenderQuad(disconnected, *imageShader->second,
+				(0.5f + (index - 2) * padding) + 0.05f,
+				0.875f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size, size,
+				glm::vec4(color.x, color.y, color.z, flagAlpha));
+		}
+
+
 
 		//flag
 		ImageRender::RenderQuad(circle, *imageShader->second,
