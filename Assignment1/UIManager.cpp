@@ -111,16 +111,15 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 	{
 		++playerNum;
 
-		if (i.score == 0 && !i.isConnected)
-			continue;
+		//if (i.score == 0 && !i.isConnected)
+		//	continue;
 
 		std::string playerScore
 		{ std::to_string(i.score) };
 
 		std::string playerText
 		{
-			"Player " + std::to_string(playerNum + 1) +
-			(!i.isConnected ? " not joined" : "")
+			"Player " + std::to_string(playerNum + 1)
 		};
 
 		const float padding = 0.075f;
@@ -139,7 +138,7 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		{
 			ImageRender::RenderQuad(disconnected, *imageShader->second,
 				(0.5f + (index - 2) * padding) + 0.05f,
-				0.81f - ((playerName == clientName) ? 0.01f : 0.0f), 0, 0, 0, size * 0.35f, size * 0.35f,
+				0.81f - ((playerName == clientName) ? 0.05f : 0.0f), 0, 0, 0, size * 0.35f, size * 0.35f,
 				glm::vec4(color.x, color.y, color.z, flagAlpha));
 		}
 
@@ -152,7 +151,7 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 		//point
 		TextRender::RenderTextNormal
 		(std::string{ playerScore },
-			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, 0.575f,
+			(0.5f + (index - 2) * padding) + 0.05f, 0.95f, 0, i.score < 100 ? 0.575f : 0.475f,
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//name
