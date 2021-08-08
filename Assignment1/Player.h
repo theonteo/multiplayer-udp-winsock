@@ -37,9 +37,6 @@ public:
 	//player score
 	int score{ 0 };
 
-	//alive / dead
-	bool alive{ true };
-
-	MoveType moveType;
+	
 };
 

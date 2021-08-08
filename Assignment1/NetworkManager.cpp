@@ -561,7 +561,8 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 			if (iter->second)
 			{
 				// Reconnect the player
-				unsigned short assignedID = iter->second - &players[0];
+				unsigned short assignedID =
+					static_cast<unsigned short>(iter->second - &players[0]);
 
 				ReconnectionReply reconPacket;
 
@@ -865,7 +866,7 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 			{
 				if (players[i].isConnected)
 				{
-					hostID = i;
+					hostID = static_cast<unsigned short>(i);
 					break;
 				}
 			}
@@ -1026,7 +1027,7 @@ void NetworkManager::GenerateReconnectionReply(ReconnectionReply& replyPacket)
 			GameObjectManager::GameObjectList.find(
 				"Player " + std::to_string(i))->second;
 
-		replyPacket.scores[i - 1] = iter->score;
+		replyPacket.scores[i - 1] = static_cast<unsigned short>(iter->score);
 		replyPacket.moveInfos[i - 1] = iter->direction;
 		replyPacket.positions[i - 1] = iter->translate;
 	}
