@@ -22,6 +22,8 @@ Technology is prohibited.
 
 #include <glm.hpp>
 
+#include "KinematicState.h"
+
 class Model;
 class Shader;
 class Material;
@@ -46,8 +48,12 @@ public:
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 scale = glm::vec3(0, 0, 0);
 	glm::vec3 colour = glm::vec3(1, 1, 1);
-	glm::vec3 point1 = glm::vec3(0, 0, 0);
-	glm::vec3 point2 = glm::vec3(0, 0, 0);
+	glm::vec3 point1 = glm::vec3(0, 0, 0);	//used for Non-playable agents
+	glm::vec3 point2 = glm::vec3(0, 0, 0);	//used for Non-playable agents
+
+	glm::vec3 velocity = glm::vec3(0, 0, 0);
+	KinematicState oldState;
+	KinematicState newState;
 
 	float counter{ 0.0 };
 	std::string GameObjectName;

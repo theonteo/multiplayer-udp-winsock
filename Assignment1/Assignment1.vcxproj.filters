@@ -304,5 +304,8 @@
     <ClInclude Include="MathHelper.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="KinematicState.h">
+      <Filter>GamePlay</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,6 +21,9 @@ Technology is prohibited.
 
 #include <string>
 #include <vector>
+
+#include "KinematicState.h"
+#include "GameObject.h"
 #include "NetworkManager.h"
 
 class Game
@@ -31,11 +34,18 @@ class Game
 	static void MoveObject();
 	static void MoveLighting();
 	static void DeadReckoning(const float& delay = 0.05f);
+	static void BlendKinematicState(KinematicState& oldState,
+		KinematicState& newState,
+		const float percentageToNew);
 
 public:
 	static void CheckState();
 	static void Init(NetworkManager* _network);
 	static void Update();
 	static void InitPlayer(size_t playerID);
+
+	static void UpdateDeadReckoning(const std::unique_ptr<GameObject>& player,
+		const glm::vec3& position,
+		const unsigned char& flag);
 };
 

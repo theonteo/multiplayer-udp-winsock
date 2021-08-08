@@ -296,6 +296,7 @@ XCOPY "$(SolutionDir)Assignment1\Textures" "$(TargetDir)\Textures\" /S /Y</Comma
     <ClInclude Include="GameObjectManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Interface.h" />
+    <ClInclude Include="KinematicState.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="NetworkManager.h" />

@@ -22,6 +22,7 @@ Technology is prohibited.
 #include "Resource.h"
 #include "Camera.h"
 #include "MathHelper.h"
+#include "GameObject.h"
 #include "GameObjectManager.h"
 #include "Window.h"
 #include "DeltaTime.h"
@@ -60,6 +61,38 @@ namespace
 	bool CheckMovementFlag(const unsigned char& flag, const DIRECTION& direction)
 	{
 		return (flag & static_cast<unsigned char>(direction)) != 0;
+	}
+
+	glm::vec3 CreateVector(const unsigned char& flag)
+	{
+		glm::vec3 translate = glm::vec3(0, 0, 0);
+		if (CheckMovementFlag(flag, DIRECTION::LEFT))
+		{
+			translate.x -=
+				playerMoveSpeed;
+		}
+		if (CheckMovementFlag(flag, DIRECTION::RIGHT))
+		{
+			translate.x +=
+				playerMoveSpeed;
+		}
+		if (CheckMovementFlag(flag, DIRECTION::UP))
+		{
+			translate.z -=
+				playerMoveSpeed;
+		}
+		if (CheckMovementFlag(flag, DIRECTION::DOWN))
+		{
+			translate.z +=
+				playerMoveSpeed;
+		}
+
+		return translate;
+	}
+
+	void PredictPosition(glm::vec3& position, const glm::vec3& velocity, const float& time)
+	{
+		position += velocity * time;
 	}
 }
 
@@ -216,49 +249,31 @@ void Game::Init(NetworkManager* _network)
 //Delay is in seconds
 void Game::DeadReckoning(const float& delay)
 {
-	if (GameState::GetCurrentState() == GameState::State::STATE_GAMEPLAY)
+	if (GameState::GetCurrentState() != GameState::State::STATE_GAMEPLAY)
+		return;
+
+	const float time = delay + DeltaTime::GetDeltaTime();
+	for (auto& name : names)
 	{
-		const float time = delay + DeltaTime::GetDeltaTime();
-		for (auto& name : names)
-		{
-			//If name is the client. don't dead reckon.
-			if (name == clientName)
-				continue;
+		//If name is the client. don't dead reckon.
+		if (name == clientName)
+			continue;
 
-			const auto& itr =
-				GameObjectManager::GameObjectList.find(name);
+		const auto& itr =
+			GameObjectManager::GameObjectList.find(name);
 
-			//Safety, If the player is not in the object list. 
-			if (itr == GameObjectManager::GameObjectList.end())
-				continue;
+		//Safety, If the player is not in the object list. 
+		if (itr == GameObjectManager::GameObjectList.end())
+			continue;
 
-			if (itr->second->enabled == false)
-				continue;
+		if (itr->second->enabled == false)
+			continue;
 
-			auto& player = itr->second;
+		auto& player = itr->second;
+		auto& flag = player->direction;
+		glm::vec3 velocity = CreateVector(flag);
 
-			const auto& flag = player->direction;
-			if (CheckMovementFlag(flag, DIRECTION::LEFT))
-			{
-				player->translate.x -=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::RIGHT))
-			{
-				player->translate.x +=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::UP))
-			{
-				player->translate.z -=
-					playerMoveSpeed * time;
-			}
-			if (CheckMovementFlag(flag, DIRECTION::DOWN))
-			{
-				player->translate.z +=
-					playerMoveSpeed * time;
-			}
-		}
+		PredictPosition(player->translate, velocity, time);
 	}
 }
 
@@ -314,4 +329,25 @@ void Game::Update()
 				glm::vec2{ -45 , -135 },
 				interpolant));
 	}
+}
+
+
+void Game::UpdateDeadReckoning(const std::unique_ptr<GameObject>& player,
+	const glm::vec3& position,
+	const unsigned char& flag)
+{
+	KinematicState newState = player->newState;
+	KinematicState oldState = player->oldState;
+
+	oldState = newState;
+
+	newState.translate = position;
+	newState.velocity = CreateVector(flag);
+}
+
+void Game::BlendKinematicState(KinematicState& oldState,
+	KinematicState& newState,
+	const float percentageToNew)
+{
+
 }
