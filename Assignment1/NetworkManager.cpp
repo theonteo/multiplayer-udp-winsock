@@ -577,7 +577,8 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 	if (localPlayerID == hostID)
 	{
 		const auto& iter = playerAddressMap.find(sourceAddr);
-		if (iter != playerAddressMap.end())
+		if (iter != playerAddressMap.end() &&
+			!iter->second->isConnected)
 		{
 			// Check if client requesting to join has previously connected
 			if (iter->second)
