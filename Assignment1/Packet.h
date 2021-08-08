@@ -38,6 +38,7 @@ enum class PacketType : unsigned char
 	INITIATE_LOCKSTEP,
 	LOCKSTEP_DATA,
 	HASHED_DATA,
+	DISCONNECT_NOTIFICATION,
 
 	NUM_OF_PACKET_TYPES			// Must be last
 };
@@ -164,6 +165,14 @@ struct HashedDataPacket : Packet
 	virtual void HtoN() override;
 };
 
+struct DisconnectNotification : Packet
+{
+	DisconnectNotification();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
 namespace
 {
 	constexpr std::array
@@ -179,7 +188,8 @@ namespace
 		sizeof(DataPacket),
 		sizeof(InitiateLockstepPacket),
 		sizeof(LockstepDataPacket),
-		sizeof(HashedDataPacket)
+		sizeof(HashedDataPacket),
+		sizeof(DisconnectNotification)
 	};
 }
 

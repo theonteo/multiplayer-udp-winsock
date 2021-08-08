@@ -216,3 +216,19 @@ void HashedDataPacket::HtoN()
 {
 	hashedData = htonll(hashedData);
 }
+
+DisconnectNotification::DisconnectNotification() :
+	Packet{ PacketType::DISCONNECT_NOTIFICATION }
+{
+	// Nothing to do here
+}
+
+void DisconnectNotification::NtoH()
+{
+	// Nothing to do here
+}
+
+void DisconnectNotification::HtoN()
+{
+	// Nothing to do here
+}

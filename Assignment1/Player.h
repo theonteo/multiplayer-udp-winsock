@@ -25,9 +25,6 @@ enum class MoveType : unsigned char;
 class Player
 {
 public:
-	// Flag to check if player has previously connected
-	bool hasPreviouslyConnnected{ false };
-
 	//Flag to check if player is currently connected
 	bool isConnected{ false };
 

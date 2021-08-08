@@ -159,6 +159,7 @@ void Engine::Loop()
 			interface_game.ShowMainUI();
 		mainWindow.swapBuffers();
 	}
+	network.ShutDown();
 }
 
 NetworkManager* Engine::GetNetworkManager()
