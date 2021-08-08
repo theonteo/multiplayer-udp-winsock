@@ -178,6 +178,11 @@ void NetworkManager::ConnectToPeers()
 
 void NetworkManager::Send()
 {
+	if (localPlayerID == INVALID_ID ||
+		!players[localPlayerID].isConnected)
+	{
+		return;
+	}
 	bool isWPressed = Window::getKeyTriggered(GLFW_KEY_W);
 	bool isAPressed = Window::getKeyTriggered(GLFW_KEY_A);
 	bool isSPressed = Window::getKeyTriggered(GLFW_KEY_S);
