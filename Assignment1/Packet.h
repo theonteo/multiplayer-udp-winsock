@@ -74,9 +74,6 @@ struct Packet
 	const PacketType packetType;
 
 	Packet(PacketType _packetType);
-
-	void NtoH();
-	void HtoN();
 };
 
 struct ConnectionPacket : Packet
