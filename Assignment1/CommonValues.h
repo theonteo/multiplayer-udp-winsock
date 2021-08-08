@@ -24,6 +24,8 @@ constexpr int START_PLAYER = 4;
 constexpr int MAX_PLAYER = 4;
 constexpr int MAX_PEER = MAX_PLAYER - 1;
 
+constexpr int MAX_FOOD = 250;
+
 constexpr int MAX_POINT_LIGHTS = 4;
 constexpr int MAX_SPOT_LIGHTS = 3;
 

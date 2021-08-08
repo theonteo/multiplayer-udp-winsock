@@ -26,6 +26,7 @@ Technology is prohibited.
 class Game
 {
 	static NetworkManager* network;
+	static float gameTime;
 
 	static void Interaction();
 	static void MoveObject();
@@ -37,5 +38,8 @@ public:
 	static void Init(NetworkManager* _network);
 	static void Update();
 	static void InitPlayer(size_t playerID);
+
+	static float GetGameTime();
+	static void SetGameTime(float _gameTime);
 };
 

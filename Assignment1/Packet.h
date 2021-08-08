@@ -25,18 +25,17 @@ Technology is prohibited.
 #include <array>
 #include <algorithm>
 #include <random>
+#include <bitset>
 #include "Player.h"
 #include "CommonValues.h"
 
 enum class PacketType : unsigned char
 {
-	CONNECTION_REQUEST = 1,
+	CONNECTION_REQUEST = 0,
 	CONNECTION_REPLY,
 	CONNECTION_CONFIRMATION,
 	CONNECTION_NOTIFICATION,
 	RECONNECTION_REPLY,
-	RECONNECTION_CONFIRMATION,
-	RECONNECTION_NOTIFICATION,
 	DATA_PACKET,
 	INITIATE_LOCKSTEP,
 	LOCKSTEP_DATA,
@@ -110,6 +109,26 @@ struct ConnectionNotification : Packet
 	virtual void HtoN() override;
 };
 
+struct ReconnectionReply : Packet
+{
+	static constexpr int MAX_ENABLED = (MAX_FOOD + MAX_PLAYER) / 8 + 1;
+	unsigned short assignedID;
+	unsigned short playerIndices[MAX_PEER];
+	unsigned short ports[MAX_PEER];
+	IN_ADDR ips[MAX_PEER];
+
+	float gameTime = 0.0f;
+	char isEnabled[MAX_ENABLED]{ false };
+	unsigned short scores[MAX_PLAYER]{ 0 };
+	unsigned char moveInfos[MAX_PLAYER]{ 0 };
+	glm::vec3 positions[MAX_PLAYER]{};
+
+	ReconnectionReply();
+
+	virtual void NtoH() override;
+	virtual void HtoN() override;
+};
+
 struct DataPacket : Packet
 {
 	unsigned char moveInfo{};
@@ -155,8 +174,6 @@ public:
 	virtual void HtoN() override;
 };
 
-
-
 struct HashedDataPacket : Packet
 {
 	size_t hashedData{};
@@ -186,6 +203,7 @@ namespace
 	{
 		sizeof(ConnectionPacket),
 		sizeof(ConnectionReply),
+		sizeof(ReconnectionReply),
 		sizeof(ConnectionConfirmation),
 		sizeof(ConnectionNotification),
 		sizeof(DataPacket),

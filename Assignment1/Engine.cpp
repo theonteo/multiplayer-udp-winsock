@@ -69,6 +69,8 @@ void Engine::Init(char** argv)
 	network.Init(argv);
 	srand(369420);
 
+	GameObjectManager::Create();
+
 	std::thread loopThread(std::bind(&Engine::EngineLoop, this));
 	std::thread networkThread(std::bind(&Engine::NetworkLoop, this));
 
@@ -109,7 +111,6 @@ void Engine::EngineLoop()
 	Lighting::init();
 	Render::Init();
 	ui.Init();
-	GameObjectManager::Create();
 	Game::Init(&network);
 	Loop();
 

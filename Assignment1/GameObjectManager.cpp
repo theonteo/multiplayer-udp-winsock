@@ -20,6 +20,8 @@ Technology is prohibited.
 #include "GameObjectManager.h"
 #include "Resource.h"
 #include <Colors.h>
+#include "CommonValues.h"
+
 std::map<std::string, std::unique_ptr<GameObject>>
 GameObjectManager::GameObjectList;
 
@@ -91,7 +93,7 @@ void GameObjectManager::AddPlayer()
 
 void GameObjectManager::AddScatterObjects()
 {
-	for (size_t i = 0; i < 250; ++i)
+	for (size_t i = 0; i < MAX_FOOD; ++i)
 	{
 		float x = static_cast<float>(((rand() % 100) - 50)) * 1.25f;
 		float z = static_cast<float>(((rand() % 100) - 50)) * 1.25f;

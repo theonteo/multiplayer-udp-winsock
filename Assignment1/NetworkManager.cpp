@@ -504,6 +504,11 @@ void NetworkManager::UnpackPacket(
 		ProcessConnectionNotification(
 			*reinterpret_cast<ConnectionNotification*>(buffer));
 	}
+	else if (packet->packetType == PacketType::RECONNECTION_REPLY)
+	{
+		ProcessReconnectionReply(
+			*reinterpret_cast<ReconnectionReply*>(buffer), sourceAddr);
+	}
 	else if (packet->packetType == PacketType::DISCONNECT_NOTIFICATION)
 	{
 		ProcessDisconnectNotification(sourceAddr);
@@ -547,10 +552,26 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 			if (iter->second)
 			{
 				// Reconnect the player
-				iter->second->isConnected = true;
+				unsigned short assignedID = iter->second - &players[0];
 
-				// Reply with a reconnection confirmation of some sort
-				// Maybe send the entire game data for the client to "catch up"
+				ReconnectionReply reconPacket;
+
+				GenerateConnectionReply(
+					*reinterpret_cast<ConnectionReply*>(&reconPacket),
+					sourceAddr,
+					assignedID);
+
+				GenerateReconnectionReply(reconPacket);
+
+				reconPacket.HtoN();
+
+				sendto(
+					clientSocket,
+					reinterpret_cast<char*>(&reconPacket),
+					sizeof(reconPacket),
+					0,
+					&sourceAddr.sockAddr,
+					sizeof(sourceAddr.sockAddr));
 			}
 			else if(GameState::GetCurrentState() ==
 				    GameState::State::STATE_LOBBY)
@@ -568,41 +589,7 @@ void NetworkManager::ProcessConnectionRequest(const SocketAddress& sourceAddr)
 
 				// Send a connection reply to the player that requested to join
 				ConnectionReply replyPacket;
-
-				const sockaddr_in* sockAddrPtr =
-					reinterpret_cast<const sockaddr_in*>(
-						&localSocketAddr.sockAddr);
-
-				replyPacket.ports[0] = ntohs(sockAddrPtr->sin_port);
-				replyPacket.ips[0] = sockAddrPtr->sin_addr;
-				replyPacket.playerIndices[0] = 0;
-
-				int counter = 1;
-				for (const auto& playerAddress : playerAddressMap)
-				{
-					if (playerAddress.first != sourceAddr)
-					{
-						sockAddrPtr =
-							reinterpret_cast<const sockaddr_in*>(
-								&playerAddress.first.sockAddr);
-
-						replyPacket.assignedID = assignedID;
-
-						replyPacket.playerIndices[counter] =
-							playerAddress.second == nullptr ?
-							INVALID_ID :
-							static_cast<unsigned short>(
-								playerAddress.second - players.data());
-
-						replyPacket.ports[counter] =
-							ntohs(sockAddrPtr->sin_port);
-
-						replyPacket.ips[counter] = sockAddrPtr->sin_addr;
-
-
-						++counter;
-					}
-				}
+				GenerateConnectionReply(replyPacket, sourceAddr, assignedID);
 
 				replyPacket.HtoN();
 
@@ -859,6 +846,180 @@ void NetworkManager::ProcessDisconnectNotification(const SocketAddress& sourceAd
 			GameState::State::STATE_LOBBY)
 		{
 			playerAddressMap[sourceAddr] = nullptr;
+		}
+	}
+}
+
+void NetworkManager::ProcessReconnectionReply(ReconnectionReply& replyPacket, const SocketAddress& sourceAddr)
+{
+	// Check if this client has already started its own session
+	if (localPlayerID == INVALID_ID)
+	{
+		replyPacket.NtoH();
+
+		// Notify lock
+		receivedConnectionReply = true;
+		timeoutCondition.notify_one();
+
+		// Save this client's assigned ID
+		localPlayerID = replyPacket.assignedID;
+		Game::InitPlayer(localPlayerID);
+		UIManager::InitPlayer(localPlayerID);
+		players[localPlayerID].isConnected = true;
+		++connectedPlayers;
+
+		for (int i = 0; i < MAX_PEER; ++i)
+		{
+			if (replyPacket.playerIndices[i] != INVALID_ID)
+			{
+				sockaddr_in sockAddr;
+				sockAddr.sin_addr = replyPacket.ips[i];
+				sockAddr.sin_port = htons(replyPacket.ports[i]);
+				SocketAddress peerAddr
+				{
+					*reinterpret_cast<sockaddr*>(&sockAddr)
+				};
+
+				playerAddressMap[peerAddr] =
+					&players[replyPacket.playerIndices[i]];
+
+				playerAddressMap[peerAddr]->isConnected = true;
+				++connectedPlayers;
+			}
+		}
+
+		// Send connection confirmation
+		ConnectionConfirmation conConfirm;
+		conConfirm.assignedID = replyPacket.assignedID;
+		conConfirm.HtoN();
+
+		sendto(
+			clientSocket,
+			reinterpret_cast<char*>(&conConfirm),
+			sizeof(ConnectionConfirmation),
+			0,
+			&sourceAddr.sockAddr,
+			sizeof(sourceAddr.sockAddr));
+
+		Game::SetGameTime(replyPacket.gameTime);
+
+		for (int i = 0; i < MAX_FOOD; ++i)
+		{
+			auto& foodGO =
+				GameObjectManager::GameObjectList.find(
+					"item " + std::to_string(i))->second;
+			
+			foodGO->enabled =
+				replyPacket.isEnabled[i / 8] & (1 << (i % 8));
+		}
+
+		for (int i = 1; i <= MAX_PLAYER; ++i)
+		{
+			const auto& playerGO =
+				GameObjectManager::GameObjectList.find(
+					"Player " + std::to_string(i))->second;
+
+			int index = MAX_FOOD + i;
+
+			playerGO->enabled =
+				replyPacket.isEnabled[index / 8 & (1 << (index % 8))];
+
+			players[i - 1].score = replyPacket.scores[i - 1];
+			playerGO->score = replyPacket.scores[i - 1];
+			playerGO->translate = replyPacket.positions[i - 1];
+			playerGO->direction = replyPacket.moveInfos[i - 1];
+		}
+
+		GameState::SetState(GameState::State::STATE_GAMEPLAY);
+	}
+}
+
+void NetworkManager::GenerateConnectionReply(
+	ConnectionReply& replyPacket,
+	const SocketAddress& sourceAddr,
+	unsigned short assignedID)
+{
+	const sockaddr_in* sockAddrPtr =
+		reinterpret_cast<const sockaddr_in*>(
+			&localSocketAddr.sockAddr);
+
+	replyPacket.ports[0] = ntohs(sockAddrPtr->sin_port);
+	replyPacket.ips[0] = sockAddrPtr->sin_addr;
+	replyPacket.playerIndices[0] = 0;
+
+	int counter = 1;
+	for (const auto& playerAddress : playerAddressMap)
+	{
+		if (playerAddress.first != sourceAddr)
+		{
+			sockAddrPtr =
+				reinterpret_cast<const sockaddr_in*>(
+					&playerAddress.first.sockAddr);
+
+			replyPacket.assignedID = assignedID;
+
+			replyPacket.playerIndices[counter] =
+				playerAddress.second == nullptr ?
+				INVALID_ID :
+				static_cast<unsigned short>(
+					playerAddress.second - players.data());
+
+			replyPacket.ports[counter] =
+				ntohs(sockAddrPtr->sin_port);
+
+			replyPacket.ips[counter] = sockAddrPtr->sin_addr;
+
+
+			++counter;
+		}
+	}
+}
+
+void NetworkManager::GenerateReconnectionReply(ReconnectionReply& replyPacket)
+{
+	replyPacket.gameTime = Game::GetGameTime();
+
+	for (int i = 1; i <= MAX_PLAYER; ++i)
+	{
+		const auto& iter =
+			GameObjectManager::GameObjectList.find(
+				"Player " + std::to_string(i))->second;
+
+		replyPacket.scores[i - 1] = iter->score;
+		replyPacket.moveInfos[i - 1] = iter->direction;
+		replyPacket.positions[i - 1] = iter->translate;
+	}
+
+	// Copy the enabled data
+	std::bitset<MAX_FOOD + MAX_PLAYER> isEnabled;
+	for (int i = 0; i < MAX_FOOD; ++i)
+	{
+		const auto& iter =
+			GameObjectManager::GameObjectList.find(
+				"item " + std::to_string(i))->second;
+
+		isEnabled[i] = iter->enabled;
+	}
+
+	for (int i = 1; i <= MAX_PLAYER; ++i)
+	{
+		const auto& iter =
+			GameObjectManager::GameObjectList.find(
+				"Player " + std::to_string(i))->second;
+
+		isEnabled[MAX_FOOD + i - 1] = iter->enabled;
+	}
+
+	for (int i = 0; i < ReconnectionReply::MAX_ENABLED; ++i)
+	{
+		int index = i * 8;
+
+		for (int j = 0; j < 8; ++j)
+		{
+			if (index + j < MAX_FOOD + MAX_PLAYER)
+			{
+				replyPacket.isEnabled[i] |= (isEnabled[index + j] << j);
+			}
 		}
 	}
 }

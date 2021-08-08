@@ -232,3 +232,54 @@ void DisconnectNotification::HtoN()
 {
 	// Nothing to do here
 }
+
+ReconnectionReply::ReconnectionReply() :
+	Packet{ PacketType::RECONNECTION_REPLY }
+{
+}
+
+void ReconnectionReply::NtoH()
+{
+	assignedID = ntohs(assignedID);
+
+	for (size_t i = 0; i < MAX_PEER; ++i)
+	{
+		playerIndices[i] = ntohs(playerIndices[i]);
+		ports[i] = ntohs(ports[i]);
+	}
+
+	gameTime = ntohf(*reinterpret_cast<unsigned int*>(&gameTime));
+	
+	for (size_t i = 0; i < MAX_PLAYER; ++i)
+	{
+		scores[i] = ntohs(scores[i]);
+		positions[i].x = ntohf(*reinterpret_cast<unsigned int*>(&positions[i].x));
+		positions[i].y = ntohf(*reinterpret_cast<unsigned int*>(&positions[i].y));
+		positions[i].z = ntohf(*reinterpret_cast<unsigned int*>(&positions[i].z));
+	}
+}
+
+void ReconnectionReply::HtoN()
+{
+	assignedID = htons(assignedID);
+
+	for (size_t i = 0; i < MAX_PEER; ++i)
+	{
+		playerIndices[i] = htons(playerIndices[i]);
+		ports[i] = htons(ports[i]);
+	}
+
+	unsigned int temp = htonf(gameTime);
+	gameTime = *reinterpret_cast<float*>(&temp);
+		
+	for (size_t i = 0; i < MAX_PLAYER; ++i)
+	{
+		scores[i] = htons(scores[i]);
+		temp = htonf(positions[i].x);
+		positions[i].x = *reinterpret_cast<float*>(&temp);
+		temp = htonf(positions[i].y);
+		positions[i].y = *reinterpret_cast<float*>(&temp);
+		temp = htonf(positions[i].z);
+		positions[i].z = *reinterpret_cast<float*>(&temp);
+	}
+}

@@ -49,7 +49,6 @@ public:
 	glm::vec3 point1 = glm::vec3(0, 0, 0);
 	glm::vec3 point2 = glm::vec3(0, 0, 0);
 
-	float counter{ 0.0 };
 	std::string GameObjectName;
 };
 #endif

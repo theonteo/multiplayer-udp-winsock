@@ -120,5 +120,15 @@ public:
 		HashedDataPacket& dataPacket, const SocketAddress& sourceAddr);
 
 	void ProcessDisconnectNotification(const SocketAddress& sourceAddr);
+
+	void ProcessReconnectionReply(
+		ReconnectionReply& replyPacket, const SocketAddress& sourceAddr);
+
+	void GenerateConnectionReply(
+		ConnectionReply& replyPacket,
+		const SocketAddress& sourceAddr,
+		unsigned short assignedID);
+
+	void GenerateReconnectionReply(ReconnectionReply& replyPacket);
 };
 

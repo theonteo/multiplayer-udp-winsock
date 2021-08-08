@@ -64,10 +64,21 @@ namespace
 }
 
 NetworkManager* Game::network = nullptr;
+float Game::gameTime = 0.0f;
 
 void Game::InitPlayer(size_t playerID)
 {
 	clientName = names[playerID];
+}
+
+float Game::GetGameTime()
+{
+	return gameTime;
+}
+
+void Game::SetGameTime(float _gameTime)
+{
+	gameTime = _gameTime;
 }
 
 void Game::Interaction()
@@ -158,8 +169,8 @@ void Game::MoveObject()
 		}
 	}
 
-
 	float dt = DeltaTime::GetDeltaTime();
+	gameTime += dt;
 
 	for (auto& itr : GameObjectManager::GameObjectList)
 	{
@@ -170,10 +181,8 @@ void Game::MoveObject()
 			continue;
 
 		std::unique_ptr<GameObject>& item = itr.second;
-		
-		item->counter += dt;
 
-		float t = sinf(item->counter);
+		float t = sinf(gameTime);
 		item->translate = item->point1 + (t * item->point2);
 	}
 }
