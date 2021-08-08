@@ -49,6 +49,13 @@ public:
 	glm::vec3 point1 = glm::vec3(0, 0, 0);
 	glm::vec3 point2 = glm::vec3(0, 0, 0);
 
+	glm::vec3 clientPos = glm::vec3(0, 0, 0);
+	glm::vec3 clientVel = glm::vec3(0, 0, 0);
+	glm::vec3 serverPos = glm::vec3(0, 0, 0);
+	glm::vec3 serverVel = glm::vec3(0, 0, 0);
+
+	float counter = 0.0f;
+
 	std::string GameObjectName;
 };
 #endif
