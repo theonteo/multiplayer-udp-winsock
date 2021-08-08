@@ -179,7 +179,7 @@ void UIManager::RenderGame(const NetworkManager::PlayerArray& data)
 
 		int score = data[0].score;
 
-		for (size_t i = 1; i < data.size(); ++i)
+		for (size_t i = 0; i < data.size(); ++i)
 		{
 			// Check if player connected
 			if (data[i].isConnected)
@@ -221,7 +221,7 @@ void UIManager::RenderResult(const NetworkManager::PlayerArray& data)
 
 	int score = data[0].score;
 
-	for (size_t i = 1; i < data.size(); ++i)
+	for (size_t i = 0; i < data.size(); ++i)
 	{
 		// Check if player connected
 		if (data[i].isConnected)
