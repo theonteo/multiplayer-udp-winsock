@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{2F596345-5886-4F9D-A7D1-EDA5CAE06D82}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Assignment1</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>udp-networking</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\GUI;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include\;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2015;$(SolutionDir)External Libs\GLEW\lib\Release\Win32;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)Assignment1\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_SILENT_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)udp-networking;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SpecifySectionAttributes>
+      </SpecifySectionAttributes>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)udp-networking\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\GUI;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include\;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2015;$(SolutionDir)External Libs\GLEW\lib\Release\Win32;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir)Assignment1;$(SolutionDir)External Libs\FreeImage\Dist\x32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)Assignment1\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)Assignment1\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_FORCE_SILENT_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)External Libs\ce;$(SolutionDir);$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\ASSIMP\include;$(SolutionDir)udp-networking;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)External Libs\GLFW\lib-vc2019;$(SolutionDir)External Libs\GLEW;$(SolutionDir)External Libs\GUI;$(SolutionDir)External Libs\glm;$(SolutionDir)External Libs\GLFW\include;$(SolutionDir)External Libs\GLEW\include;$(SolutionDir)External Libs;$(SolutionDir);$(SolutionDir)External Libs\ASSIMP\lib;$(SolutionDir)External Libs\FreeImage;$(SolutionDir)External Libs\FT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glew32.lib;glfw3.lib;assimp-vc140-mt.lib;freetype.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SpecifySectionAttributes>
+      </SpecifySectionAttributes>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)External Libs\GLEW\glew32.dll" "$(TargetDir)glew32.dll" /Y
+copy "$(SolutionDir)External Libs\FreeImage\FreeImage.dll" "$(TargetDir)FreeImage.dll" /Y
+copy "$(SolutionDir)External Libs\FT\lib\freetype.dll" "$(TargetDir)freetype.dll" /Y
+
+
+XCOPY "$(SolutionDir)udp-networking\Cubemaps" "$(TargetDir)\Cubemaps\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Fonts" "$(TargetDir)\Fonts\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Models" "$(TargetDir)\Models\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Shaders" "$(TargetDir)\Shaders\" /S /Y
+XCOPY "$(SolutionDir)udp-networking\Textures" "$(TargetDir)\Textures\" /S /Y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\External Libs\GUI\imgui.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_demo.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_draw.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\External Libs\GUI\imgui_widgets.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DeltaTime.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="GameObjectManager.cpp" />
+    <ClCompile Include="Interface.cpp" />
+    <ClCompile Include="Lighting.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="SocketAddress.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UIImage.cpp" />
+    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="UIText.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\External Libs\GUI\imconfig.h" />
+    <ClInclude Include="..\External Libs\GUI\imgui.h" />
+    <ClInclude Include="..\External Libs\GUI\imgui_impl_glfw.h" />
+    <ClInclude Include="..\External Libs\GUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\External Libs\GUI\imgui_impl_win32.h" />
+    <ClInclude Include="..\External Libs\GUI\imgui_internal.h" />
+    <ClInclude Include="..\External Libs\GUI\imstb_rectpack.h" />
+    <ClInclude Include="..\External Libs\GUI\imstb_textedit.h" />
+    <ClInclude Include="..\External Libs\GUI\imstb_truetype.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Colors.h" />
+    <ClInclude Include="CommonValues.h" />
+    <ClInclude Include="DeltaTime.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameObjectManager.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Interface.h" />
+    <ClInclude Include="Lighting.h" />
+    <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Render.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcess.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="Skybox.h" />
+    <ClInclude Include="SocketAddress.h" />
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="UIImage.h" />
+    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UIText.h" />
+    <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
